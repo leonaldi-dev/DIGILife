@@ -9,7 +9,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         // FIX: Konfigurasi Tailwind dikembalikan agar kelas kustom seperti 'bg-logo-color' berfungsi.
-        // Catatan: Peringatan 'should not be used in production' akan muncul kembali karena menggunakan CDN.
         tailwind.config = {
             theme: {
                 extend: {
@@ -18,7 +17,7 @@
                         'card-dark': 'var(--secondary-bg)',
                         'accent-leo': 'var(--text-purple)',
                         'accent-miftah': 'var(--accent-miftah)',
-                        'logo-color': 'var(--logo-yellow)', // INI YANG MEMBUAT TOMBOL KUNING
+                        'logo-color': 'var(--logo-yellow)', 
                         'btn-text': 'var(--button-text)',
                         'text-light': 'var(--text-light)',
                     },
@@ -80,10 +79,9 @@
         body { scrollbar-width: none; -ms-overflow-style: none; }
         
         /* ==================== */
-        /* 2. CUSTOM ACCENT CLASSES (Tetap dipertahankan untuk keamanan) */
+        /* 2. CUSTOM ACCENT CLASSES */
         /* ==================== */
         
-        /* Meskipun Tailwind config sudah dikembalikan, kita pastikan warna dinamis bekerja */
         .text-accent-leo { color: var(--text-purple); }
         .border-accent-leo { border-color: var(--text-purple); }
         .bg-accent-leo { background-color: var(--text-purple); }
@@ -307,8 +305,8 @@
     
     <!-- HEADER/NAVIGASI UTAMA -->
     <header id="main-header" class="p-4 md:px-8 bg-secondary-bg/95 backdrop-blur-sm shadow-xl w-full flex justify-between items-center rounded-b-xl border-b border-gray-700">
-        <!-- PERBAIKAN: Memastikan klik logo selalu memanggil showView('initial') untuk kembali ke tampilan dua kartu. -->
-        <div class="flex items-center space-x-2 cursor-pointer transition duration-300 transform hover:scale-105" onclick="showView('initial')">
+        <!-- PERBAIKAN: Memastikan klik logo selalu memanggil window.parent.showView('initial') untuk kembali ke tampilan dua kartu. -->
+        <div class="flex items-center space-x-2 cursor-pointer transition duration-300 transform hover:scale-105" onclick="window.parent.showView('initial')">
             <i class="fas fa-laptop-code text-logo-color text-3xl logo-glow"></i>
             <span class="port-logo text-logo-color logo-glow">DIGILife</span>
         </div>
@@ -331,7 +329,8 @@
                 name: "LEONALDI AHMAD IBRAHIM",
                 tagline: "Web-Developer",
                 color: "accent-leo",
-                img: "assets/images/leoganteng.jpg",
+                // PERBAIKAN: Menggunakan jalur absolut dari root GitHub Pages (diawali /)
+                img: "/assets/images/leoganteng.jpg",
                 ig_link: "https://www.instagram.com/l_nlibrhm?igsh=MXFpemFhNHowd252YQ==",
                 description: "I am a **Web-Developer** and i m a passionate Junior Web Developer dedicated and committed to creating engaging and functional web experiences.,",
                 roles: ["Full-Stack Developer", "Maintenance", "Web Developer", "UI/UX Enthusiast", "Debugging Expert"]
@@ -340,7 +339,8 @@
                 name: "MIFTAKHUL ACHYAR",
                 tagline: "Programmer",
                 color: "accent-miftah",
-                img: "assets/images/miftah.jpg",
+                // PERBAIKAN: Menggunakan jalur absolut dari root GitHub Pages (diawali /)
+                img: "/assets/images/miftah.jpg", 
                 ig_link: "https://www.instagram.com/mft4h_17",
                 description: "I am a dedicated **Software Engineer** specializing in problem-solving and clean code architecture. My focus is on optimizing performance and ensuring a seamless user experience across all platforms. Ready to tackle any coding challenge.",
                 roles: ["Software Engineer", "Problem Solver", "Debugging Expert", "Programmer Inti"]
@@ -376,7 +376,6 @@
                                     <h4 class="text-2xl font-bold high-contrast-text mb-2">${members[key].name}</h4>
                                     <p class="text-${members[key].color} font-medium mb-6 text-lg">${members[key].tagline}</p>
                                     
-                                    <!-- FIX: bg-logo-color SEKARANG BERFUNGSI -->
                                     <button class="mt-4 px-6 py-2 bg-logo-color text-btn-text font-extrabold rounded-full shadow-lg hover:opacity-90 transition duration-300 uppercase tracking-wider btn-glow">
                                         <i class="fas fa-arrow-circle-right"></i> Lebih Lanjut
                                     </button>
@@ -418,7 +417,6 @@
                                 ${member.description.replace(/\*\*(.*?)\*\*/g, '<strong class="text-logo-color">$1</strong>')}
                             </p>
                             
-                            <!-- FIX: bg-logo-color SEKARANG BERFUNGSI -->
                             <a href="${member.ig_link}" target="_blank" class="inline-flex items-center px-8 py-3 bg-logo-color text-btn-text font-extrabold rounded-full transition duration-300 hover:opacity-90 shadow-2xl shadow-logo-color/50 uppercase tracking-wider btn-glow">
                                 Let's Connect <i class="fab fa-instagram ml-3 text-xl"></i>
                             </a>
@@ -456,6 +454,18 @@
                 renderPortfolioView(memberKey);
             }
         }
+        
+        // Memanggil showView pada Parent Window untuk menutup modal
+        // Catatan: Ini harus dipanggil oleh tombol yang ada di tampilan portfolio 
+        // atau logo di header jika ingin kembali ke menu awal dua kartu.
+        function closeAuthorView() {
+            if (window.parent && window.parent.showView) {
+                window.parent.showView('initial');
+            } else {
+                showView('initial'); // Fallback jika tidak dimuat dalam iframe
+            }
+        }
+
 
         function startTypingEffect(roles) {
             if (window.typingTimeout) clearTimeout(window.typingTimeout);
