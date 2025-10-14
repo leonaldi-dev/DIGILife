@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <!-- PERBAIKAN 1: VIEWPORT SAMA DENGAN PARENT -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Perencana Anggaran Lokal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Poppins (Google Font) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Custom CSS & Variables (Dark Purple Theme) */
+        :root {
+            --primary-dark: #1f2a38; 
+            --secondary-dark: #2c3e50; 
+            --accent-purple: #bb66ff; /* Lebih cerah untuk kids-friendly */
+            --highlight-green: #2ecc71; 
+            --highlight-red: #e74c3c; 
+            --text-light: #ecf0f1;
+            --background-gradient: linear-gradient(135deg, #4b3869 0%, #291a3b 100%);
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
+        
+        /* PERBAIKAN 2: BODY UNTUK IFRAME */
+        body {
+            background: var(--background-gradient);
+            min-height: 100vh;
+            width: 100%;
+            /* PERBAIKAN: Hapus flex dan ganti dengan block */
+            display: block;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        /* PERBAIKAN 3: MAIN APP WIDTH */
+        .main-app {
+            width: 100%;
+            max-width: 100%;
+            background-color: var(--secondary-dark);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            color: var(--text-light);
+            animation: fadeIn 0.6s ease-out;
+            margin: 0;
+            /* PERBAIKAN: Pastikan tidak ada padding/margin yang bikin kesempitan */
+            box-sizing: border-box;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* PERBAIKAN 4: DASHBOARD GRID FIX */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+        }
+
+        /* Utility classes overrides */
+        .input-style {
+            background-color: var(--primary-dark);
+            border: 2px solid var(--accent-purple);
+            color: var(--text-light);
+            transition: border-color 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
+        }
+        .input-style:focus {
+            border-color: var(--highlight-green);
+            box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.5);
+            outline: none;
+        }
+        
+        .btn-style {
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, opacity 0.2s;
+            font-weight: 700;
+            box-sizing: border-box;
+        }
+        .btn-style:hover {
+            transform: translateY(-2px); /* Lebih interaktif */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Tombol Simpan Inovatif */
+        .save-btn-gradient {
+            background: linear-gradient(45deg, #1abc9c, var(--highlight-green)); /* Gradient */
+            color: var(--primary-dark);
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.5); /* Glowing effect */
+        }
+        .save-btn-gradient:hover {
+            background: linear-gradient(45deg, #2ecc71, #16a085);
+            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.7);
+        }
+
+        /* Dashboard Specific Styles */
+        .card-income { background-color: #27ae60; }
+        .card-expense { background-color: #c0392b; }
+        .card-balance { background-color: var(--accent-purple); }
+        
+        .balance-positive { color: var(--highlight-green) !important; font-weight: 800; }
+        .balance-negative { color: var(--highlight-red) !important; font-weight: 800; }
+        
+        /* Pesan Status Saldo */
+        #status-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.5s;
+            box-sizing: border-box;
+        }
+        .status-positive {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 1px solid var(--highlight-green);
+            color: var(--highlight-green);
+        }
+        .status-negative {
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 1px solid var(--highlight-red);
+            color: var(--highlight-red);
+        }
+
+        /* Transaction List Styles */
+        .transaction-item {
+            border-bottom: 1px solid rgba(236, 240, 241, 0.1);
+            transition: background-color 0.3s;
+            box-sizing: border-box;
+        }
+        .transaction-item:hover {
+            background-color: #3f556d;
+        }
+        .income-amount { color: var(--highlight-green); }
+        .expense-amount { color: var(--highlight-red); }
+        
+        /* Scrollbar styling for transaction list */
+        #transaction-list {
+            max-height: 400px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        #transaction-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        #transaction-list::-webkit-scrollbar-thumb {
+            background-color: #5d6d7e;
+            border-radius: 10px;
+        }
+        #transaction-list::-webkit-scrollbar-track {
+            background: var(--primary-dark);
+        }
+
+        /* Styling untuk memastikan input Rupiah dan Jumlah sejajar dan terlihat rapi */
+        .rp-input-group {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .rp-input-prefix {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            padding: 0.75rem 0.5rem 0.75rem 1rem; /* p-3 */
+            font-weight: 600;
+            border: 2px solid var(--accent-purple);
+            border-right: none;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        
+        .rp-input-field {
+            flex-grow: 1;
+            background-color: var(--primary-dark);
+            border: 2px solid var(--accent-purple);
+            border-left: none;
+            color: var(--text-light);
+            padding: 0.75rem 1rem 0.75rem 0.5rem; /* p-3 */
+            text-align: right;
+            box-sizing: border-box;
+        }
+        
+        .rp-input-field:focus {
+            border-color: var(--highlight-green);
+            box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.5);
+            outline: none;
+        }
+
+        /* Pesan Interaksi Cepat */
+        #fun-message-box {
+            background-color: #5c3577; /* Warna ungu gelap */
+            box-shadow: 0 0 15px rgba(187, 102, 255, 0.7); /* Bayangan ungu */
+            border: 1px solid var(--accent-purple);
+            font-size: 0.9rem;
+            z-index: 60; /* Lebih tinggi dari message-box biasa */
+        }
+
+        /* PERBAIKAN 5: RESPONSIVE UNTUK IFRAME */
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+            
+            .main-app {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            #transaction-form-section,
+            #transaction-list-section,
+            #dashboard {
+                padding: 15px;
+            }
+            
+            /* PERBAIKAN KRITIS: GRID MOBILE */
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .p-3 {
+                padding: 12px 8px;
+            }
+            
+            .text-xl {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* PERBAIKAN 6: MEDIUM SCREENS */
+        @media (max-width: 768px) and (min-width: 481px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<!-- PERBAIKAN 7: HAPUS PADDING DARI BODY -->
+<body class="p-0">
+
+    <div class="main-app">
+        <header class="p-6 bg-gray-800 rounded-t-lg shadow-lg">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-extrabold text-white flex items-center gap-3">
+                    <i class="fas fa-wallet text-yellow-400"></i> Perencana Anggaran
+                </h1>
+                <span id="loading-indicator" class="hidden text-sm text-yellow-400">
+                    <i class="fas fa-spinner fa-spin"></i> Memuat...
+                </span>
+            </div>
+            <div class="text-xs mt-2 text-gray-400">
+                Data disimpan secara **Lokal** di Perangkat Anda.
+            </div>
+        </header>
+        
+        <!-- PERBAIKAN 8: DASHBOARD DENGAN GRID BARU -->
+        <section id="dashboard" class="p-6">
+            <h2 class="text-xl font-bold mb-4 text-center text-accent-purple">Ringkasan Keuangan</h2>
+            <div class="dashboard-grid">
+                
+                <!-- Pemasukan -->
+                <div class="p-3 rounded-xl shadow-md card-income">
+                    <p class="text-sm font-semibold">Pemasukan</p>
+                    <p id="total-income" class="text-xl font-extrabold mt-1 text-white">Rp 0</p>
+                </div>
+                
+                <!-- Pengeluaran -->
+                <div class="p-3 rounded-xl shadow-md card-expense">
+                    <p class="text-sm font-semibold">Pengeluaran</p>
+                    <p id="total-expense" class="text-xl font-extrabold mt-1 text-white">Rp 0</p>
+                </div>
+                
+                <!-- Saldo Bersih -->
+                <div class="p-3 rounded-xl shadow-md card-balance">
+                    <p class="text-sm font-semibold">Saldo Bersih</p>
+                    <p id="net-balance" class="text-xl font-extrabold mt-1 text-white">Rp 0</p>
+                </div>
+            </div>
+
+            <!-- Pesan Status Saldo Akan Muncul di Sini -->
+            <div id="status-message" class="hidden"></div>
+
+        </section>
+
+        <!-- Form Tambah Transaksi -->
+        <section id="transaction-form-section" class="p-6 border-t border-gray-700">
+            <h2 class="text-xl font-bold mb-4 text-accent-purple">Tambah Transaksi Baru</h2>
+            <!-- Layout Grid Baru untuk Simetri -->
+            <form id="transaction-form" class="grid grid-cols-1 md:grid-cols-6 gap-3">
+                
+                <!-- Tipe (Lebar 3 kolom di mobile/desktop) -->
+                <select id="transaction-type" required class="col-span-full md:col-span-3 p-3 rounded-lg input-style">
+                    <option value="income">Pemasukan</option>
+                    <option value="expense">Pengeluaran</option>
+                </select>
+
+                <!-- Deskripsi (Lebar 3 kolom di mobile/desktop) -->
+                <input type="text" id="description" placeholder="Deskripsi (Misal: Gaji, Belanja)" required 
+                        class="col-span-full md:col-span-3 p-3 rounded-lg input-style">
+                
+                <!-- Jumlah/RP (Lebar 4 kolom di desktop, Full di mobile) -->
+                <div class="col-span-full md:col-span-4 rp-input-group">
+                    <span class="rp-input-prefix rounded-l-lg">Rp</span>
+                    <!-- Input field sekarang memiliki kelas kustom -->
+                    <input type="text" id="amount" placeholder="Jumlah (Otomatis koma)" required 
+                            class="rp-input-field rounded-r-lg">
+                </div>
+
+                <!-- Tombol Simpan (Lebar 2 kolom di desktop, Full di mobile) -->
+                <button type="submit" 
+                        class="col-span-full md:col-span-2 p-3 rounded-lg btn-style save-btn-gradient">
+                    <i class="fas fa-save mr-2"></i> Simpan
+                </button>
+            </form>
+        </section>
+
+        <!-- Daftar Transaksi -->
+        <section id="transaction-list-section" class="p-6 border-t border-gray-700">
+            <h2 class="text-xl font-bold mb-4 text-accent-purple">Daftar Transaksi</h2>
+            <div id="transaction-list" class="bg-primary-dark rounded-lg p-2">
+                <!-- Data transaksi akan dimuat di sini oleh JavaScript -->
+                <p id="empty-state" class="text-center text-gray-500 py-6">Belum ada transaksi. Tambahkan yang pertama!</p>
+            </div>
+        </section>
+        
+        <!-- Pesan Notifikasi Biasa (Ganti alert() yang tidak boleh dipakai) -->
+        <div id="message-box" class="fixed bottom-5 right-5 p-4 rounded-lg shadow-xl text-white hidden z-50 transition-opacity duration-300"></div>
+
+        <!-- Pesan Interaksi Cepat (Di bawah tombol simpan) -->
+        <div id="fun-message-box" class="fixed bottom-5 right-5 p-4 rounded-lg shadow-xl text-white hidden z-60 transition-opacity duration-300"></div>
+
+    </div>
+
+    <!-- SCRIPT UTAMA (LOCAL STORAGE) -->
+    <script>
+        // --- KONSTANTA & INISIALISASI ELEMEN ---
+        const STORAGE_KEY = 'budgetPlannerTransactions'; // Kunci penyimpanan data lokal
+
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const transactionList = document.getElementById('transaction-list');
+        const emptyState = document.getElementById('empty-state');
+        const dashboard = {
+            income: document.getElementById('total-income'),
+            expense: document.getElementById('total-expense'),
+            balance: document.getElementById('net-balance'),
+            statusMessage: document.getElementById('status-message')
+        };
+        const transactionForm = document.getElementById('transaction-form');
+        const amountInput = document.getElementById('amount');
+        const descriptionInput = document.getElementById('description');
+        const messageBox = document.getElementById('message-box');
+        const funMessageBox = document.getElementById('fun-message-box');
+
+        let transactions = []; // Array global untuk menyimpan data transaksi
+
+        // JS: PESAN STATUS UNTUK SALDO POSITIF & NEGATIF
+        const positiveMessages = [
+            "Saldo Anda senyum lebar! 😄 Anda hemat sekali!",
+            "Wah, saldo masih aman! Traktir diri sendiri sedikit boleh lah~",
+            "MANTAP! Anggaran terkendali. Anda jenius finansial!",
+            "Uang Anda berkembang biak! Saldo positif nih.",
+            "Selamat! Masa depan cerah menanti. Uang Anda baik-baik saja."
+        ];
+        
+        const negativeMessages = [
+            "WADUH! Saldo mulai menjerit. 😱 Cek lagi pengeluaran yang tidak penting!",
+            "Uang Anda sedang liburan mendadak. Saldo sudah minus, hati-hati!",
+            "SALDO BOCOR! Kita butuh strategi baru, segera pangkas biaya tak terduga.",
+            "Keuangan Anda sedang diuji. Tahan dulu keinginan belanja yang tidak perlu!",
+            "Anda sudah melebihi batas. Minum air putih saja dulu, ya."
+        ];
+        
+        // --- HELPER FUNCTIONS ---
+
+        // Fungsi untuk menampilkan notifikasi (pengganti alert)
+        function showMessage(message, type = 'info') {
+            const box = type === 'fun' ? funMessageBox : messageBox;
+            box.textContent = message;
+            
+            // Atur styling untuk pesan fun/lucu
+            if (type === 'fun') {
+                box.classList.remove('hidden', 'bg-red-500', 'bg-green-500', 'bg-blue-500');
+                box.classList.add('bg-purple-600'); // Warna khusus untuk fun message
+            } else {
+                // Notifikasi standar
+                box.classList.remove('hidden', 'bg-red-500', 'bg-green-500', 'bg-blue-500');
+                if (type === 'success') {
+                    box.classList.add('bg-green-500');
+                } else if (type === 'error') {
+                    box.classList.add('bg-red-500');
+                } else {
+                    box.classList.add('bg-blue-500');
+                }
+            }
+            
+            box.style.opacity = '1';
+            
+            // DURASI PESAN FUN DITAMBAH MENJADI 7 DETIK (7000ms)
+            setTimeout(() => {
+                box.style.opacity = '0';
+                setTimeout(() => box.classList.add('hidden'), 300);
+            }, type === 'fun' ? 7000 : 3000); 
+        }
+
+        // FUNGSI BARU: Logika Pesan Interaksi (Fun Fact)
+        function getTransactionFunFact(type, amount, description) {
+            const formattedAmount = formatNumber(amount);
+            const descLower = description.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+
+            const wackyMessages = [
+                "🚨 WARNING! Database mendeteksi Anda sangat keren dalam mengelola uang. Tetaplah rendah hati.",
+                "Fungsi otak kanan Anda barusan mengkategorikan transaksi ini. Beri tepuk tangan untuk diri sendiri! 👏",
+                "Apakah Anda yakin ini angka yang benar? Tidak ada 0 yang tersembunyi, kan? Hanya bercanda. 😉",
+                "Transaksinya sudah disimpan, sekarang waktunya makan camilan. Anggaran butuh nutrisi juga.",
+                "Sistem kami sudah lelah mencatat kekayaan/pengeluaran Anda. Tolong kurangi kejeniusan finansial Anda sedikit.",
+                "Ini catatan yang sangat rapi. Apakah Anda punya rahasia? Kami tidak akan bilang siapa-siapa. 🤫",
+                "Selamat datang di masa depan! Uang Anda baru saja diproses oleh robot keuangan kecil. Bip-bop! 🤖",
+                "Transaksinya sudah terkirim ke penyimpanan lokal. Sampai jumpa di ringkasan akhir bulan! 👋",
+                "Sejarah baru telah tercipta! Transaksi ini adalah bagian dari riwayat keuangan epik Anda.",
+                "Tugas selesai. Sekarang Anda bebas memikirkan hal-hal yang lebih penting, seperti: makan siang apa hari ini?",
+                "📢 Pengumuman: Seekor kucing barusan mencoba mencuri data Anda. Transaksi aman!",
+                "Barusan ada kecoa lewat di layar. Semoga membawa keberuntungan finansial! 🍀",
+                "Saldo Anda tersenyum. Jangan membuatnya nangis dengan belanja impulsif, ya. Hehe.",
+                "Mode 'Hemat' diaktifkan. Atau... mungkin mode 'Belanja Gila'? Aku lupa. *shrugs*",
+                "Tahukah Anda? Mencatat pengeluaran membakar 5 kalori. Lanjut terus! (Data ini ngarang).",
+                "Dokumen ini butuh kopi! Ups, maksudku, transaksi ini sudah tercatat. ☕️",
+                "Kami mencoba menerjemahkan riwayat keuangan Anda ke Bahasa Alien. Hasilnya: 'Zorp Glorg Finan!' 👽",
+                "Selamat! Anda baru saja memenangkan undian 'Pengguna Terbaik Hari Ini' (Hadiahnya: Saldo yang sudah Anda punya).",
+                "Kunci kesuksesan finansial adalah mencatat. Kunci kesuksesan hidup adalah es krim. 🍦",
+                "Jika uang bisa bicara, dia akan bilang: 'Aku capek lari-lari! Tolong diam di sini sebentar.'",
+                "Waktunya cek saldo! Biar kayak bos-bos di film. (Padahal cuma cek sisa Rp5000).",
+                "Barusan ada peri anggaran lewat dan dia bilang: 'Bagus!' ✨",
+                "Transaksi Anda seberat 3 gigabyte data. *Bukan*. Tapi sudah tercatat kok!",
+                "Angka ini terlihat sangat penting. Aku akan memberinya mahkota. 👑"
+            ];
+
+
+            // 40% kesempatan (4 dari 10) untuk menampilkan pesan acak yang benar-benar random
+            if (Math.random() < 0.4) { 
+                const randomIndex = Math.floor(Math.random() * wackyMessages.length);
+                return wackyMessages[randomIndex];
+            }
+
+
+            // --- LOGIKA PESAN SPESIFIK BERDASARKAN KATEGORI (Hanya jika random gagal) ---
+            
+            if (type === 'income') {
+                const incomeMessages = [
+                    `🎉 Wah, ${formattedAmount} untuk ${description}! Orang kaya ya kamu? Traktir dong! 😉`,
+                    `🙏 Alhamdulillah, ada pemasukan ${formattedAmount} dari ${description}. Sedikit-sedikit, lama-lama jadi bukit!`,
+                    `✨ Jackpot! Kami harus segera memasang alarm di dompet Anda. Ini resmi: Anda adalah sultan!`,
+                    `💰 Setetes demi setetes, lama-lama jadi danau! Semangat mencari rezeki halalnya, boss!`
+                ];
+
+                if (amount >= 50000) {
+                    const bigIndex = Math.random() < 0.5 ? 0 : 2;
+                    return incomeMessages[bigIndex];
+                } 
+                else if (amount > 0) {
+                    const smallIndex = Math.random() < 0.5 ? 1 : 3;
+                    return incomeMessages[smallIndex];
+                }
+            } 
+            
+            if (type === 'expense') {
+                
+                let isExpensive = false;
+                let isCheap = false;
+                let specificCategory = null;
+
+                // 1. Kopi/Minuman
+                if (descLower.includes('kopi') || descLower.includes('minum')) {
+                    specificCategory = 'Kopi';
+                    if (amount >= 30000) isExpensive = true;
+                    if (amount <= 5000) isCheap = true;
+                } 
+                // 2. Makanan/Jajan/Cemilan
+                else if (descLower.includes('makan') || descLower.includes('jajan') || descLower.includes('cemil') || descLower.includes('resto')) {
+                    specificCategory = 'Makanan';
+                    if (amount >= 50000) isExpensive = true;
+                    if (amount <= 15000) isCheap = true;
+                } 
+                // 3. Transportasi/Bensin
+                else if (descLower.includes('bensin') || descLower.includes('transport') || descLower.includes('ojek')) {
+                    specificCategory = 'Transport';
+                    if (amount >= 100000) isExpensive = true;
+                    if (amount <= 5000) isCheap = true;
+                }
+                
+                // Generate message based on price check
+                if (isCheap) {
+                    return `🍜 ${description} cuma ${formattedAmount}! Murah banget! Beli di mana? Kasih tahu dong!`;
+                } 
+                
+                if (isExpensive) {
+                    // Pesan mahal spesifik
+                    if (specificCategory === 'Kopi') {
+                        return `☕️ Kopi ${formattedAmount} lagi? Semoga sepadan dengan energi untuk mengumpulkan uangnya ya!`;
+                    }
+                    if (specificCategory === 'Makanan') {
+                        return `💸 Wih, ${description} sampai ${formattedAmount}! Pasti enak/keren banget tuh! Semoga gak nyesel ya.`;
+                    }
+                    if (specificCategory === 'Transport') {
+                        return `✈️ ${formattedAmount} untuk transport? Pasti perjalanan yang panjang! Jangan lupa istirahat.`;
+                    }
+                    // Fallback mahal
+                    return `🚨 Uang ${formattedAmount} keluar! Semoga ini investasi yang baik, bukan penyesalan masa depan.`;
+                }
+                
+                // General Expense Message
+                return `👍 ${description} berhasil dicatat! Anggaran aman. (Walaupun agak bosen sama deskripsi ini).`;
+            }
+            
+            return `Transaksi ${type} berhasil dicatat! (Tapi gak terlalu seru).`; // Fallback paling aman
+        }
+
+
+        // Fungsi untuk format input (saat diketik)
+        function formatInputCurrency(input) {
+            let rawValue = input.value.replace(/[^0-9]/g, '');
+            
+            if (rawValue) {
+                const formatted = new Intl.NumberFormat('id-ID').format(rawValue);
+                input.value = formatted;
+            } else {
+                input.value = '';
+            }
+        }
+        
+        // Panggil fungsi formatInputCurrency setiap kali ada input (ketikan) di kolom jumlah
+        amountInput.addEventListener('input', function() {
+            formatInputCurrency(this);
+        });
+
+
+        // Fungsi untuk memformat angka hasil perhitungan ke format Rupiah
+        function formatNumber(num) {
+            const sign = num < 0 ? '-' : '';
+            const absoluteNum = Math.abs(num);
+            const formatted = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(absoluteNum);
+            return `Rp ${sign}${formatted}`;
+        }
+        
+        // --- LOCAL STORAGE FUNCTIONS (PENGGANTI FIREBASE) ---
+
+        /**
+         * Memuat data transaksi dari Local Storage.
+         * @returns {Array} Array transaksi yang dimuat.
+         */
+        function loadTransactions() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                console.error("Gagal memuat data dari Local Storage:", e);
+                showMessage("Gagal memuat data lokal. Data mungkin hilang.", 'error');
+                return [];
+            }
+        }
+
+        /**
+         * Menyimpan data transaksi ke Local Storage.
+         */
+        function saveTransactions() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+            } catch (e) {
+                console.error("Gagal menyimpan data ke Local Storage:", e);
+                showMessage("Gagal menyimpan data lokal. Ruang penyimpanan mungkin penuh.", 'error');
+            }
+        }
+
+        // --- CORE UI UPDATE FUNCTION (PENGGANTI onSnapshot) ---
+
+        /**
+         * Memperbarui seluruh UI (Dashboard & Daftar Transaksi) berdasarkan array 'transactions'.
+         */
+        function updateUI() {
+            loadingIndicator.classList.add('hidden'); // Sembunyikan loading setelah data siap
+
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            transactions.forEach(t => {
+                const amount = parseFloat(t.amount) || 0;
+                if (t.type === 'income') {
+                    totalIncome += amount;
+                } else if (t.type === 'expense') {
+                    totalExpense += amount;
+                }
+            });
+
+            // Sortir transaksi secara lokal berdasarkan waktu (terbaru di atas)
+            transactions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            renderDashboard(totalIncome, totalExpense);
+            renderTransactionList(transactions);
+        }
+
+        // FUNGSI U: Update Dashboard dan Pesan Status
+        function renderDashboard(income, expense) {
+            const netBalance = income - expense;
+            
+            dashboard.income.textContent = formatNumber(income);
+            dashboard.expense.textContent = formatNumber(expense);
+            dashboard.balance.textContent = formatNumber(netBalance);
+            
+            // Atur warna saldo bersih
+            dashboard.balance.classList.remove('balance-positive', 'balance-negative');
+            if (netBalance > 0) {
+                dashboard.balance.classList.add('balance-positive');
+            } else if (netBalance < 0) {
+                dashboard.balance.classList.add('balance-negative');
+            }
+
+            // --- FUNGSI PESAN STATUS SALDO ---
+            const statusBox = dashboard.statusMessage;
+            statusBox.classList.remove('hidden', 'status-positive', 'status-negative');
+            
+            let message;
+            let cssClass;
+
+            if (netBalance > 0) {
+                // Pilih pesan positif secara acak
+                const randomIndex = Math.floor(Math.random() * positiveMessages.length);
+                message = positiveMessages[randomIndex];
+                cssClass = 'status-positive';
+            } else if (netBalance < 0) {
+                // Pilih pesan negatif secara acak
+                const randomIndex = Math.floor(Math.random() * negativeMessages.length);
+                message = negativeMessages[randomIndex];
+                cssClass = 'status-negative';
+            } else {
+                // Saldo Nol
+                message = "Saldo bersih nol. Saatnya menetapkan tujuan baru! 💪";
+                cssClass = 'status-positive'; // Anggap nol itu status netral/baik
+            }
+
+            statusBox.textContent = message;
+            statusBox.classList.add(cssClass);
+            statusBox.classList.remove('hidden'); 
+            // --- AKHIR FUNGSI PESAN STATUS SALDO ---
+        }
+
+        // Fungsi R: Render Daftar Transaksi
+        function renderTransactionList(currentTransactions) {
+            transactionList.innerHTML = '';
+            
+            if (currentTransactions.length === 0) {
+                emptyState.classList.remove('hidden');
+                transactionList.appendChild(emptyState);
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            currentTransactions.forEach(t => {
+                const amountClass = t.type === 'income' ? 'income-amount' : 'expense-amount';
+                const iconClass = t.type === 'income' ? 'fa-arrow-circle-up' : 'fa-arrow-circle-down';
+                const formattedDate = new Date(t.timestamp).toLocaleDateString('id-ID', {
+                    day: 'numeric', month: 'short', year: '2-digit'
+                });
+
+                const itemHtml = `
+                    <div class="transaction-item flex justify-between items-center p-3">
+                        <div class="flex items-center space-x-3 w-3/5">
+                            <i class="fas ${iconClass} ${t.type === 'income' ? 'text-green-500' : 'text-red-500'} text-xl"></i>
+                            <div>
+                                <p class="font-semibold truncate">${t.description}</p>
+                                <p class="text-xs text-gray-400">${formattedDate}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-end w-2/5">
+                            <p class="${amountClass} font-bold mr-4 text-right">${formatNumber(t.amount)}</p>
+                            <button data-id="${t.id}" class="delete-btn text-gray-500 hover:text-highlight-red p-1">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                transactionList.insertAdjacentHTML('beforeend', itemHtml);
+            });
+
+            // Re-attach listeners for delete buttons
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const idToDelete = e.currentTarget.dataset.id;
+                    deleteTransaction(idToDelete);
+                });
+            });
+        }
+
+
+        // FUNGSI C: Tambah Transaksi
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Ambil data dari form dan bersihkan input
+            const type = document.getElementById('transaction-type').value;
+            const description = descriptionInput.value.trim();
+            
+            // Bersihkan format Rupiah untuk mendapatkan nilai murni
+            const rawAmountString = amountInput.value.replace(/[^0-9]/g, '');
+            const amount = parseFloat(rawAmountString);
+
+            if (!description || amount <= 0 || isNaN(amount)) {
+                showMessage("Deskripsi dan Jumlah harus diisi dengan benar.", 'error');
+                return;
+            }
+
+            const newTransaction = {
+                id: Date.now().toString(), // Gunakan timestamp sebagai ID unik
+                type: type,
+                description: description,
+                amount: amount,
+                timestamp: new Date().toISOString() // Simpan waktu dalam format ISO string
+            };
+
+            // Tambahkan ke array global
+            transactions.push(newTransaction);
+            saveTransactions(); // Simpan ke Local Storage
+            updateUI(); // Perbarui tampilan
+
+            // Tampilkan pesan interaksi lucu
+            const funMessage = getTransactionFunFact(type, amount, description);
+            showMessage(funMessage, 'fun');
+            
+            // Reset form
+            transactionForm.reset();
+        }
+        
+        // FUNGSI D: Hapus Transaksi
+        function deleteTransaction(id) {
+            // Hapus dari array global
+            const initialLength = transactions.length;
+            transactions = transactions.filter(t => t.id !== id);
+
+            if (transactions.length < initialLength) {
+                saveTransactions(); // Simpan ke Local Storage
+                updateUI(); // Perbarui tampilan
+                showMessage("Transaksi berhasil dihapus.", 'success');
+            } else {
+                 showMessage("Gagal menghapus transaksi. ID tidak ditemukan.", 'error');
+            }
+        }
+
+        // --- STARTUP / INISIALISASI ---
+
+        function initApp() {
+            loadingIndicator.classList.remove('hidden');
+            
+            // 1. Muat data awal dari Local Storage
+            transactions = loadTransactions();
+
+            // 2. Perbarui UI berdasarkan data yang dimuat
+            updateUI();
+            
+            // 3. Pasang Event Listener Form
+            transactionForm.addEventListener('submit', handleFormSubmit);
+
+            // Sembunyikan indikator loading
+            loadingIndicator.classList.add('hidden');
+        }
+
+        // Mulai aplikasi setelah DOM dimuat
+        window.onload = initApp;
+
+    </script>
+</body>
+</html>
