@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator - Fun Edition</title>
+    <!-- Memuat Font Poppins dan Fredoka One -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS DENGAN ANIMASI FUN & KIDS-FRIENDLY */
+        
+        /* Tema Warna */
+        :root {
+            --op-green: #27ae60; 
+            --op-green-shadow: #1e8449;
+            --op-blue-gray: #34495e;
+            --op-blue-gray-shadow: #263849;
+            --op-orange: #e67e22;
+            --op-orange-shadow: #d35400;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calculator {
+            background: #2c3e50;
+            border-radius: 25px; 
+            padding: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.1); 
+            max-width: 400px;
+            width: 100%;
+            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .display {
+            background: #1a252f;
+            border-radius: 15px; 
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); 
+            overflow: hidden; 
+        }
+
+        .current-operation {
+            color: #95a5a6;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            min-height: 24px;
+            word-wrap: break-word;
+            transition: color 0.3s;
+        }
+        
+        /* Style untuk pesan lucu/fun fact */
+        .fun-message {
+            color: #ffcc00; /* Kuning cerah */
+            font-family: 'Fredoka One', cursive; 
+            font-size: 1.1rem;
+            animation: slideIn 0.3s ease-out;
+            min-height: 24px;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .current-value {
+            color: #ecf0f1;
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.8rem;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            background: var(--op-blue-gray);
+            border: none;
+            border-radius: 12px;
+            color: #ecf0f1;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.1s ease-out; 
+            min-height: 70px;
+            box-shadow: 0 5px var(--op-blue-gray-shadow); 
+            line-height: 1; 
+        }
+
+        button:hover {
+            background: #4a6b8a;
+            transform: translateY(-4px);
+            box-shadow: 0 9px var(--op-blue-gray-shadow);
+        }
+
+        button:active {
+            transform: translateY(2px) scale(0.95);
+            box-shadow: 0 3px var(--op-blue-gray-shadow);
+        }
+        
+        /* === SKEMA WARNA TOMBOL KHUSUS === */
+
+        .operator {
+            background: #e74c3c;
+            box-shadow: 0 5px #b1372d;
+        }
+        .operator:hover { background: #c0392b; box-shadow: 0 9px #b1372d; }
+        .operator:active { box-shadow: 0 3px #b1372d; }
+        
+        /* Tombol + (plus) dengan warna oranye */
+        .plus {
+            background: var(--op-orange);
+            box-shadow: 0 5px var(--op-orange-shadow);
+        }
+        .plus:hover { background: #f39c12; box-shadow: 0 9px var(--op-orange-shadow); }
+        .plus:active { box-shadow: 0 3px var(--op-orange-shadow); }
+        
+        /* Tombol +/-, C, CE menggunakan warna Clear */
+        .clear {
+            background: #d35400;
+            box-shadow: 0 5px #a04100;
+        }
+        .clear:hover { background: #ff7f00; box-shadow: 0 9px #a04100; }
+        .clear:active { box-shadow: 0 3px #a04100; }
+        
+        /* Tombol Equals */
+        .equals {
+            background: var(--op-green);
+            box-shadow: 0 5px var(--op-green-shadow);
+        }
+        .equals:hover { background: #219a52; box-shadow: 0 9px var(--op-green-shadow); }
+        .equals:active { box-shadow: 0 3px var(--op-green-shadow); }
+
+        /* === ANIMASI HASIL (CALCULATE) === */
+        .result-glow {
+            animation: resultGlow 0.5s ease-out;
+        }
+
+        @keyframes resultGlow {
+            0% { box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); transform: scale(1); }
+            50% { box-shadow: inset 0 0 20px var(--op-green), 0 0 10px var(--op-green); transform: scale(1.02); }
+            100% { box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); transform: scale(1); }
+        }
+
+        .double {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 15px;
+            }
+            button {
+                padding: 15px;
+                font-size: 1.3rem;
+                min-height: 60px;
+            }
+            .current-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator" id="calc">
+        <div class="display">
+            <!-- Tempat untuk Teks Operasi / Pesan Lucu -->
+            <div class="current-operation" id="operation"></div> 
+            <!-- Tempat untuk Nilai yang Sedang Diketik/Hasil -->
+            <div class="current-value" id="display">0</div>
+        </div>
+        <div class="buttons">
+            <!-- Baris 1: C, CE, +/-, Operator -->
+            <button class="clear" onclick="clearCalculator()">C</button>
+            <button class="clear" onclick="clearEntry()">CE</button>
+            <button class="clear" onclick="toggleSign()">+/-</button>
+            <button class="operator" onclick="appendOperator('/')">/</button>
+            
+            <!-- Baris 2: Angka 7-9 & Operator -->
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+            
+            <!-- Baris 3: Angka 4-6 & Operator -->
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+            
+            <!-- Baris 4: Angka 1-3 & Plus -->
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="plus" onclick="appendOperator('+')">+</button>
+            
+            <!-- Baris 5: Angka 0 & Desimal & Equals -->
+            <button class="double" onclick="appendNumber('0')">0</button>
+            <button onclick="appendDecimal()">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        // Daftar pesan kejutan lucu/pintar
+        const funMessages = {
+            // Pesan saat hasil adalah bilangan bulat (integer)
+            integer: [
+                "✨ BILANGAN BULAT SEMPURNA! Hasilnya rapi sekali.",
+                "Angka ini sangat bersih. Tidak ada remah-remah di belakang koma.",
+                "🎉 Hasilnya bulat, seperti donat yang enak!",
+                "Bravo! Itu jawaban yang sah!"
+            ],
+            // Pesan saat hasil memiliki desimal/koma
+            decimal: [
+                "🧐 Hasilnya agak berkoma. Dunia ini tidak selalu sempurna, kan?",
+                "Jangan panik dengan komanya! Itu hanya angka yang sedang bersembunyi.",
+                "Hmm, sepertinya kita butuh pembulatan. Tapi kita biarkan saja dia apa adanya.",
+                "Mantap! Tetap hitungan yang valid!"
+            ],
+            // Pesan untuk hasil yang sangat besar (>= 100000)
+            large: [
+                "🤯 WOW! Angka sebesar ini bisa membuat Anda kaya!",
+                "🚨 Hasilnya sudah mencapai orbit! Kita butuh roket untuk membacanya.",
+                "Penting! Angka ini layak mendapat tepuk tangan meriah. 👏"
+            ],
+            // Pesan untuk hasil nol
+            zero: [
+                "0️⃣ Hasil nol. Tapi di dunia ini, nol juga penting lho!",
+                "Mulai dari nol lagi, ya? Tidak masalah, nol itu keren.",
+                "Nol. Sempurna, tapi sedikit membosankan. Coba lagi!"
+            ],
+            // Pesan untuk error/pembagian nol
+            error: [
+                "❌ TIDAK BISA DIBAGI DENGAN NOL! Coba lagi dengan angka lain.",
+                "🚨 ERROR! Angka Anda mencoba melarikan diri dari pembagian nol.",
+                "Waduh! Ada lubang hitam di hitungan Anda. Tekan C."
+            ],
+            // Pesan khusus untuk penjumlahan
+            addition: [
+                "➕ Penjumlahan yang sempurna!",
+                "Tambah-tambahan yang menyenangkan!",
+                "Hasil penjumlahan yang cantik!",
+                "Wow, angka-angka ini cocok bertemu!"
+            ]
+        };
+
+        class Calculator {
+            constructor() {
+                // State Awal Kalkulator
+                this.currentValue = '0';
+                this.previousValue = '';
+                this.operator = '';
+                this.waitingForNewValue = false; // Flag untuk menunggu input angka kedua
+                this.errorMode = false;
+                this.clearMessage = false; // Flag untuk menghapus pesan lucu
+                
+                // Elemen DOM
+                this.displayElement = document.getElementById('display');
+                this.operationElement = document.getElementById('operation');
+                this.displayArea = document.querySelector('.display'); 
+            }
+
+            // --- DISPLAY & ANIMASI ---
+
+            updateDisplay() {
+                 if (this.errorMode) {
+                    this.displayElement.textContent = "ERROR!";
+                    return;
+                }
+                
+                // Tampilkan angka dengan format lokal untuk angka besar
+                this.displayElement.textContent = this.formatNumber(this.currentValue);
+                
+                // Jika sedang menampilkan pesan lucu, jangan tampilkan operasi di baris atas
+                if (this.clearMessage) return;
+
+                let operationText = '';
+                if (this.previousValue !== '') {
+                    const displayOperator = this.operator === '*' ? '×' : this.operator; 
+                    operationText = `${this.formatNumber(this.previousValue)} ${displayOperator || ''}`;
+                }
+                
+                // Hapus kelas fun-message jika sedang menampilkan operasi normal
+                this.operationElement.classList.remove('fun-message');
+                this.operationElement.textContent = operationText;
+            }
+
+            // Fungsi untuk memformat angka dengan koma sebagai pemisah ribuan
+            formatNumber(inputNum) {
+                const numString = String(inputNum); 
+
+                // Angka negatif
+                const isNegative = numString.startsWith('-');
+                let num = isNegative ? numString.substring(1) : numString;
+
+                // Pisahkan bagian integer dan desimal
+                const [integerPart, decimalPart] = num.split('.');
+
+                // Format bagian integer dengan pemisah ribuan
+                const formattedInteger = parseFloat(integerPart).toLocaleString('id-ID', { maximumFractionDigits: 0 });
+
+                // Gabungkan kembali
+                let result;
+                if (decimalPart !== undefined) {
+                    result = `${formattedInteger}.${decimalPart}`;
+                } else {
+                    result = formattedInteger;
+                }
+
+                // Tambahkan kembali tanda negatif jika ada
+                return isNegative ? `-${result}` : result;
+            }
+
+            animateResult() {
+                this.displayArea.classList.remove('result-glow');
+                void this.displayArea.offsetWidth; 
+                this.displayArea.classList.add('result-glow');
+            }
+            
+            // --- LOGIKA PESAN LUCU ---
+
+            showFunMessage(result, isError = false, operator = '') {
+                let category;
+                const absResult = Math.abs(result);
+                
+                if (isError) {
+                    category = 'error';
+                } else if (result === 0) {
+                    category = 'zero';
+                } else if (operator === '+') {
+                    category = 'addition';
+                } else if (Number.isInteger(absResult) && String(absResult).length < 7) {
+                    category = 'integer';
+                } else if (absResult >= 100000) {
+                    category = 'large';
+                } else if (!Number.isInteger(result) && String(result).includes('.')) {
+                    category = 'decimal';
+                } else {
+                    return; 
+                }
+                
+                const messages = funMessages[category];
+                const message = messages[Math.floor(Math.random() * messages.length)];
+                
+                this.operationElement.textContent = message;
+                this.operationElement.classList.add('fun-message');
+                this.clearMessage = true;
+            }
+
+            // --- FUNGSI KALKULATOR UTAMA ---
+
+            appendNumber(number) {
+                 if (this.errorMode) this.clearCalculator();
+
+                // Hapus pesan lucu saat mulai mengetik angka baru
+                if (this.clearMessage && !this.waitingForNewValue) {
+                    this.clearMessage = false;
+                    this.operationElement.textContent = '';
+                    this.operationElement.classList.remove('fun-message');
+                }
+
+                if (this.waitingForNewValue) {
+                    this.currentValue = number;
+                    this.waitingForNewValue = false;
+                } else {
+                    // Batasi panjang angka untuk menghindari overflow display
+                    if (this.currentValue.length < 15) {
+                        this.currentValue = this.currentValue === '0' ? number : this.currentValue + number;
+                    }
+                }
+                this.updateDisplay();
+            }
+            
+            appendDecimal() {
+                if (this.errorMode) this.clearCalculator();
+                if (this.currentValue.indexOf('.') === -1) {
+                    if (this.waitingForNewValue) {
+                        this.currentValue = '0.';
+                        this.waitingForNewValue = false;
+                    } else {
+                        this.currentValue += '.';
+                    }
+                }
+                this.updateDisplay();
+            }
+
+            appendOperator(nextOperator) {
+                 if (this.errorMode) this.clearCalculator();
+                this.clearMessage = false;
+
+                const inputValue = parseFloat(this.currentValue);
+
+                if (this.previousValue === '') {
+                    this.previousValue = inputValue;
+                } else if (this.operator) {
+                    const result = this.performCalculation();
+                    
+                    if (result === 'Error') {
+                        this.handleError();
+                        return;
+                    }
+                    this.currentValue = String(result);
+                    this.previousValue = result;
+                }
+
+                this.waitingForNewValue = true;
+                this.operator = nextOperator;
+                this.updateDisplay();
+            }
+
+            // Fungsi untuk mengubah tanda (+/-)
+            toggleSign() {
+                if (this.errorMode || this.currentValue === '0') return;
+
+                // Jika sedang menunggu input angka baru, terapkan ke previousValue dulu
+                if (this.waitingForNewValue && this.previousValue !== '') {
+                    this.previousValue = this.previousValue * -1;
+                    this.updateDisplay();
+                } 
+                // Jika sedang mengetik angka, terapkan ke currentValue
+                else {
+                    const currentValueNum = parseFloat(this.currentValue);
+                    if (!isNaN(currentValueNum) && currentValueNum !== 0) {
+                        this.currentValue = String(currentValueNum * -1);
+                        this.updateDisplay();
+                    }
+                }
+            }
+
+            performCalculation() {
+                const prev = parseFloat(this.previousValue);
+                const current = parseFloat(this.currentValue);
+                
+                if (isNaN(prev) || isNaN(current)) return current; 
+
+                let result;
+                switch (this.operator) {
+                    case '+': result = prev + current; break;
+                    case '-': result = prev - current; break;
+                    case '*': result = prev * current; break;
+                    case '/': 
+                        if (current === 0) {
+                            return 'Error'; 
+                        }
+                        result = prev / current; 
+                        break;
+                    default: return current;
+                }
+                // Membatasi presisi desimal
+                return parseFloat(result.toFixed(10));
+            }
+
+            calculate() {
+                if (this.errorMode) this.clearCalculator();
+                if (this.operator && !this.waitingForNewValue) {
+                    const result = this.performCalculation();
+                    
+                    if (result === 'Error') {
+                        this.handleError();
+                        return;
+                    }
+                    
+                    this.currentValue = String(result);
+                    this.showFunMessage(result, false, this.operator); // Kirim operator untuk pesan khusus
+                    this.animateResult(); 
+
+                    this.previousValue = '';
+                    this.operator = '';
+                    this.waitingForNewValue = true; 
+                    this.updateDisplay();
+                }
+            }
+            
+            handleError() {
+                this.errorMode = true;
+                this.currentValue = 'Error';
+                this.previousValue = '';
+                this.operator = '';
+                this.waitingForNewValue = true;
+                this.showFunMessage(null, true); 
+                this.updateDisplay();
+            }
+
+            clearCalculator() {
+                this.currentValue = '0';
+                this.previousValue = '';
+                this.operator = '';
+                this.waitingForNewValue = false;
+                this.errorMode = false;
+                this.clearMessage = false;
+                this.updateDisplay();
+            }
+
+            clearEntry() {
+                if (this.errorMode) this.clearCalculator();
+                this.currentValue = '0';
+                this.updateDisplay();
+            }
+        }
+
+        // 1. Buat instance kalkulator
+        const calculator = new Calculator();
+
+        // 2. Fungsi Global untuk tombol onclick
+        function appendNumber(number) { calculator.appendNumber(number); }
+        function appendDecimal() { calculator.appendDecimal(); }
+        function appendOperator(operator) { calculator.appendOperator(operator); }
+        function calculate() { calculator.calculate(); }
+        function clearCalculator() { calculator.clearCalculator(); }
+        function clearEntry() { calculator.clearEntry(); }
+        function toggleSign() { calculator.toggleSign(); }
+
+        // 3. Dukungan Keyboard
+        document.addEventListener('keydown', (event) => {
+            const key = event.key;
+            
+            if (key >= '0' && key <= '9') {
+                appendNumber(key);
+            } else if (key === '.') {
+                appendDecimal();
+            } else if (['+', '-', '*', '/'].includes(key)) {
+                event.preventDefault(); 
+                appendOperator(key);
+            } else if (key === 'Enter' || key === '=') {
+                event.preventDefault();
+                calculate();
+            } else if (key === 'Escape') {
+                clearCalculator();
+            } else if (key === 'Backspace') {
+                clearEntry(); 
+            }
+        });
+        
+        document.addEventListener('keydown', (event) => {
+            if (['+', '-', '*', '/', 'Enter', '='].includes(event.key)) {
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
