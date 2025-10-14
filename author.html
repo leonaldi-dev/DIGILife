@@ -307,6 +307,7 @@
     
     <!-- HEADER/NAVIGASI UTAMA -->
     <header id="main-header" class="p-4 md:px-8 bg-secondary-bg/95 backdrop-blur-sm shadow-xl w-full flex justify-between items-center rounded-b-xl border-b border-gray-700">
+        <!-- PERBAIKAN: Memastikan klik logo selalu memanggil showView('initial') untuk kembali ke tampilan dua kartu. -->
         <div class="flex items-center space-x-2 cursor-pointer transition duration-300 transform hover:scale-105" onclick="showView('initial')">
             <i class="fas fa-laptop-code text-logo-color text-3xl logo-glow"></i>
             <span class="port-logo text-logo-color logo-glow">DIGILife</span>
