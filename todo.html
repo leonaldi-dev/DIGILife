@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIGILife - To-Do List Interaktif</title>
+    <!-- Menggunakan font Poppins dan Fredoka One -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Mengubah palet warna, menggunakan ungu sebagai aksen utama */
+        :root {
+            --primary-dark: #2c3e50;
+            --secondary-dark: #34495e;
+            --accent-purple: #9b59b6; /* Aksen Ungu (Amethyst) */
+            --accent-purple-dark: #8e44ad; /* Ungu gelap untuk hover */
+            --accent-green-title: #2ecc71; /* Hijau Khusus untuk Judul */
+            --accent-yellow: #f1c40f; /* Kuning untuk Prioritas Tinggi */
+            --text-light: #ecf0f1;
+            --button-red: #e74c3c;
+            --background-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--background-grad);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .todo-card {
+            background-color: var(--primary-dark);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            max-width: 450px;
+            width: 100%;
+            padding: 30px;
+            text-align: center;
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Keyframe untuk animasi pulse */
+        @keyframes priority-pulse {
+            0% { box-shadow: 0 0 0 rgba(241, 196, 15, 0.4); }
+            50% { box-shadow: 0 0 8px rgba(241, 196, 15, 0.8); }
+            100% { box-shadow: 0 0 0 rgba(241, 196, 15, 0.4); }
+        }
+
+        .todo-card h2 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--accent-green-title); /* Judul kembali ke hijau */
+            margin-bottom: 25px;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+
+        #task-input {
+            flex-grow: 1;
+            padding: 14px 15px;
+            border-radius: 10px;
+            border: 2px solid var(--secondary-dark);
+            background: #1a252f;
+            color: var(--text-light);
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        #task-input:focus {
+            border-color: var(--accent-purple); /* Menggunakan aksen ungu */
+            outline: none;
+            box-shadow: 0 0 8px rgba(155, 89, 182, 0.5); /* Menggunakan aksen ungu */
+        }
+
+        #add-button {
+            /* Styling dasar tombol Tambah */
+            padding: 14px 25px;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--accent-purple); 
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            
+            /* Menambahkan efek 3D: Box shadow untuk kedalaman dan transisi untuk animasi */
+            box-shadow: 0 6px 0 var(--accent-purple-dark);
+            transform: translateY(0);
+            transition: all 0.1s ease-out;
+        }
+
+        /* Efek 3D saat hover/focus: Tombol sedikit 'naik' atau 'pop' */
+        #add-button:hover, #add-button:focus { 
+            background-color: var(--accent-purple); /* Tetap ungu saat hover */
+            box-shadow: 0 8px 0 var(--accent-purple-dark); /* Shadow lebih tebal */
+            transform: translateY(-2px); /* Sedikit naik */
+            outline: none;
+        } 
+        
+        /* Efek 3D saat ditekan: Tombol terlihat 'masuk' ke dalam */
+        #add-button:active { 
+            background-color: var(--accent-purple-dark); 
+            box-shadow: 0 2px 0 var(--accent-purple-dark); /* Shadow menipis */
+            transform: translateY(4px); /* Turun, menciptakan efek tekan */
+        }
+
+        #task-list {
+            list-style: none;
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        #task-list::-webkit-scrollbar { width: 8px; }
+        #task-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--secondary-dark);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.3s ease-in-out;
+            border-left: 5px solid transparent; /* Default border */
+        }
+        
+        /* Gaya untuk Prioritas Tinggi */
+        .task-item.high-priority {
+            background-color: #3e5166; /* Warna sedikit beda untuk penekanan */
+            border-left: 5px solid var(--accent-yellow); /* Garis kuning penanda prioritas */
+        }
+
+        .task-item.removing {
+            opacity: 0;
+            height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-bottom: 0;
+            transform: translateX(100%);
+        }
+
+        .task-content-wrapper {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            text-align: left;
+            margin-right: 15px;
+        }
+
+        .task-content {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .task-item.completed {
+            background-color: #4a6177;
+            text-decoration: line-through 2px var(--accent-purple); /* Menggunakan aksen ungu */
+            opacity: 0.8;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-checkbox {
+            margin-right: 15px;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--accent-purple); /* Menggunakan aksen ungu */
+            border-radius: 6px;
+            background-color: transparent;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .task-checkbox:checked {
+            background-color: var(--accent-purple); /* Menggunakan aksen ungu */
+            border-color: var(--accent-purple); /* Menggunakan aksen ungu */
+        }
+
+        .task-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .action-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: var(--button-red);
+        }
+
+        .delete-btn:hover { background-color: #c0392b; }
+        .delete-btn:active { transform: scale(0.95); }
+        
+        .priority-btn {
+            background-color: var(--accent-yellow);
+            color: var(--primary-dark);
+        }
+        
+        /* Efek saat tombol Prioritas ditekan */
+        .priority-btn:active {
+            transform: scale(0.95); 
+            box-shadow: 0 0 10px rgba(241, 196, 15, 0.8); /* Kilatan kuning saat ditekan */
+        }
+
+        .priority-btn.high {
+             /* Menggunakan warna aksen ungu untuk tombol prioritas tinggi yang aktif */
+             background-color: var(--accent-purple);
+             color: var(--text-light);
+             /* Animasi pulse terus menerus saat berstatus High */
+             animation: priority-pulse 1.5s infinite alternate; 
+        }
+
+        .priority-btn:hover { opacity: 0.8; }
+        
+
+
+        /* ============================== */
+        /* 📱 RESPONSIVE LAYOUT SETTINGS  */
+        /* ============================== */
+        @media (max-width: 480px) {
+            .todo-card {
+                padding: 20px;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+            #add-button {
+                width: 100%;
+                padding: 12px;
+                font-size: 0.9em;
+            }
+            #task-input {
+                font-size: 0.9em;
+                padding: 12px;
+            }
+            .task-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 15px; /* Sesuaikan padding */
+            }
+            .task-content-wrapper {
+                 width: 100%;
+            }
+            .task-actions {
+                 align-self: flex-end; /* Aksi tetap di kanan bawah */
+                 margin-top: -10px;
+            }
+            .action-btn {
+                padding: 6px 10px;
+                font-size: 0.75em;
+            }
+            /* Menyesuaikan tombol 3D agar tidak keluar dari batas pada layar kecil */
+            #add-button:active { 
+                transform: translateY(2px); /* Turun sedikit lebih kecil pada mobile */
+            }
+        }
+
+        @media (max-width: 320px) {
+            .todo-card h2 {
+                font-size: 1.5rem;
+            }
+            #task-input, #add-button {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="todo-card">
+        <h2>Jadwal Tugas Harianku</h2>
+        
+        <div class="input-group">
+            <input type="text" id="task-input" placeholder="Tulis tugas baru di sini..." onkeydown="if(event.key === 'Enter') document.getElementById('add-button').click();">
+            <button id="add-button">Tambah</button>
+        </div>
+        
+        <ul id="task-list"></ul>
+        <p id="empty-message" style="color: #95a5a6; margin-top: 20px; font-style: italic; display: none;">Tidak ada tugas hari ini. Santai!</p>
+    </div>
+
+    <script>
+        // Menggunakan localStorage untuk persistensi data.
+        const taskInput = document.getElementById('task-input');
+        const addButton = document.getElementById('add-button');
+        const taskList = document.getElementById('task-list');
+        const emptyMessage = document.getElementById('empty-message');
+
+        /**
+         * Mencari index tugas dalam array berdasarkan ID unik.
+         * @param {Array<Object>} tasks - Daftar tugas.
+         * @param {number|string} id - ID tugas yang dicari.
+         * @returns {number} Index tugas, atau -1 jika tidak ditemukan.
+         */
+        function findTaskIndexById(tasks, id) {
+            // ID disimpan sebagai angka (timestamp), tapi dari data-attribute bisa berupa string.
+            const taskId = typeof id === 'number' ? id : parseFloat(id);
+            return tasks.findIndex(task => task.id === taskId);
+        }
+
+        /**
+         * Mengambil daftar tugas dari Local Storage.
+         * Memastikan setiap tugas memiliki ID dan Prioritas.
+         * @returns {Array<Object>} Daftar tugas yang sudah diperbarui.
+         */
+        function getTasks() {
+            const tasks = JSON.parse(localStorage.getItem('digilife_tasks')) || [];
+            let needsSave = false;
+            
+            // Logika untuk backfill ID dan Priority jika data lama tidak memilikinya
+            const updatedTasks = tasks.map(task => {
+                if (!task.id) {
+                    // Beri ID unik baru (Date.now() + random untuk menghindari tabrakan jika tasks dibuat berdekatan)
+                    task.id = Date.now() + Math.random(); 
+                    needsSave = true;
+                }
+                if (!task.priority) {
+                    task.priority = 'Normal';
+                    needsSave = true;
+                }
+                return task;
+            });
+
+            // Jika ada perubahan pada struktur data (penambahan ID), simpan kembali ke localStorage
+            if (needsSave) {
+                saveTasks(updatedTasks);
+            }
+            return updatedTasks;
+        }
+
+        /**
+         * Menyimpan daftar tugas ke Local Storage.
+         * @param {Array<Object>} tasks - Daftar tugas yang akan disimpan.
+         */
+        function saveTasks(tasks) {
+            localStorage.setItem('digilife_tasks', JSON.stringify(tasks));
+        }
+        
+        /**
+         * Memperbarui pesan 'tidak ada tugas'.
+         * @param {Array<Object>} tasks - Daftar tugas.
+         */
+        function updateEmptyMessage(tasks) {
+            emptyMessage.style.display = tasks.length === 0 ? 'block' : 'none';
+        }
+
+        /**
+         * Menggambar ulang seluruh daftar tugas, diurutkan berdasarkan prioritas.
+         */
+        function renderTasks() {
+            taskList.innerHTML = '';
+            let tasks = getTasks();
+            updateEmptyMessage(tasks);
+
+            // SORTING: Prioritas Tinggi (High) selalu di atas, diikuti yang belum selesai, lalu yang sudah selesai
+            tasks.sort((a, b) => {
+                // 1. Sortir berdasarkan Prioritas (High > Normal)
+                if (a.priority === 'High' && b.priority !== 'High') return -1;
+                if (a.priority !== 'High' && b.priority === 'High') return 1;
+                
+                // 2. Sortir berdasarkan Status Selesai (Belum selesai > Selesai)
+                if (a.completed !== b.completed) {
+                    return a.completed ? 1 : -1;
+                }
+                
+                return 0; // Jaga urutan yang lain
+            });
+
+            tasks.forEach(task => {
+                const listItem = document.createElement('li');
+                // Menggunakan ID sebagai dataset untuk identifikasi
+                listItem.className = `task-item ${task.completed ? 'completed' : ''} ${task.priority === 'High' ? 'high-priority' : ''}`;
+                listItem.dataset.id = task.id; // Menyimpan ID unik tugas di DOM
+
+                // Teks tombol prioritas
+                const priorityText = task.priority === 'High' ? 'Prioritas TINGGI' : 'Prioritas Normal';
+                const priorityClass = task.priority === 'High' ? 'high' : '';
+
+                listItem.innerHTML = `
+                    <div class="task-content-wrapper">
+                        <div class="task-content">
+                            <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                            <span>${task.text}</span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-btn priority-btn ${priorityClass}">${priorityText}</button>
+                        <button class="action-btn delete-btn">Hapus</button>
+                    </div>
+                `;
+                
+                // Event Listener untuk tombol Hapus - Menggunakan ID
+                listItem.querySelector('.delete-btn').addEventListener('click', () => {
+                    deleteTask(task.id, listItem);
+                });
+                
+                // Event Listener untuk tombol Prioritas - Menggunakan ID
+                listItem.querySelector('.priority-btn').addEventListener('click', () => {
+                    toggleTaskPriority(task.id);
+                });
+
+                // Event Listener untuk checkbox (mengubah status selesai) - Menggunakan ID
+                listItem.querySelector('.task-checkbox').addEventListener('change', () => {
+                    toggleTaskCompletion(task.id);
+                });
+
+                // Event Listener untuk mengklik teks/konten (sama seperti mengklik checkbox)
+                listItem.querySelector('.task-content span').addEventListener('click', () => {
+                    listItem.querySelector('.task-checkbox').click();
+                });
+
+                taskList.appendChild(listItem);
+            });
+        }
+
+        // Menambahkan tugas baru
+        addButton.addEventListener('click', () => {
+            const text = taskInput.value.trim();
+            if (text === '') return;
+
+            const tasks = getTasks();
+            // Tugas baru: tambahkan ID unik menggunakan timestamp
+            tasks.push({ text: text, completed: false, priority: 'Normal', id: Date.now() + Math.random() }); 
+            saveTasks(tasks);
+            taskInput.value = '';
+            taskInput.focus(); 
+            renderTasks();
+            // Gulir ke bawah untuk melihat tugas baru
+            taskList.scrollTop = taskList.scrollHeight;
+        });
+
+        /**
+         * Mengubah status selesai/belum selesai pada tugas berdasarkan ID.
+         * @param {number|string} id - ID tugas.
+         */
+        function toggleTaskCompletion(id) {
+            const tasks = getTasks();
+            const index = findTaskIndexById(tasks, id);
+            
+            if (index > -1) {
+                tasks[index].completed = !tasks[index].completed;
+                saveTasks(tasks);
+                // Render ulang untuk memperbarui tampilan (dan mempertahankan urutan setelah di-sort)
+                renderTasks();
+            }
+        }
+        
+        /**
+         * Mengubah status Prioritas tugas antara 'Normal' dan 'High' berdasarkan ID.
+         * @param {number|string} id - ID tugas.
+         */
+        function toggleTaskPriority(id) {
+            const tasks = getTasks();
+            const index = findTaskIndexById(tasks, id);
+
+            if (index > -1) {
+                tasks[index].priority = tasks[index].priority === 'High' ? 'Normal' : 'High';
+                saveTasks(tasks);
+                // Render ulang untuk mengaktifkan sorting prioritas
+                renderTasks();
+            }
+        }
+
+        /**
+         * Menghapus tugas dengan animasi berdasarkan ID.
+         * @param {number|string} id - ID tugas yang akan dihapus.
+         * @param {HTMLElement} listItem - Elemen LI tugas.
+         */
+        function deleteTask(id, listItem) {
+            // Memulai animasi penghapusan
+            listItem.classList.add('removing');
+            
+            // Tunggu sebentar agar animasi selesai, lalu hapus dari data dan render ulang
+            setTimeout(() => {
+                const tasks = getTasks();
+                const index = findTaskIndexById(tasks, id);
+
+                if (index > -1) {
+                    // Hapus 1 elemen dari array pada index yang ditemukan
+                    tasks.splice(index, 1);
+                    saveTasks(tasks);
+                }
+                // Render ulang setelah penghapusan untuk membersihkan UI
+                renderTasks(); 
+            }, 300); // Sesuai dengan durasi CSS transition (0.3s)
+        }
+
+        // Panggil renderTasks saat halaman dimuat untuk menampilkan tugas yang tersimpan
+        document.addEventListener('DOMContentLoaded', renderTasks);
+    </script>
+
+</body>
+</html>
