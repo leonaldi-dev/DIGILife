@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIGILife - To-Do List Interaktif</title>
-    <!-- Menggunakan font Poppins dan Fredoka One -->
+    <title>DIGILife - To-Do List & Pomodoro</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* Mengubah palet warna, menggunakan ungu sebagai aksen utama */
         :root {
-            --primary-dark: #2c3e50;
-            --secondary-dark: #34495e;
-            --accent-purple: #9b59b6; /* Aksen Ungu (Amethyst) */
-            --accent-purple-dark: #8e44ad; /* Ungu gelap untuk hover */
-            --accent-green-title: #2ecc71; /* Hijau Khusus untuk Judul */
-            --accent-yellow: #f1c40f; /* Kuning untuk Prioritas Tinggi */
+            --primary-dark: #1f2a38;
+            --secondary-dark: #2c3e50;
+            --accent-purple: #9b59b6;
+            --accent-purple-dark: #8e44ad;
+            --accent-green: #2ecc71;
+            --accent-yellow: #f1c40f;
+            --accent-indigo: #6366f1;
             --text-light: #ecf0f1;
             --button-red: #e74c3c;
-            --background-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --background-grad: linear-gradient(135deg, #1f2a38 0%, #2c3e50 100%);
         }
 
         * {
@@ -32,106 +32,118 @@
             background: var(--background-grad);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             padding: 20px;
         }
 
-        .todo-card {
+        .container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            transition: all 0.3s ease;
+            max-width: 1200px;
+        }
+
+        .todo-card, .pomodoro-card {
             background-color: var(--primary-dark);
             border-radius: 20px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            max-width: 450px;
             width: 100%;
+            max-width: 500px;
             padding: 30px;
             text-align: center;
             animation: fadeInScale 0.5s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid rgba(155, 89, 182, 0.1);
+        }
+
+        .todo-card:hover, .pomodoro-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
         }
 
         @keyframes fadeInScale {
             0% { opacity: 0; transform: scale(0.9); }
             100% { opacity: 1; transform: scale(1); }
         }
-        
-        /* Keyframe untuk animasi pulse */
-        @keyframes priority-pulse {
-            0% { box-shadow: 0 0 0 rgba(241, 196, 15, 0.4); }
-            50% { box-shadow: 0 0 8px rgba(241, 196, 15, 0.8); }
-            100% { box-shadow: 0 0 0 rgba(241, 196, 15, 0.4); }
-        }
 
-        .todo-card h2 {
+        h2 {
             font-family: 'Fredoka One', cursive;
-            color: var(--accent-green-title); /* Judul kembali ke hijau */
+            color: var(--accent-yellow);
             margin-bottom: 25px;
             font-size: clamp(1.8rem, 5vw, 2.5rem);
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
         }
 
+        /* === TO-DO LIST STYLES (SAMA) === */
         .input-group {
             display: flex;
             margin-bottom: 25px;
             gap: 10px;
+            transition: all 0.3s ease;
         }
 
         #task-input {
             flex-grow: 1;
             padding: 14px 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 2px solid var(--secondary-dark);
-            background: #1a252f;
+            background: #121c27;
             color: var(--text-light);
             font-size: 1em;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            transition: all 0.3s ease;
         }
 
         #task-input:focus {
-            border-color: var(--accent-purple); /* Menggunakan aksen ungu */
+            border-color: var(--accent-indigo);
             outline: none;
-            box-shadow: 0 0 8px rgba(155, 89, 182, 0.5); /* Menggunakan aksen ungu */
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+            transform: scale(1.02);
         }
 
         #add-button {
-            /* Styling dasar tombol Tambah */
             padding: 14px 25px;
             border: none;
-            border-radius: 10px;
-            background-color: var(--accent-purple); 
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
             color: white;
             font-weight: 700;
             cursor: pointer;
-            white-space: nowrap;
-            
-            /* Menambahkan efek 3D: Box shadow untuk kedalaman dan transisi untuk animasi */
-            box-shadow: 0 6px 0 var(--accent-purple-dark);
+            box-shadow: 0 6px 0 rgba(99, 102, 241, 0.4);
             transform: translateY(0);
-            transition: all 0.1s ease-out;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Efek 3D saat hover/focus: Tombol sedikit 'naik' atau 'pop' */
-        #add-button:hover, #add-button:focus { 
-            background-color: var(--accent-purple); /* Tetap ungu saat hover */
-            box-shadow: 0 8px 0 var(--accent-purple-dark); /* Shadow lebih tebal */
-            transform: translateY(-2px); /* Sedikit naik */
-            outline: none;
-        } 
-        
-        /* Efek 3D saat ditekan: Tombol terlihat 'masuk' ke dalam */
-        #add-button:active { 
-            background-color: var(--accent-purple-dark); 
-            box-shadow: 0 2px 0 var(--accent-purple-dark); /* Shadow menipis */
-            transform: translateY(4px); /* Turun, menciptakan efek tekan */
+        #add-button:hover {
+            box-shadow: 0 8px 0 rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+        }
+
+        #add-button:active {
+            box-shadow: 0 2px 0 rgba(99, 102, 241, 0.4);
+            transform: translateY(4px);
         }
 
         #task-list {
             list-style: none;
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
             padding: 0;
+            transition: all 0.3s ease;
         }
 
-        #task-list::-webkit-scrollbar { width: 8px; }
+        #task-list::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        
         #task-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
             border-radius: 10px;
         }
 
@@ -139,22 +151,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: var(--secondary-dark);
-            padding: 15px;
+            background: linear-gradient(135deg, var(--secondary-dark), #34495e);
+            padding: 18px;
             margin-bottom: 12px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             color: var(--text-light);
-            opacity: 1;
-            transform: translateX(0);
             transition: all 0.3s ease-in-out;
-            border-left: 5px solid transparent; /* Default border */
+            border-left: 5px solid transparent;
+            transform: translateY(0);
+            opacity: 1;
         }
-        
-        /* Gaya untuk Prioritas Tinggi */
+
         .task-item.high-priority {
-            background-color: #3e5166; /* Warna sedikit beda untuk penekanan */
-            border-left: 5px solid var(--accent-yellow); /* Garis kuning penanda prioritas */
+            background: linear-gradient(135deg, #3e5166, #4a6177);
+            border-left: 5px solid var(--accent-yellow);
+            box-shadow: 0 4px 20px rgba(241, 196, 15, 0.2);
         }
 
         .task-item.removing {
@@ -166,12 +178,22 @@
             transform: translateX(100%);
         }
 
+        .task-item.entering {
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
         .task-content-wrapper {
             display: flex;
             align-items: center;
             flex-grow: 1;
             text-align: left;
             margin-right: 15px;
+            transition: all 0.3s ease;
         }
 
         .task-content {
@@ -179,20 +201,20 @@
             align-items: center;
             flex-grow: 1;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
-        
+
         .task-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
-            flex-shrink: 0;
+            transition: all 0.3s ease;
         }
 
         .task-item.completed {
-            background-color: #4a6177;
-            text-decoration: line-through 2px var(--accent-purple); /* Menggunakan aksen ungu */
-            opacity: 0.8;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #4a6177, #5d6d7e);
+            text-decoration: line-through 2px var(--accent-green);
+            opacity: 0.7;
         }
 
         .task-checkbox {
@@ -200,18 +222,17 @@
             appearance: none;
             width: 22px;
             height: 22px;
-            border: 2px solid var(--accent-purple); /* Menggunakan aksen ungu */
+            border: 2px solid var(--accent-indigo);
             border-radius: 6px;
             background-color: transparent;
             cursor: pointer;
+            transition: all 0.3s ease;
             position: relative;
-            flex-shrink: 0;
-            transition: background-color 0.2s, border-color 0.2s;
         }
 
         .task-checkbox:checked {
-            background-color: var(--accent-purple); /* Menggunakan aksen ungu */
-            border-color: var(--accent-purple); /* Menggunakan aksen ungu */
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+            border-color: var(--accent-indigo);
         }
 
         .task-checkbox:checked::after {
@@ -232,52 +253,297 @@
             cursor: pointer;
             font-size: 0.85em;
             font-weight: 600;
-            transition: background-color 0.2s, transform 0.1s;
-            flex-shrink: 0;
+            transition: all 0.3s ease;
             color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .delete-btn {
-            background-color: var(--button-red);
+            background: linear-gradient(135deg, var(--button-red), #c0392b);
         }
 
-        .delete-btn:hover { background-color: #c0392b; }
-        .delete-btn:active { transform: scale(0.95); }
-        
-        .priority-btn {
-            background-color: var(--accent-yellow);
-            color: var(--primary-dark);
+        .delete-btn:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
         }
-        
-        /* Efek saat tombol Prioritas ditekan */
-        .priority-btn:active {
-            transform: scale(0.95); 
-            box-shadow: 0 0 10px rgba(241, 196, 15, 0.8); /* Kilatan kuning saat ditekan */
+        .delete-btn:active { transform: scale(0.95); }
+
+        .priority-btn {
+            background: linear-gradient(135deg, var(--accent-yellow), #f39c12);
+            color: var(--primary-dark);
         }
 
         .priority-btn.high {
-             /* Menggunakan warna aksen ungu untuk tombol prioritas tinggi yang aktif */
-             background-color: var(--accent-purple);
-             color: var(--text-light);
-             /* Animasi pulse terus menerus saat berstatus High */
-             animation: priority-pulse 1.5s infinite alternate; 
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-indigo));
+            color: var(--text-light);
+            animation: priority-pulse 2s infinite alternate;
         }
 
-        .priority-btn:hover { opacity: 0.8; }
-        
+        .priority-btn:hover { transform: scale(1.05); }
+        .priority-btn:active { transform: scale(0.95); }
 
+        @keyframes priority-pulse {
+            0% { box-shadow: 0 0 0 rgba(155, 89, 182, 0.4); }
+            50% { box-shadow: 0 0 12px rgba(155, 89, 182, 0.8); }
+            100% { box-shadow: 0 0 0 rgba(155, 89, 182, 0.4); }
+        }
 
-        /* ============================== */
-        /* 📱 RESPONSIVE LAYOUT SETTINGS  */
-        /* ============================== */
-        @media (max-width: 480px) {
-            .todo-card {
-                padding: 20px;
+        .pomodoro-btn {
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+            color: white;
+        }
+
+        .pomodoro-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .pomodoro-btn:active {
+            transform: scale(0.95);
+        }
+
+        .pomodoro-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* === POMODORO TIMER STYLES (YANG DIREVISI) === */
+        .timer-settings {
+            background: rgba(18, 28, 39, 0.6);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid var(--accent-indigo);
+        }
+
+        .setting-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .setting-label {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.95em;
+            flex: 1;
+            text-align: left;
+        }
+
+        .time-input {
+            width: 80px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid var(--secondary-dark);
+            background: #121c27;
+            color: var(--text-light);
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .time-input:focus {
+            border-color: var(--accent-indigo);
+            outline: none;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .session-type {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .session-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: var(--secondary-dark);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .session-btn.active {
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .session-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .timer-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        #timer {
+            font-size: 4rem;
+            color: var(--text-light);
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .timer-progress {
+            width: 100%;
+            height: 8px;
+            background: var(--secondary-dark);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .timer-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-indigo), var(--accent-purple));
+            width: 100%;
+            transition: width 1s linear;
+            border-radius: 10px;
+        }
+
+        .timer-status {
+            font-size: 1.1em;
+            color: var(--accent-yellow);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 0 rgba(99, 102, 241, 0.4);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            box-shadow: 0 8px 0 rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .control-btn:active {
+            box-shadow: 0 2px 0 rgba(99, 102, 241, 0.4);
+            transform: translateY(4px);
+        }
+
+        #start-btn {
+            background: linear-gradient(135deg, var(--accent-green), #27ae60);
+            box-shadow: 0 6px 0 rgba(46, 204, 113, 0.4);
+        }
+
+        #start-btn:hover {
+            box-shadow: 0 8px 0 rgba(46, 204, 113, 0.4);
+        }
+
+        #start-btn:active {
+            box-shadow: 0 2px 0 rgba(46, 204, 113, 0.4);
+        }
+
+        #reset-btn {
+            background: linear-gradient(135deg, var(--button-red), #c0392b);
+            box-shadow: 0 6px 0 rgba(231, 76, 60, 0.4);
+        }
+
+        #reset-btn:hover {
+            box-shadow: 0 8px 0 rgba(231, 76, 60, 0.4);
+        }
+
+        #reset-btn:active {
+            box-shadow: 0 2px 0 rgba(231, 76, 60, 0.4);
+        }
+
+        .current-task {
+            background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            animation: taskHighlight 2s infinite alternate;
+        }
+
+        @keyframes taskHighlight {
+            0% { box-shadow: 0 0 0 rgba(99, 102, 241, 0.3); }
+            100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.6); }
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(31, 42, 56, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease;
+        }
+
+        .spinner {
+            border: 6px solid rgba(99, 102, 241, 0.2);
+            border-top: 6px solid var(--accent-indigo);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
             }
-            .input-group {
+            .todo-card, .pomodoro-card {
+                padding: 20px;
+                max-width: 100%;
+            }
+            .input-group, .controls {
                 flex-direction: column;
             }
-            #add-button {
+            #add-button, .control-btn {
                 width: 100%;
                 padding: 12px;
                 font-size: 0.9em;
@@ -289,83 +555,133 @@
             .task-item {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
-                padding: 15px; /* Sesuaikan padding */
-            }
-            .task-content-wrapper {
-                 width: 100%;
+                gap: 12px;
             }
             .task-actions {
-                 align-self: flex-end; /* Aksi tetap di kanan bawah */
-                 margin-top: -10px;
+                align-self: stretch;
+                justify-content: space-between;
             }
-            .action-btn {
-                padding: 6px 10px;
-                font-size: 0.75em;
+            #timer {
+                font-size: 3rem;
             }
-            /* Menyesuaikan tombol 3D agar tidak keluar dari batas pada layar kecil */
-            #add-button:active { 
-                transform: translateY(2px); /* Turun sedikit lebih kecil pada mobile */
+            .setting-group {
+                flex-direction: column;
+                align-items: stretch;
             }
-        }
-
-        @media (max-width: 320px) {
-            .todo-card h2 {
-                font-size: 1.5rem;
+            .time-input {
+                width: 100%;
             }
-            #task-input, #add-button {
-                font-size: 0.8em;
+            .loading-overlay {
+                padding: 20px;
+            }
+            .spinner {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
 </head>
 <body>
-
-    <div class="todo-card">
-        <h2>Jadwal Tugas Harianku</h2>
-        
-        <div class="input-group">
-            <input type="text" id="task-input" placeholder="Tulis tugas baru di sini..." onkeydown="if(event.key === 'Enter') document.getElementById('add-button').click();">
-            <button id="add-button">Tambah</button>
+    <div class="container">
+        <div class="todo-card">
+            <h2><i class="fas fa-tasks"></i> Jadwal Tugas Harianku</h2>
+            <div class="input-group">
+                <input type="text" id="task-input" placeholder="✏️ Tulis tugas baru di sini..." onkeydown="if(event.key === 'Enter') document.getElementById('add-button').click();">
+                <button id="add-button"><i class="fas fa-plus"></i> Tambah</button>
+            </div>
+            <ul id="task-list"></ul>
+            <p id="empty-message" style="color: #95a5a6; margin-top: 20px; font-style: italic; display: none;">
+                <i class="fas fa-smile"></i> Tidak ada tugas hari ini. Santai!
+            </p>
         </div>
         
-        <ul id="task-list"></ul>
-        <p id="empty-message" style="color: #95a5a6; margin-top: 20px; font-style: italic; display: none;">Tidak ada tugas hari ini. Santai!</p>
+        <div class="pomodoro-card">
+            <h2><i class="fas fa-clock"></i> Timer</h2>
+            
+            <!-- SETTINGS BARU -->
+            <div class="timer-settings">
+                <div class="setting-group">
+                    <span class="setting-label">⏱️ Waktu Fokus:</span>
+                    <input type="number" id="focus-time" class="time-input" min="1" max="60" value="25">
+                    <span style="color: var(--text-light); font-weight: 600;">menit</span>
+                </div>
+                <div class="setting-group">
+                    <span class="setting-label">☕ Waktu Istirahat:</span>
+                    <input type="number" id="break-time" class="time-input" min="1" max="30" value="5">
+                    <span style="color: var(--text-light); font-weight: 600;">menit</span>
+                </div>
+                <div class="session-type">
+                    <button class="session-btn active" data-type="focus">Fokus 🎯</button>
+                    <button class="session-btn" data-type="break">Istirahat ☕</button>
+                </div>
+            </div>
+
+            <div class="timer-container">
+                <div id="timer">25:00</div>
+                <div class="timer-status" id="timer-status">Siap untuk fokus! 🎯</div>
+                <div class="current-task" id="current-task" style="display: none;">
+                    <i class="fas fa-bullseye"></i> Sedang mengerjakan: <span id="current-task-text"></span>
+                </div>
+                <div class="timer-progress">
+                    <div class="timer-progress-bar" id="progress-bar"></div>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="start-btn" class="control-btn"><i class="fas fa-play"></i> Mulai</button>
+                <button id="reset-btn" class="control-btn"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+    </div>
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
     </div>
 
     <script>
-        // Menggunakan localStorage untuk persistensi data.
         const taskInput = document.getElementById('task-input');
         const addButton = document.getElementById('add-button');
         const taskList = document.getElementById('task-list');
         const emptyMessage = document.getElementById('empty-message');
+        const timerDisplay = document.getElementById('timer');
+        const timerStatus = document.getElementById('timer-status');
+        const currentTask = document.getElementById('current-task');
+        const currentTaskText = document.getElementById('current-task-text');
+        const progressBar = document.getElementById('progress-bar');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        
+        // ELEMEN BARU UNTUK SETTINGS
+        const focusTimeInput = document.getElementById('focus-time');
+        const breakTimeInput = document.getElementById('break-time');
+        const sessionButtons = document.querySelectorAll('.session-btn');
+        
+        let time = 25 * 60; // 25 menit dalam detik
+        let timerInterval;
+        let currentTaskId = null;
+        let isRunning = false;
+        let totalTime = 25 * 60;
+        let currentSessionType = 'focus'; // 'focus' atau 'break'
 
-        /**
-         * Mencari index tugas dalam array berdasarkan ID unik.
-         * @param {Array<Object>} tasks - Daftar tugas.
-         * @param {number|string} id - ID tugas yang dicari.
-         * @returns {number} Index tugas, atau -1 jika tidak ditemukan.
-         */
+        function showLoading() {
+            loadingOverlay.classList.add('active');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.remove('active');
+        }
+
         function findTaskIndexById(tasks, id) {
-            // ID disimpan sebagai angka (timestamp), tapi dari data-attribute bisa berupa string.
             const taskId = typeof id === 'number' ? id : parseFloat(id);
             return tasks.findIndex(task => task.id === taskId);
         }
 
-        /**
-         * Mengambil daftar tugas dari Local Storage.
-         * Memastikan setiap tugas memiliki ID dan Prioritas.
-         * @returns {Array<Object>} Daftar tugas yang sudah diperbarui.
-         */
         function getTasks() {
+            showLoading();
             const tasks = JSON.parse(localStorage.getItem('digilife_tasks')) || [];
             let needsSave = false;
-            
-            // Logika untuk backfill ID dan Priority jika data lama tidak memilikinya
             const updatedTasks = tasks.map(task => {
                 if (!task.id) {
-                    // Beri ID unik baru (Date.now() + random untuk menghindari tabrakan jika tasks dibuat berdekatan)
-                    task.id = Date.now() + Math.random(); 
+                    task.id = Date.now() + Math.random();
                     needsSave = true;
                 }
                 if (!task.priority) {
@@ -374,62 +690,43 @@
                 }
                 return task;
             });
-
-            // Jika ada perubahan pada struktur data (penambahan ID), simpan kembali ke localStorage
-            if (needsSave) {
-                saveTasks(updatedTasks);
-            }
+            if (needsSave) saveTasks(updatedTasks);
+            hideLoading();
             return updatedTasks;
         }
 
-        /**
-         * Menyimpan daftar tugas ke Local Storage.
-         * @param {Array<Object>} tasks - Daftar tugas yang akan disimpan.
-         */
         function saveTasks(tasks) {
+            showLoading();
             localStorage.setItem('digilife_tasks', JSON.stringify(tasks));
+            hideLoading();
         }
-        
-        /**
-         * Memperbarui pesan 'tidak ada tugas'.
-         * @param {Array<Object>} tasks - Daftar tugas.
-         */
+
         function updateEmptyMessage(tasks) {
             emptyMessage.style.display = tasks.length === 0 ? 'block' : 'none';
         }
 
-        /**
-         * Menggambar ulang seluruh daftar tugas, diurutkan berdasarkan prioritas.
-         */
         function renderTasks() {
+            showLoading();
             taskList.innerHTML = '';
             let tasks = getTasks();
             updateEmptyMessage(tasks);
-
-            // SORTING: Prioritas Tinggi (High) selalu di atas, diikuti yang belum selesai, lalu yang sudah selesai
+            
             tasks.sort((a, b) => {
-                // 1. Sortir berdasarkan Prioritas (High > Normal)
                 if (a.priority === 'High' && b.priority !== 'High') return -1;
                 if (a.priority !== 'High' && b.priority === 'High') return 1;
-                
-                // 2. Sortir berdasarkan Status Selesai (Belum selesai > Selesai)
-                if (a.completed !== b.completed) {
-                    return a.completed ? 1 : -1;
-                }
-                
-                return 0; // Jaga urutan yang lain
+                if (a.completed !== b.completed) return a.completed ? 1 : -1;
+                return 0;
             });
 
             tasks.forEach(task => {
                 const listItem = document.createElement('li');
-                // Menggunakan ID sebagai dataset untuk identifikasi
-                listItem.className = `task-item ${task.completed ? 'completed' : ''} ${task.priority === 'High' ? 'high-priority' : ''}`;
-                listItem.dataset.id = task.id; // Menyimpan ID unik tugas di DOM
-
-                // Teks tombol prioritas
-                const priorityText = task.priority === 'High' ? 'Prioritas TINGGI' : 'Prioritas Normal';
+                listItem.className = `task-item ${task.completed ? 'completed' : ''} ${task.priority === 'High' ? 'high-priority' : ''} ${!task.rendered ? 'entering' : ''}`;
+                listItem.dataset.id = task.id;
+                
+                const priorityText = task.priority === 'High' ? '⭐ Tinggi' : '⚡ Normal';
                 const priorityClass = task.priority === 'High' ? 'high' : '';
-
+                const pomodoroIcon = currentTaskId === task.id ? 'fas fa-spin fa-sync-alt' : 'fas fa-clock';
+                
                 listItem.innerHTML = `
                     <div class="task-content-wrapper">
                         <div class="task-content">
@@ -438,110 +735,295 @@
                         </div>
                     </div>
                     <div class="task-actions">
-                        <button class="action-btn priority-btn ${priorityClass}">${priorityText}</button>
-                        <button class="action-btn delete-btn">Hapus</button>
+                        <button class="action-btn priority-btn ${priorityClass}">
+                            <i class="fas ${task.priority === 'High' ? 'fa-star' : 'fa-bolt'}"></i>
+                            ${priorityText}
+                        </button>
+                        <button class="action-btn pomodoro-btn" ${task.completed ? 'disabled' : ''}>
+                            <i class="${pomodoroIcon}"></i>
+                            Focus
+                        </button>
+                        <button class="action-btn delete-btn">
+                            <i class="fas fa-trash"></i>
+                            Hapus
+                        </button>
                     </div>
                 `;
+
+                if (!task.rendered) {
+                    setTimeout(() => {
+                        listItem.classList.remove('entering');
+                        task.rendered = true;
+                        saveTasks(tasks);
+                    }, 300);
+                }
+
+                listItem.querySelector('.delete-btn').addEventListener('click', () => deleteTask(task.id, listItem));
+                listItem.querySelector('.priority-btn').addEventListener('click', () => toggleTaskPriority(task.id));
+                listItem.querySelector('.task-checkbox').addEventListener('change', () => toggleTaskCompletion(task.id));
+                listItem.querySelector('.task-content span').addEventListener('click', () => listItem.querySelector('.task-checkbox').click());
+                listItem.querySelector('.pomodoro-btn').addEventListener('click', () => startPomodoro(task.id, task.text));
                 
-                // Event Listener untuk tombol Hapus - Menggunakan ID
-                listItem.querySelector('.delete-btn').addEventListener('click', () => {
-                    deleteTask(task.id, listItem);
-                });
-                
-                // Event Listener untuk tombol Prioritas - Menggunakan ID
-                listItem.querySelector('.priority-btn').addEventListener('click', () => {
-                    toggleTaskPriority(task.id);
-                });
-
-                // Event Listener untuk checkbox (mengubah status selesai) - Menggunakan ID
-                listItem.querySelector('.task-checkbox').addEventListener('change', () => {
-                    toggleTaskCompletion(task.id);
-                });
-
-                // Event Listener untuk mengklik teks/konten (sama seperti mengklik checkbox)
-                listItem.querySelector('.task-content span').addEventListener('click', () => {
-                    listItem.querySelector('.task-checkbox').click();
-                });
-
                 taskList.appendChild(listItem);
             });
+            hideLoading();
         }
 
-        // Menambahkan tugas baru
         addButton.addEventListener('click', () => {
             const text = taskInput.value.trim();
             if (text === '') return;
-
+            showLoading();
             const tasks = getTasks();
-            // Tugas baru: tambahkan ID unik menggunakan timestamp
-            tasks.push({ text: text, completed: false, priority: 'Normal', id: Date.now() + Math.random() }); 
+            tasks.push({ 
+                text: text, 
+                completed: false, 
+                priority: 'Normal', 
+                id: Date.now() + Math.random(), 
+                rendered: false 
+            });
             saveTasks(tasks);
             taskInput.value = '';
-            taskInput.focus(); 
+            taskInput.focus();
             renderTasks();
-            // Gulir ke bawah untuk melihat tugas baru
             taskList.scrollTop = taskList.scrollHeight;
         });
 
-        /**
-         * Mengubah status selesai/belum selesai pada tugas berdasarkan ID.
-         * @param {number|string} id - ID tugas.
-         */
         function toggleTaskCompletion(id) {
+            showLoading();
             const tasks = getTasks();
             const index = findTaskIndexById(tasks, id);
-            
             if (index > -1) {
                 tasks[index].completed = !tasks[index].completed;
                 saveTasks(tasks);
-                // Render ulang untuk memperbarui tampilan (dan mempertahankan urutan setelah di-sort)
                 renderTasks();
             }
         }
-        
-        /**
-         * Mengubah status Prioritas tugas antara 'Normal' dan 'High' berdasarkan ID.
-         * @param {number|string} id - ID tugas.
-         */
+
         function toggleTaskPriority(id) {
+            showLoading();
             const tasks = getTasks();
             const index = findTaskIndexById(tasks, id);
-
             if (index > -1) {
                 tasks[index].priority = tasks[index].priority === 'High' ? 'Normal' : 'High';
                 saveTasks(tasks);
-                // Render ulang untuk mengaktifkan sorting prioritas
                 renderTasks();
             }
         }
 
-        /**
-         * Menghapus tugas dengan animasi berdasarkan ID.
-         * @param {number|string} id - ID tugas yang akan dihapus.
-         * @param {HTMLElement} listItem - Elemen LI tugas.
-         */
         function deleteTask(id, listItem) {
-            // Memulai animasi penghapusan
+            showLoading();
             listItem.classList.add('removing');
-            
-            // Tunggu sebentar agar animasi selesai, lalu hapus dari data dan render ulang
             setTimeout(() => {
                 const tasks = getTasks();
                 const index = findTaskIndexById(tasks, id);
-
-                if (index > -1) {
-                    // Hapus 1 elemen dari array pada index yang ditemukan
-                    tasks.splice(index, 1);
-                    saveTasks(tasks);
-                }
-                // Render ulang setelah penghapusan untuk membersihkan UI
-                renderTasks(); 
-            }, 300); // Sesuai dengan durasi CSS transition (0.3s)
+                if (index > -1) tasks.splice(index, 1);
+                saveTasks(tasks);
+                renderTasks();
+            }, 300);
         }
 
-        // Panggil renderTasks saat halaman dimuat untuk menampilkan tugas yang tersimpan
-        document.addEventListener('DOMContentLoaded', renderTasks);
-    </script>
+        function playSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1);
+                oscillator.stop(audioCtx.currentTime + 1);
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
 
+        // FUNGSI BARU: Update session type
+        function updateSessionType(type) {
+            currentSessionType = type;
+            sessionButtons.forEach(btn => {
+                if (btn.dataset.type === type) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            if (type === 'focus') {
+                time = parseInt(focusTimeInput.value) * 60;
+                timerStatus.textContent = 'Siap untuk fokus! 🎯';
+                timerStatus.style.color = '#f1c40f';
+            } else {
+                time = parseInt(breakTimeInput.value) * 60;
+                timerStatus.textContent = 'Waktu istirahat! ☕';
+                timerStatus.style.color = '#3498db';
+            }
+            
+            totalTime = time;
+            updateDisplay();
+            updateProgressBar();
+        }
+
+        // FUNGSI BARU: Start pomodoro dengan session type
+        function startPomodoro(id, taskText) {
+            showLoading();
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            currentTaskId = id;
+            currentTaskText.textContent = taskText;
+            currentTask.style.display = 'block';
+            updateSessionType('focus');
+            startBtn.innerHTML = '<i class="fas fa-play"></i> Mulai';
+            
+            renderTasks();
+            hideLoading();
+        }
+
+        function updateDisplay() {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (time <= 300) {
+                timerDisplay.style.color = '#e74c3c';
+                timerDisplay.style.textShadow = '0 0 20px rgba(231, 76, 60, 0.5)';
+            } else if (time <= 600) {
+                timerDisplay.style.color = '#f39c12';
+                timerDisplay.style.textShadow = '0 0 20px rgba(243, 156, 18, 0.5)';
+            } else {
+                timerDisplay.style.color = '#ecf0f1';
+                timerDisplay.style.textShadow = '0 0 20px rgba(99, 102, 241, 0.5)';
+            }
+        }
+
+        function updateProgressBar() {
+            const progress = ((totalTime - time) / totalTime) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        startBtn.addEventListener('click', () => {
+            showLoading();
+            if (!isRunning) {
+                timerInterval = setInterval(() => {
+                    if (time > 0) {
+                        time--;
+                        updateDisplay();
+                        updateProgressBar();
+                        
+                        if (time === 300) {
+                            timerStatus.textContent = currentSessionType === 'focus' ? '5 menit lagi! 💪' : 'Istirahat hampir selesai!';
+                            timerStatus.style.color = '#f39c12';
+                        } else if (time === 60) {
+                            timerStatus.textContent = currentSessionType === 'focus' ? '1 menit lagi! 🏃‍♂️' : 'Istirahat 1 menit lagi!';
+                            timerStatus.style.color = '#e74c3c';
+                        }
+                    } else {
+                        clearInterval(timerInterval);
+                        timerInterval = null;
+                        isRunning = false;
+                        
+                        playSound();
+                        
+                        if (currentSessionType === 'focus') {
+                            timerStatus.textContent = 'Waktu fokus habis! 🎉 Istirahat dulu!';
+                            timerStatus.style.color = '#2ecc71';
+                            
+                            if (currentTaskId) {
+                                const tasks = getTasks();
+                                const index = findTaskIndexById(tasks, currentTaskId);
+                                if (index > -1) {
+                                    tasks[index].completed = true;
+                                    saveTasks(tasks);
+                                    renderTasks();
+                                }
+                                currentTask.style.display = 'none';
+                                currentTaskId = null;
+                            }
+                            
+                            // Auto switch to break session
+                            updateSessionType('break');
+                            setTimeout(() => {
+                                alert('🎉 Pomodoro session selesai! Sekarang istirahat ' + breakTimeInput.value + ' menit!');
+                            }, 100);
+                        } else {
+                            timerStatus.textContent = 'Istirahat selesai! 🚀 Siap fokus lagi!';
+                            timerStatus.style.color = '#f1c40f';
+                            // Auto switch back to focus session
+                            updateSessionType('focus');
+                        }
+                        
+                        startBtn.innerHTML = '<i class="fas fa-play"></i> Mulai';
+                    }
+                }, 1000);
+                
+                isRunning = true;
+                startBtn.innerHTML = '<i class="fas fa-pause"></i> Jeda';
+                timerStatus.textContent = currentSessionType === 'focus' ? 'Sedang fokus... 🔥' : 'Sedang istirahat... ☕';
+                timerStatus.style.color = currentSessionType === 'focus' ? '#2ecc71' : '#3498db';
+            } else {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                isRunning = false;
+                startBtn.innerHTML = '<i class="fas fa-play"></i> Lanjut';
+                timerStatus.textContent = 'Timer dijeda ⏸️';
+                timerStatus.style.color = '#f1c40f';
+            }
+            hideLoading();
+        });
+
+        resetBtn.addEventListener('click', () => {
+            showLoading();
+            clearInterval(timerInterval);
+            timerInterval = null;
+            isRunning = false;
+            updateSessionType('focus');
+            startBtn.innerHTML = '<i class="fas fa-play"></i> Mulai';
+            currentTask.style.display = 'none';
+            currentTaskId = null;
+            renderTasks();
+            hideLoading();
+        });
+
+                // EVENT LISTENERS BARU UNTUK SETTINGS
+        focusTimeInput.addEventListener('change', function() {
+            if (this.value < 1) this.value = 1;
+            if (this.value > 60) this.value = 60;
+            if (currentSessionType === 'focus' && !isRunning) {
+                updateSessionType('focus');
+            }
+        });
+
+        breakTimeInput.addEventListener('change', function() {
+            if (this.value < 1) this.value = 1;
+            if (this.value > 30) this.value = 30;
+            if (currentSessionType === 'break' && !isRunning) {
+                updateSessionType('break');
+            }
+        });
+
+        sessionButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!isRunning) {
+                    updateSessionType(this.dataset.type);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showLoading();
+            setTimeout(() => {
+                renderTasks();
+                updateSessionType('focus'); // Set default session
+                hideLoading();
+            }, 500);
+        });
+    </script>
 </body>
 </html>
