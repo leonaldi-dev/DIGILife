@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decision Maker - DIGILife</title>
+    <title>Enhanced Decision Maker - DIGILife</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* PALET WARNA SAMA DENGAN BUDGET PLANNER */
         :root {
             --primary-dark: #1f2a38; 
             --secondary-dark: #2c3e50; 
             --accent-purple: #b458ff;
             --highlight-green: #2ecc71; 
-
             --highlight-red: #e74c3c; 
             --text-light: #ecf0f1;
             --background-gradient: linear-gradient(135deg, #4b3869 0%, #291a3b 100%);
             --logo-yellow: #f1c40f;
+            --roulette-bg: #34495e;
         }
 
         * {
@@ -39,7 +38,7 @@
 
         .main-app {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             background-color: var(--secondary-dark);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -48,7 +47,6 @@
             position: relative;
         }
 
-        /* ANIMASI LAMPU HIJAU BERKEDIP */
         .pulse-light {
             position: absolute;
             top: 20px;
@@ -82,7 +80,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* HEADER STYLE */
         .app-header {
             padding: 20px;
             background-color: var(--primary-dark);
@@ -104,7 +101,6 @@
             font-size: 1rem;
         }
 
-        /* TIPS BOX LUCU */
         .tips-box {
             background: rgba(46, 204, 113, 0.1);
             border: 1px solid var(--highlight-green);
@@ -122,7 +118,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* CONTENT SECTIONS */
         .content-section {
             padding: 20px;
         }
@@ -131,7 +126,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* INPUT STYLES */
         .input-style {
             padding: 12px 15px;
             border: 2px solid var(--accent-purple);
@@ -153,7 +147,6 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* BUTTON STYLES */
         .btn-style {
             transition: all 0.3s ease;
             font-weight: 700;
@@ -196,7 +189,6 @@
             box-shadow: 0 0 15px rgba(231, 76, 60, 0.6);
         }
 
-        /* TOMBOL PUTUSKAN - WARNA HIJAU */
         .decision-btn {
             background: linear-gradient(45deg, var(--highlight-green), #27ae60);
             color: white;
@@ -232,7 +224,6 @@
             box-shadow: none;
         }
 
-        /* OPTIONS LIST */
         .options-list {
             max-height: 200px;
             overflow-y: auto;
@@ -276,7 +267,81 @@
             color: var(--text-light);
         }
 
-        /* RESULT SECTION */
+        /* ROULETTE STYLES - DIPERBAIKI */
+        .roulette-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin: 20px 0;
+            overflow: hidden;
+            border-radius: 10px;
+            background: var(--roulette-bg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .roulette-wheel {
+            display: flex;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            transition: transform 0.1s linear;
+        }
+
+        .roulette-item {
+            min-width: 200px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-align: center;
+            color: white;
+            border-right: 2px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(45deg, var(--accent-purple), #8e44ad);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .roulette-item:nth-child(even) {
+            background: linear-gradient(45deg, var(--highlight-green), #27ae60);
+        }
+
+        .roulette-item:nth-child(3n) {
+            background: linear-gradient(45deg, var(--logo-yellow), #f39c12);
+        }
+
+        .roulette-item:nth-child(4n) {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+
+        .roulette-item:nth-child(5n) {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+        }
+
+        .roulette-pointer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background: var(--highlight-red);
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.8);
+            z-index: 10;
+        }
+
+        .roulette-pointer::before {
+            content: '▼';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--highlight-red);
+            font-size: 20px;
+            text-shadow: 0 0 10px rgba(231, 76, 60, 0.8);
+        }
+
         .result-section {
             text-align: center;
             min-height: 150px;
@@ -284,6 +349,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
         .result-placeholder {
@@ -330,7 +396,56 @@
             text-align: center;
         }
 
-        /* HISTORY SECTION */
+        .pros-cons-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .pros-cons-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--logo-yellow);
+            text-align: center;
+        }
+
+        .pros-cons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .pros-list, .cons-list {
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .pros-list {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid var(--highlight-green);
+        }
+
+        .cons-list {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--highlight-red);
+        }
+
+        .pros-cons-item {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .pros-item {
+            background: rgba(46, 204, 113, 0.2);
+        }
+
+        .cons-item {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
         .history-section {
             padding: 15px 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -350,7 +465,6 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
-        /* MESSAGE BOX */
         .message-box {
             position: fixed;
             bottom: 20px;
@@ -382,14 +496,23 @@
             opacity: 1;
         }
 
-        /* INPUT GROUP */
         .input-group {
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
         }
 
-        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .pros-cons-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .roulette-item {
+                min-width: 150px;
+                font-size: 1rem;
+            }
+        }
+
         @media (max-width: 480px) {
             .main-app {
                 margin: 10px;
@@ -419,9 +542,13 @@
                 width: 10px;
                 height: 10px;
             }
+            
+            .roulette-item {
+                min-width: 120px;
+                font-size: 0.9rem;
+            }
         }
 
-        /* CONFETTI EFFECT */
         .confetti {
             position: fixed;
             width: 10px;
@@ -434,15 +561,13 @@
 </head>
 <body>
     <div class="main-app">
-        <!-- ANIMASI LAMPU HIJAU -->
         <div class="pulse-light"></div>
         
         <header class="app-header">
-            <h1 class="logo">🎯Decision Maker🎯</h1>
-            <p class="subtitle">Biarkan kami membantu Anda mengambil keputusan sulit! 🎯</p>
+            <h1 class="logo">🎯 Enhanced Decision Maker 🎯</h1>
+            <p class="subtitle">Putaran roulette akan menentukan pilihan terbaik! 🎡</p>
         </header>
         
-        <!-- TIPS BOX LUCU -->
         <div class="tips-box" id="tipsBox">
             💡 <strong>Tips:</strong> Tambahkan minimal 2 pilihan untuk mulai!
         </div>
@@ -464,16 +589,37 @@
         
         <div class="content-section border-section">
             <button class="decision-btn btn-style" id="decideBtn" disabled>
-                <i class="fas fa-random"></i> Putuskan Sekarang!
+                <i class="fas fa-random"></i> Putar Roulette!
             </button>
+        </div>
+        
+        <div class="content-section">
+            <div class="roulette-container" id="rouletteContainer">
+                <div class="roulette-wheel" id="rouletteWheel"></div>
+                <div class="roulette-pointer"></div>
+            </div>
         </div>
         
         <div class="content-section result-section">
             <div class="result-placeholder" id="resultPlaceholder">
-                Pilihan akan muncul di sini...
+                Hasil roulette akan muncul di sini...
             </div>
             <div class="result-display" id="resultDisplay" style="display: none;"></div>
             <div class="fun-message" id="funMessage"></div>
+        </div>
+        
+        <div class="content-section pros-cons-section" id="prosConsSection" style="display: none;">
+            <div class="pros-cons-title">Analisis Pilihan:</div>
+            <div class="pros-cons-grid">
+                <div class="pros-list">
+                    <h4><i class="fas fa-thumbs-up"></i> Kelebihan</h4>
+                    <div id="prosList"></div>
+                </div>
+                <div class="cons-list">
+                    <h4><i class="fas fa-thumbs-down"></i> Kekurangan</h4>
+                    <div id="consList"></div>
+                </div>
+            </div>
         </div>
         
         <div class="history-section">
@@ -485,7 +631,6 @@
     <div id="messageBox" class="message-box"></div>
 
     <script>
-        // Data untuk pesan lucu dan tips
         const funMessages = {
             positive: [
                 "Wah, pilihan yang bagus! 👍",
@@ -510,21 +655,42 @@
             ]
         };
 
-        // Tips-tips lucu untuk ditampilkan
         const tipsMessages = [
             "💡 <strong>Tips:</strong> Tambahkan pilihan yang benar-benar membuat Anda bingung!",
-            "🎯 <strong>Fun Fact:</strong> Decision Maker ini lebih jujur daripada koin!",
-            "🤔 <strong>Tips:</strong> Jangan tambahkan pilihan 'jangan pilih aku' - sistem akan bingung!",
+            "🎯 <strong>Fun Fact:</strong> Roulette ini lebih adil daripada koin!",
+            "🤔 <strong>Tips:</strong> Jangan tambahkan pilihan 'jangan pilih aku' - roulette akan bingung!",
             "😄 <strong>Fun Fact:</strong> Tombol hijau ini lebih hijau daripada daun di musim hujan!",
-            "💫 <strong>Tips:</strong> Semakin banyak pilihan, semakin seru keputusannya!",
+            "💫 <strong>Tips:</strong> Semakin banyak pilihan, semakin seru roulette-nya!",
             "🎲 <strong>Fun Fact:</strong> Sistem ini menggunakan teknologi canggih 'Random-ology'!",
             "🤖 <strong>Tips:</strong> Robot kecil di belakang layar sedang berhitung untuk Anda!",
             "✨ <strong>Fun Fact:</strong> Lampu hijau berkedip = sistem sedang bernafas!",
             "🍀 <strong>Tips:</strong> Semoga keberuntungan selalu menyertai pilihan Anda!",
-            "😂 <strong>Fun Fact:</strong> Jika bingung memilih, coba tutup mata dan klik!"
+            "😂 <strong>Fun Fact:</strong> Jika bingung memilih, coba tutup mata dan putar roulette!"
         ];
 
-        // Elemen DOM
+        const prosConsData = {
+            "makan di luar": {
+                pros: ["Tidak perlu masak", "Coba menu baru", "Suasana berbeda", "Hemat waktu"],
+                cons: ["Lebih mahal", "Harus antri", "Kurang sehat", "Waktu tempuh"]
+            },
+            "masak di rumah": {
+                pros: ["Lebih hemat", "Lebih sehat", "Bisa sesuai selera", "Keluarga berkumpul"],
+                cons: ["Butuh waktu", "Harus belanja", "Bersih-bersih", "Resiko gagal masak"]
+            },
+            "nonton film": {
+                pros: ["Hibur diri", "Ilmu baru", "Relaksasi", "Quality time"],
+                cons: ["Habis waktu", "Bikin mata lelah", "Bisa mahal", "Spoiler dari teman"]
+            },
+            "belanja online": {
+                pros: ["Praktis", "Banyak pilihan", "Bisa compare harga", "Door to door"],
+                cons: ["Tidak bisa lihat langsung", "Resiko barang cacat", "Ongkos kirim", "Ketagihan belanja"]
+            },
+            "olahraga": {
+                pros: ["Sehat", "Mood booster", "Energi meningkat", "Bentuk badan ideal"],
+                cons: ["Capek", "Butuh waktu", "Berkeringat", "Butuh konsistensi"]
+            }
+        };
+
         const optionInput = document.getElementById('optionInput');
         const addOptionBtn = document.getElementById('addOptionBtn');
         const optionsList = document.getElementById('optionsList');
@@ -535,13 +701,19 @@
         const historyItem = document.getElementById('historyItem');
         const messageBox = document.getElementById('messageBox');
         const tipsBox = document.getElementById('tipsBox');
+        const rouletteWheel = document.getElementById('rouletteWheel');
+        const prosConsSection = document.getElementById('prosConsSection');
+        const prosList = document.getElementById('prosList');
+        const consList = document.getElementById('consList');
 
-        // Array untuk menyimpan pilihan
         let options = [];
         let decisionHistory = [];
         let tipsInterval;
+        let isSpinning = false;
+        let rouletteInterval;
+        let currentPosition = 0;
+        let spinSpeed = 0;
 
-        // Fungsi untuk menampilkan pesan
         function showMessage(message, type = 'info') {
             messageBox.textContent = message;
             messageBox.className = 'message-box';
@@ -561,7 +733,6 @@
             }, type === 'fun' ? 5000 : 3000);
         }
 
-        // Fungsi untuk mengubah tips secara acak
         function changeTips() {
             const randomTip = tipsMessages[Math.floor(Math.random() * tipsMessages.length)];
             tipsBox.innerHTML = randomTip;
@@ -571,7 +742,6 @@
             }, 10);
         }
 
-        // Fungsi untuk menambah pilihan
         function addOption() {
             const optionText = optionInput.value.trim();
             
@@ -592,25 +762,23 @@
             
             options.push(optionText);
             renderOptions();
+            updateRoulette();
             optionInput.value = '';
             optionInput.focus();
             
-            // Enable tombol putuskan jika ada minimal 2 pilihan
             if (options.length >= 2) {
                 decideBtn.disabled = false;
-                // Ganti tips ketika sudah ada cukup pilihan
                 changeTips();
             }
             
             showMessage('Pilihan ditambahkan! ✅', 'success');
         }
 
-        // Fungsi untuk menghapus pilihan
         function removeOption(index) {
             options.splice(index, 1);
             renderOptions();
+            updateRoulette();
             
-            // Disable tombol putuskan jika kurang dari 2 pilihan
             if (options.length < 2) {
                 decideBtn.disabled = true;
             }
@@ -618,7 +786,6 @@
             showMessage('Pilihan dihapus! ❌', 'warning');
         }
 
-        // Fungsi untuk merender daftar pilihan
         function renderOptions() {
             optionsList.innerHTML = '';
             
@@ -643,7 +810,95 @@
             });
         }
 
-        // Fungsi untuk membuat efek konfeti
+        function updateRoulette() {
+            rouletteWheel.innerHTML = '';
+            
+            if (options.length === 0) {
+                const emptyItem = document.createElement('div');
+                emptyItem.className = 'roulette-item';
+                emptyItem.textContent = 'Tambahkan pilihan';
+                rouletteWheel.appendChild(emptyItem);
+                return;
+            }
+            
+            // Buat lebih banyak item untuk efek loop yang smooth
+            for (let i = 0; i < 3; i++) {
+                options.forEach(option => {
+                    const item = document.createElement('div');
+                    item.className = 'roulette-item';
+                    item.textContent = option;
+                    rouletteWheel.appendChild(item);
+                });
+            }
+        }
+
+        function startRouletteSpin() {
+            if (rouletteInterval) {
+                clearInterval(rouletteInterval);
+            }
+            
+            spinSpeed = 30; // Kecepatan awal tinggi
+            currentPosition = 0;
+            
+            rouletteInterval = setInterval(() => {
+                currentPosition += spinSpeed;
+                rouletteWheel.style.transform = `translateX(-${currentPosition}px)`;
+                
+                // Reset position ketika mencapai akhir untuk efek loop
+                const wheelWidth = rouletteWheel.scrollWidth;
+                if (currentPosition >= wheelWidth / 3) {
+                    currentPosition = 0;
+                }
+            }, 16); // ~60fps
+        }
+
+        function stopRouletteSpin(selectedOption) {
+            // Perlambat secara bertahap
+            const slowDownInterval = setInterval(() => {
+                spinSpeed *= 0.95; // Perlambat 5% setiap frame
+                
+                if (spinSpeed < 0.5) {
+                    clearInterval(rouletteInterval);
+                    clearInterval(slowDownInterval);
+                    
+                    // Hitung posisi akhir yang tepat
+                    const itemWidth = 200;
+                    const optionIndex = options.indexOf(selectedOption);
+                    const targetPosition = (options.length * itemWidth) + (optionIndex * itemWidth);
+                    
+                    // Animasi ke posisi akhir dengan easing
+                    rouletteWheel.style.transition = 'transform 1s cubic-bezier(0.2, 0.8, 0.3, 1)';
+                    rouletteWheel.style.transform = `translateX(-${targetPosition}px)`;
+                    
+                    setTimeout(() => {
+                        showResult(selectedOption);
+                    }, 1000);
+                }
+            }, 16);
+        }
+
+        function showResult(selectedOption) {
+            resultDisplay.innerHTML = `"${selectedOption}"`;
+            
+            const messageType = ['positive', 'neutral', 'funny'][Math.floor(Math.random() * 3)];
+            const randomMessage = funMessages[messageType][Math.floor(Math.random() * funMessages[messageType].length)];
+            funMessage.textContent = randomMessage;
+            
+            showProsCons(selectedOption);
+            
+            decisionHistory.unshift(selectedOption);
+            if (decisionHistory.length > 5) {
+                decisionHistory.pop();
+            }
+            updateHistory();
+            
+            createConfetti();
+            
+            isSpinning = false;
+            decideBtn.disabled = false;
+            changeTips();
+        }
+
         function createConfetti() {
             const colors = ['#f1c40f', '#e74c3c', '#2ecc71', '#bb66ff'];
             
@@ -656,7 +911,6 @@
                 confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
                 document.body.appendChild(confetti);
                 
-                // Animasi konfeti
                 const animation = confetti.animate([
                     { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
                     { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
@@ -671,52 +925,70 @@
             }
         }
 
-        // Fungsi untuk mengambil keputusan
+        function showProsCons(selectedOption) {
+            prosConsSection.style.display = 'block';
+            prosList.innerHTML = '';
+            consList.innerHTML = '';
+            
+            let foundData = null;
+            for (const [key, value] of Object.entries(prosConsData)) {
+                if (selectedOption.toLowerCase().includes(key)) {
+                    foundData = value;
+                    break;
+                }
+            }
+            
+            if (!foundData) {
+                foundData = {
+                    pros: ["Bisa dicoba", "Pengalaman baru", "Mungkin menyenangkan", "Belajar hal baru"],
+                    cons: ["Butuh persiapan", "Mungkin ada resiko", "Butuh waktu", "Bisa mengecewakan"]
+                };
+            }
+            
+            foundData.pros.forEach(pro => {
+                const proItem = document.createElement('div');
+                proItem.className = 'pros-cons-item pros-item';
+                proItem.innerHTML = `<i class="fas fa-check"></i> ${pro}`;
+                prosList.appendChild(proItem);
+            });
+            
+            foundData.cons.forEach(con => {
+                const conItem = document.createElement('div');
+                conItem.className = 'pros-cons-item cons-item';
+                conItem.innerHTML = `<i class="fas fa-times"></i> ${con}`;
+                consList.appendChild(conItem);
+            });
+        }
+
         function makeDecision() {
-            if (options.length < 2) {
+            if (options.length < 2 || isSpinning) {
                 showMessage('Butuh minimal 2 pilihan!', 'warning');
                 return;
             }
             
-            // Animasi memutuskan
-            resultPlaceholder.style.display = 'none';
-            resultDisplay.style.display = 'block';
-            resultDisplay.innerHTML = '<div class="deciding-animation"><i class="fas fa-cog fa-spin"></i> Memutuskan...</div>';
-            funMessage.textContent = 'Tunggu sebentar ya...';
+            isSpinning = true;
             decideBtn.disabled = true;
             
-            // Simulasi proses pengambilan keputusan
+            resultPlaceholder.style.display = 'none';
+            resultDisplay.style.display = 'none';
+            prosConsSection.style.display = 'none';
+            
+            resultDisplay.style.display = 'block';
+            resultDisplay.innerHTML = '<div class="deciding-animation"><i class="fas fa-cog fa-spin"></i> Memutar Roulette...</div>';
+            funMessage.textContent = 'Tunggu sebentar ya...';
+            
+            const randomIndex = Math.floor(Math.random() * options.length);
+            const selectedOption = options[randomIndex];
+            
+            // Mulai putaran roulette
+            startRouletteSpin();
+            
+            // Setelah 2 detik, mulai perlambatan
             setTimeout(() => {
-                const randomIndex = Math.floor(Math.random() * options.length);
-                const selectedOption = options[randomIndex];
-                
-                // Tampilkan hasil
-                resultDisplay.innerHTML = `"${selectedOption}"`;
-                
-                // Tampilkan pesan lucu acak
-                const messageType = ['positive', 'neutral', 'funny'][Math.floor(Math.random() * 3)];
-                const randomMessage = funMessages[messageType][Math.floor(Math.random() * funMessages[messageType].length)];
-                funMessage.textContent = randomMessage;
-                
-                // Simpan ke riwayat
-                decisionHistory.unshift(selectedOption);
-                if (decisionHistory.length > 5) {
-                    decisionHistory.pop();
-                }
-                updateHistory();
-                
-                // Buat efek konfeti
-                createConfetti();
-                
-                // Enable tombol lagi
-                decideBtn.disabled = false;
-                
-                // Ganti tips setelah keputusan
-                changeTips();
+                stopRouletteSpin(selectedOption);
             }, 2000);
         }
 
-        // Fungsi untuk memperbarui riwayat
         function updateHistory() {
             if (decisionHistory.length > 0) {
                 historyItem.textContent = `"${decisionHistory[0]}"`;
@@ -725,7 +997,6 @@
             }
         }
 
-        // Event listeners
         addOptionBtn.addEventListener('click', addOption);
         
         optionInput.addEventListener('keypress', (e) => {
@@ -736,10 +1007,9 @@
         
         decideBtn.addEventListener('click', makeDecision);
 
-        // Inisialisasi
         renderOptions();
+        updateRoulette();
 
-        // Mulai interval untuk mengganti tips setiap 8 detik
         tipsInterval = setInterval(changeTips, 8000);
     </script>
 </body>
