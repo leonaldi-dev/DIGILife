@@ -5,21 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Profil & Portofolio Tim DIGILife</title>
     
-    <!-- Tailwind CSS (Diperlukan untuk JIT custom colors) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // FIX: Konfigurasi Tailwind dikembalikan agar kelas kustom seperti 'bg-logo-color' berfungsi.
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'bg-dark': 'var(--primary-bg)',
-                        'card-dark': 'var(--secondary-bg)',
-                        'accent-leo': 'var(--text-purple)',
-                        'accent-miftah': 'var(--accent-miftah)',
-                        'logo-color': 'var(--logo-yellow)', 
-                        'btn-text': 'var(--button-text)',
-                        'text-light': 'var(--text-light)',
+                        'bg-dark': '#0d1117',
+                        'card-dark': '#161b22',
+                        'accent-leo': '#c862ff',
+                        'accent-miftah': '#03dac6',
+                        'logo-color': '#fdd835',
+                        'btn-text': '#161b22',
+                        'text-light': '#f0f6fc',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -41,17 +40,10 @@
             --primary-bg: #0d1117;
             --secondary-bg: #161b22;
             --text-light: #f0f6fc;
-            
-            /* WARNA BACKGROUND GELOMBANG */
             --bg-purple: #4b0273;
-            
-            /* WARNA UNGU UNTUK TEKS DAN ELEMEN LEO */
-            --text-purple: #c862ff; 
-            
-            /* WARNA HIJAU UNTUK TEKS DAN ELEMEN MIFTAH */
+            --text-purple: #c862ff;
             --accent-miftah: #03dac6;
-            
-            --logo-yellow: #fdd835; /* WARNA KUNING TOMBOL */
+            --logo-yellow: #fdd835;
             --button-text: #161b22;
         }
 
@@ -62,7 +54,7 @@
         }
 
         body {
-            background-color: var(--primary-bg); 
+            background-color: var(--primary-bg);
             color: var(--text-light);
             min-height: 100vh;
             width: 100%;
@@ -70,7 +62,7 @@
             padding: 0;
             margin: 0;
             overflow-x: hidden;
-            position: relative; 
+            position: relative;
             font-family: 'Inter', sans-serif;
         }
         
@@ -79,17 +71,16 @@
         body { scrollbar-width: none; -ms-overflow-style: none; }
         
         /* ==================== */
-        /* 2. CUSTOM ACCENT CLASSES */
+        /* 2. CUSTOM STYLES */
         /* ==================== */
         
-        .text-accent-leo { color: var(--text-purple); }
-        .border-accent-leo { border-color: var(--text-purple); }
-        .bg-accent-leo { background-color: var(--text-purple); }
+        .text-accent-leo { color: var(--text-purple) !important; }
+        .border-accent-leo { border-color: var(--text-purple) !important; }
+        .bg-accent-leo { background-color: var(--text-purple) !important; }
 
-        .text-accent-miftah { color: var(--accent-miftah); }
-        .border-accent-miftah { border-color: var(--accent-miftah); }
-        .bg-accent-miftah { background-color: var(--accent-miftah); }
-
+        .text-accent-miftah { color: var(--accent-miftah) !important; }
+        .border-accent-miftah { border-color: var(--accent-miftah) !important; }
+        .bg-accent-miftah { background-color: var(--accent-miftah) !important; }
 
         /* ==================== */
         /* 3. BACKGROUND VISUAL GELOMBANG */
@@ -101,7 +92,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -10; 
+            z-index: -10;
             overflow: hidden;
         }
 
@@ -125,7 +116,7 @@
         /* Animasi Gelombang */
         @keyframes waveMove {
             0% { transform: translateX(0) scaleY(1); }
-            50% { transform: translateX(-50%) scaleY(1.1); } 
+            50% { transform: translateX(-50%) scaleY(1.1); }
             100% { transform: translateX(0) scaleY(1); }
         }
 
@@ -139,7 +130,7 @@
             animation: waveMove 40s linear infinite;
             height: 250px;
             opacity: 0.9;
-            box-shadow: 0 0 150px 60px var(--bg-purple); 
+            box-shadow: 0 0 150px 60px var(--bg-purple);
             filter: blur(5px);
             top: -150px;
             transform: rotate(180deg) translateX(0);
@@ -148,9 +139,9 @@
             animation: waveMoveReverse 35s linear infinite;
             height: 300px;
             top: -200px;
-            opacity: 0.7; 
+            opacity: 0.7;
             filter: blur(10px);
-            box-shadow: 0 0 120px 50px var(--bg-purple); 
+            box-shadow: 0 0 120px 50px var(--bg-purple);
             transform: rotate(180deg) translateX(-50%);
         }
 
@@ -158,7 +149,7 @@
             animation: waveMove 25s linear infinite;
             height: 350px;
             opacity: 1.0;
-            box-shadow: 0 0 180px 80px var(--bg-purple); 
+            box-shadow: 0 0 180px 80px var(--bg-purple);
             filter: blur(7px);
             bottom: -150px;
         }
@@ -166,9 +157,9 @@
             animation: waveMoveReverse 30s linear infinite;
             height: 400px;
             bottom: -200px;
-            opacity: 0.8; 
+            opacity: 0.8;
             filter: blur(10px);
-            box-shadow: 0 0 140px 60px var(--bg-purple); 
+            box-shadow: 0 0 140px 60px var(--bg-purple);
         }
 
         /* ==================== */
@@ -203,7 +194,7 @@
             position: relative;
             overflow: hidden;
             background-color: var(--secondary-bg);
-            border-radius: 1.5rem; 
+            border-radius: 1.5rem;
             border: 1px solid #282c34;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
@@ -257,7 +248,7 @@
         }
 
         #main-header {
-            position: relative; 
+            position: relative;
             margin-bottom: 20px;
             border-radius: 0 0 15px 15px;
         }
@@ -291,6 +282,17 @@
                 font-size: 3.5rem !important;
             }
         }
+
+        /* FIX: Custom border classes untuk gambar */
+        .custom-border-leo {
+            border-color: #c862ff !important;
+            border-width: 4px;
+        }
+        
+        .custom-border-miftah {
+            border-color: #03dac6 !important;
+            border-width: 4px;
+        }
     </style>
 </head>
 
@@ -304,8 +306,7 @@
     </div>
     
     <!-- HEADER/NAVIGASI UTAMA -->
-    <header id="main-header" class="p-4 md:px-8 bg-secondary-bg/95 backdrop-blur-sm shadow-xl w-full flex justify-between items-center rounded-b-xl border-b border-gray-700">
-        <!-- PERBAIKAN: Memastikan klik logo selalu memanggil window.parent.showView('initial') untuk kembali ke tampilan dua kartu. -->
+    <header id="main-header" class="p-4 md:px-8 bg-card-dark/95 backdrop-blur-sm shadow-xl w-full flex justify-between items-center rounded-b-xl border-b border-gray-700">
         <div class="flex items-center space-x-2 cursor-pointer transition duration-300 transform hover:scale-105" onclick="window.parent.showView('initial')">
             <i class="fas fa-laptop-code text-logo-color text-3xl logo-glow"></i>
             <span class="port-logo text-logo-color logo-glow">DIGILife</span>
@@ -323,24 +324,22 @@
     </footer>
 
     <script>
-        // Data Anggota Tim
+        // Data Anggota Tim - PATH DIPERBAIKI
         const members = {
             leo: {
                 name: "LEONALDI AHMAD IBRAHIM",
                 tagline: "Web-Developer",
                 color: "accent-leo",
-                // PERBAIKAN: Menggunakan jalur absolut dari root GitHub Pages (diawali /)
-                img: "/assets/images/leoganteng.jpg",
+                img: "assets/images/leoganteng.jpg", // PATH DIPERBAIKI
                 ig_link: "https://www.instagram.com/l_nlibrhm?igsh=MXFpemFhNHowd252YQ==",
-                description: "I am a **Web-Developer** and i m a passionate Junior Web Developer dedicated and committed to creating engaging and functional web experiences.,",
+                description: "I am a **Web-Developer** and i m a passionate Junior Web Developer dedicated and committed to creating engaging and functional web experiences.",
                 roles: ["Full-Stack Developer", "Maintenance", "Web Developer", "UI/UX Enthusiast", "Debugging Expert"]
             },
             miftah: {
                 name: "MIFTAKHUL ACHYAR",
                 tagline: "Programmer",
                 color: "accent-miftah",
-                // PERBAIKAN: Menggunakan jalur absolut dari root GitHub Pages (diawali /)
-                img: "/assets/images/miftah.jpg", 
+                img: "assets/images/miftah.jpg", // PATH DIPERBAIKI
                 ig_link: "https://www.instagram.com/mft4h_17",
                 description: "I am a dedicated **Software Engineer** specializing in problem-solving and clean code architecture. My focus is on optimizing performance and ensuring a seamless user experience across all platforms. Ready to tackle any coding challenge.",
                 roles: ["Software Engineer", "Problem Solver", "Debugging Expert", "Programmer Inti"]
@@ -356,88 +355,111 @@
         function renderInitialView() {
             if (window.typingTimeout) clearTimeout(window.typingTimeout);
 
-            // Placeholder image helper to determine colors based on member key
-            const getPlaceholderColor = (key) => {
-                return key === 'leo' ? 'c862ff' : '03dac6'; // Use hex values for placeholder URL
-            };
+            // Debug info
+            console.log('=== DEBUG GAMBAR ===');
+            Object.keys(members).forEach(key => {
+                console.log(`Gambar ${key}:`, members[key].img);
+            });
 
             container.innerHTML = `
                 <div class="w-full max-w-4xl text-center p-4 text-content">
                     <h2 class="text-4xl font-extrabold main-title mb-4">Tim Pengembang <span class="logo-glow">DIGILife</span></h2>
                     <p class="text-gray-300 mb-10">Pilih profil di bawah untuk melihat portofolio lengkap.</p>
                     <div class="flex flex-col md:flex-row gap-8 justify-center">
-                        ${Object.keys(members).map(key => `
-                            <div id="${key}-card" class="profile-card ${key} p-8 w-full md:w-1/2 shadow-2xl transition duration-500 border-t-4 border-${members[key].color}" onclick="showView('portfolio', '${key}')">
-                                <div class="card-inner">
-                                    <img src="${members[key].img}" 
-                                        onerror="this.onerror=null;this.src='https://placehold.co/120x120/${getPlaceholderColor(key)}/ffffff?text=${key.toUpperCase().charAt(0)}';" 
-                                        alt="Foto ${members[key].name}" 
-                                        class="w-32 h-32 rounded-full object-cover border-4 border-${members[key].color} mx-auto mb-6 shadow-lg transition duration-300 hover:scale-105">
-                                    <h4 class="text-2xl font-bold high-contrast-text mb-2">${members[key].name}</h4>
-                                    <p class="text-${members[key].color} font-medium mb-6 text-lg">${members[key].tagline}</p>
-                                    
-                                    <button class="mt-4 px-6 py-2 bg-logo-color text-btn-text font-extrabold rounded-full shadow-lg hover:opacity-90 transition duration-300 uppercase tracking-wider btn-glow">
-                                        <i class="fas fa-arrow-circle-right"></i> Lebih Lanjut
-                                    </button>
+                        ${Object.keys(members).map(key => {
+                            const member = members[key];
+                            const borderClass = key === 'leo' ? 'custom-border-leo' : 'custom-border-miftah';
+                            const textColorClass = key === 'leo' ? 'text-accent-leo' : 'text-accent-miftah';
+                            
+                            return `
+                                <div id="${key}-card" class="profile-card ${key} p-8 w-full md:w-1/2 shadow-2xl transition duration-500 border-t-4 ${borderClass.replace('custom-border', 'border')}" onclick="showView('portfolio', '${key}')">
+                                    <div class="card-inner">
+                                        <img src="${member.img}" 
+                                            onerror="this.onerror=null; this.src='https://placehold.co/200x200/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt[0]}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar gagal load:', '${member.img}')"
+                                            alt="Foto ${member.name}" 
+                                            class="w-32 h-32 rounded-full object-cover ${borderClass} mx-auto mb-6 shadow-lg transition duration-300 hover:scale-105">
+                                        <h4 class="text-2xl font-bold high-contrast-text mb-2">${member.name}</h4>
+                                        <p class="${textColorClass} font-medium mb-6 text-lg">${member.tagline}</p>
+                                        
+                                        <button class="mt-4 px-6 py-2 bg-logo-color text-btn-text font-extrabold rounded-full shadow-lg hover:opacity-90 transition duration-300 uppercase tracking-wider btn-glow">
+                                            <i class="fas fa-arrow-circle-right"></i> Lebih Lanjut
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        `).join('')}
+                            `;
+                        }).join('')}
                     </div>
                 </div>
             `;
         }
 
-        // ==============================================
+                // ==============================================
         // 2. TAMPILAN PORTOFOLIO INDIVIDUAL
         // ==============================================
 
         function renderPortfolioView(key) {
             const member = members[key];
-            const accentClass = member.color;
-
-            // Placeholder image helper to determine colors based on member key
-            const getPlaceholderColor = (key) => {
-                return key === 'leo' ? 'c862ff' : '03dac6'; // Use hex values for placeholder URL
-            };
+            const textColorClass = key === 'leo' ? 'text-accent-leo' : 'text-accent-miftah';
+            const borderClass = key === 'leo' ? 'custom-border-leo' : 'custom-border-miftah';
 
             container.innerHTML = `
                 <div class="container mx-auto max-w-7xl p-4 pt-10 min-h-screen flex items-center text-content">
                     <div class="flex flex-col md:flex-row items-center md:space-x-16 w-full py-10">
                         
                         <div class="md:w-3/5 text-center md:text-left mb-10 md:mb-0">
-                            <p class="text-${accentClass} text-xl font-semibold mb-3">Welcome to DIGILife</p>
+                            <p class="${textColorClass} text-xl font-semibold mb-3">Welcome to DIGILife</p>
                             
                             <h1 class="text-5xl sm:text-6xl lg:text-8xl font-extrabold leading-tight mb-6">
                                 Hi! I'm <span class="text-logo-color logo-glow">${key.toUpperCase()}</span>
                                 <br>
-                                <span id="role-title" class="text-${accentClass} typing-effect mt-2"></span>
+                                <span id="role-title" class="${textColorClass} typing-effect mt-2"></span>
                             </h1>
                             
                             <p class="description-text text-base md:text-lg max-w-xl mx-auto md:mx-0 mb-10">
                                 ${member.description.replace(/\*\*(.*?)\*\*/g, '<strong class="text-logo-color">$1</strong>')}
                             </p>
                             
-                            <a href="${member.ig_link}" target="_blank" class="inline-flex items-center px-8 py-3 bg-logo-color text-btn-text font-extrabold rounded-full transition duration-300 hover:opacity-90 shadow-2xl shadow-logo-color/50 uppercase tracking-wider btn-glow">
-                                Let's Connect <i class="fab fa-instagram ml-3 text-xl"></i>
-                            </a>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <a href="${member.ig_link}" target="_blank" class="inline-flex items-center justify-center px-8 py-3 bg-logo-color text-btn-text font-extrabold rounded-full transition duration-300 hover:opacity-90 shadow-2xl shadow-logo-color/50 uppercase tracking-wider btn-glow">
+                                    Let's Connect <i class="fab fa-instagram ml-3 text-xl"></i>
+                                </a>
+                                <button onclick="showView('initial')" class="inline-flex items-center justify-center px-8 py-3 border-2 ${borderClass} text-${member.color} font-extrabold rounded-full transition duration-300 hover:bg-${member.color} hover:text-btn-text uppercase tracking-wider">
+                                    <i class="fas fa-arrow-left mr-3"></i> Back to Team
+                                </button>
+                            </div>
                         </div>
 
                         <div class="md:w-2/5 flex justify-center">
                             <div class="relative">
-                                <div class="absolute inset-0 m-auto w-full h-full rounded-full opacity-30 blur-xl bg-${accentClass} neon-glow-ring"></div>
+                                <div class="absolute inset-0 m-auto w-full h-full rounded-full opacity-30 blur-xl ${key === 'leo' ? 'bg-accent-leo' : 'bg-accent-miftah'} neon-glow-ring"></div>
 
                                 <img 
                                     src="${member.img}" 
-                                    onerror="this.onerror=null;this.src='https://placehold.co/300x300/${getPlaceholderColor(key)}/ffffff?text=${key.toUpperCase()}';" 
+                                    onerror="this.onerror=null; this.src='https://placehold.co/300x300/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar portfolio gagal load:', '${member.img}')"
                                     alt="Foto ${member.name}" 
-                                    class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full object-cover border-4 border-logo-color transition duration-500 transform hover:scale-105 shadow-2xl"
+                                    class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full object-cover ${borderClass} transition duration-500 transform hover:scale-105 shadow-2xl"
                                 >
                             </div>
                         </div>
 
                     </div>
                 </div>
+                
+                <!-- Skills & Roles Section -->
+                <div class="container mx-auto max-w-7xl p-4 mb-16">
+                    <div class="bg-card-dark rounded-2xl p-8 shadow-2xl">
+                        <h3 class="text-3xl font-bold text-center ${textColorClass} mb-8">Skills & Expertise</h3>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            ${member.roles.map(role => `
+                                <span class="px-6 py-3 ${key === 'leo' ? 'bg-accent-leo' : 'bg-accent-miftah'} text-btn-text font-bold rounded-full shadow-lg transition transform hover:scale-105">
+                                    ${role}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
             `;
+            
             startTypingEffect(member.roles);
         }
         
@@ -455,17 +477,13 @@
             }
         }
         
-        // Memanggil showView pada Parent Window untuk menutup modal
-        // Catatan: Ini harus dipanggil oleh tombol yang ada di tampilan portfolio 
-        // atau logo di header jika ingin kembali ke menu awal dua kartu.
         function closeAuthorView() {
             if (window.parent && window.parent.showView) {
                 window.parent.showView('initial');
             } else {
-                showView('initial'); // Fallback jika tidak dimuat dalam iframe
+                showView('initial');
             }
         }
-
 
         function startTypingEffect(roles) {
             if (window.typingTimeout) clearTimeout(window.typingTimeout);
@@ -505,12 +523,36 @@
                 
                 window.typingTimeout = setTimeout(typeLoop, typeSpeed);
             }
-            typeLoop();
+            
+            if (data.typingElement) {
+                typeLoop();
+            }
         }
 
+        // ==============================================
+        // 4. INISIALISASI
+        // ==============================================
+
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('Author page loaded - checking images...');
+            
+            // Test image paths
+            Object.keys(members).forEach(key => {
+                const img = new Image();
+                img.onload = function() {
+                    console.log(`✅ Gambar ${key} berhasil dimuat: ${members[key].img}`);
+                };
+                img.onerror = function() {
+                    console.error(`❌ Gambar ${key} gagal dimuat: ${members[key].img}`);
+                };
+                img.src = members[key].img;
+            });
+            
             showView('initial');
         });
+
+        // Export function untuk parent window (jika diperlukan)
+        window.renderAuthorView = showView;
     </script>
 </body>
 </html>
