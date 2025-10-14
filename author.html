@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <!-- PERBAIKAN 1: VIEWPORT SAMA DENGAN PARENT -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Profil & Portofolio Tim DIGILife</title>
+    <!-- Tailwind CSS (Untuk styling modern) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-dark': 'var(--primary-bg)',
+                        'card-dark': 'var(--secondary-bg)',
+                        'accent-leo': 'var(--text-purple)', // SEKARANG PAKAI VARIABLE BERBEDA
+                        'accent-miftah': '#03dac6',
+                        'logo-color': 'var(--logo-yellow)',
+                        'btn-text': 'var(--button-text)',
+                        'text-light': 'var(--text-light)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* ==================== */
+        /* 1. PALET WARNA & FONT - DIPISAH! */
+        /* ==================== */
+        :root {
+            --primary-bg: #0d1117;
+            --secondary-bg: #161b22;
+            --text-light: #f0f6fc;
+            
+            /* WARNA BACKGROUND GELOMBANG */
+            --bg-purple: #4b0273; /* INI UNTUK BACKGROUND SAJA */
+            
+            /* WARNA UNGU UNTUK TEKS DAN ELEMEN LAIN */
+            --text-purple: #c862ff; /* INI UNTUK TEKS DAN KARTU */
+            
+            --accent-miftah: #03dac6;
+            --logo-yellow: #fdd835;
+            --button-text: #161b22;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* PERBAIKAN 2: BODY UNTUK IFRAME */
+        body {
+            background-color: var(--primary-bg); 
+            color: var(--text-light);
+            min-height: 100vh;
+            width: 100%;
+            /* PERBAIKAN: Hapus flex dan ganti dengan block */
+            display: block;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative; 
+        }
+        
+        body::-webkit-scrollbar { display: none; }
+        body { scrollbar-width: none; -ms-overflow-style: none; }
+        
+        /* ==================== */
+        /* 2. BACKGROUND VISUAL GELOMBANG - PAKAI VARIABLE BG */
+        /* ==================== */
+        
+        #wave-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10; 
+            overflow: hidden;
+        }
+
+        .wave-layer {
+            position: absolute;
+            width: 140vw;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 300px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--bg-purple) 45%, /* PAKAI VARIABLE BG */
+                var(--bg-purple) 55%, 
+                transparent 100%
+            );
+            filter: blur(8px);
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+
+        /* Animasi Gelombang */
+        @keyframes waveMove {
+            0% { transform: translateX(0) scaleY(1); }
+            50% { transform: translateX(-50%) scaleY(1.1); } 
+            100% { transform: translateX(0) scaleY(1); }
+        }
+
+        @keyframes waveMoveReverse {
+            0% { transform: translateX(-50%) scaleY(1); }
+            50% { transform: translateX(0) scaleY(1.1); }
+            100% { transform: translateX(-50%) scaleY(1); }
+        }
+        
+        .wave-top {
+            top: -150px;
+            transform: rotate(180deg);
+        }
+
+        .wave-layer.top-1 { 
+            animation: waveMove 40s linear infinite;
+            height: 250px;
+            opacity: 0.9;
+            box-shadow: 0 0 150px 60px var(--bg-purple); /* PAKAI VARIABLE BG */
+            filter: blur(5px);
+        }
+        .wave-layer.top-2 { 
+            animation: waveMoveReverse 35s linear infinite;
+            height: 300px;
+            top: -200px;
+            opacity: 0.7; 
+            filter: blur(10px);
+            box-shadow: 0 0 120px 50px var(--bg-purple); /* PAKAI VARIABLE BG */
+        }
+
+        .wave-bottom {
+            bottom: -150px;
+        }
+        
+        .wave-layer.bottom-1 { 
+            animation: waveMove 25s linear infinite;
+            height: 350px;
+            opacity: 1.0;
+            box-shadow: 0 0 180px 80px var(--bg-purple); /* PAKAI VARIABLE BG */
+            filter: blur(7px);
+        }
+        .wave-layer.bottom-2 { 
+            animation: waveMoveReverse 30s linear infinite;
+            height: 400px;
+            bottom: -200px;
+            opacity: 0.8; 
+            filter: blur(10px);
+            box-shadow: 0 0 140px 60px var(--bg-purple); /* PAKAI VARIABLE BG */
+        }
+
+        /* ==================== */
+        /* 3. KOMPONEN TEKS & KARTU - PAKAI VARIABLE TEXT */
+        /* ==================== */
+
+        .port-logo {
+            font-family: 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .logo-glow {
+            color: var(--logo-yellow);
+            text-shadow: 0 0 10px var(--logo-yellow), 0 0 20px var(--logo-yellow);
+            transition: all 0.3s;
+        }
+        
+        .btn-glow {
+            box-shadow: 0 0 5px var(--logo-yellow), 0 0 15px var(--logo-yellow);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-glow:hover {
+            box-shadow: 0 0 10px var(--logo-yellow), 0 0 30px var(--logo-yellow);
+            transform: translateY(-2px);
+        }
+
+        .profile-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--secondary-bg);
+            border-radius: 1.5rem; 
+            border: 1px solid #282c34;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* KARTU LEO PAKAI VARIABLE TEXT */
+        .profile-card.leo:hover {
+            box-shadow: 0 0 15px var(--text-purple), 0 0 35px var(--text-purple);
+            transform: scale(1.03);
+        }
+        
+        .profile-card.miftah:hover {
+            box-shadow: 0 0 15px var(--accent-miftah), 0 0 35px var(--accent-miftah);
+            transform: scale(1.03);
+        }
+        
+        @keyframes neon-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .neon-glow-ring {
+            animation: neon-pulse 3s infinite alternate;
+        }
+
+        .text-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .high-contrast-text {
+            color: var(--text-light);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        
+        .profile-card h4 {
+            color: var(--text-light);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        
+        .main-title {
+            color: var(--text-light);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        
+        .description-text {
+            color: #e0e6ed;
+            line-height: 1.6;
+        }
+        
+        .border-accent-leo {
+            border-color: var(--text-purple); /* PAKAI VARIABLE TEXT */
+        }
+        
+        .border-accent-miftah {
+            border-color: var(--accent-miftah);
+        }
+
+        /* PERBAIKAN 4: CONTAINER UTAMA UNTUK IFRAME */
+        #main-content-container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 20px 15px;
+            box-sizing: border-box;
+        }
+
+        /* PERBAIKAN 5: HEADER FIXED UNTUK IFRAME */
+        #main-header {
+            position: relative; /* Ganti dari fixed untuk iframe */
+            margin-bottom: 20px;
+            border-radius: 0 0 15px 15px;
+        }
+
+        /* PERBAIKAN 6: RESPONSIVE UNTUK IFRAME */
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+            
+            #main-content-container {
+                padding: 10px;
+            }
+            
+            .profile-card {
+                padding: 20px 15px;
+            }
+            
+            .port-logo {
+                font-size: 1.5rem;
+            }
+            
+            h1.text-5xl {
+                font-size: 2.5rem !important;
+            }
+            
+            h1.text-6xl {
+                font-size: 3rem !important;
+            }
+            
+            h1.text-8xl {
+                font-size: 3.5rem !important;
+            }
+        }
+    </style>
+</head>
+
+<!-- PERBAIKAN 7: HAPUS PADDING DARI BODY -->
+<body class="antialiased p-0">
+    <!-- BACKGROUND VISUAL: GELOMBANG UNGU DI ATAS & BAWAH -->
+    <div id="wave-container">
+        <div class="wave-layer wave-top top-1"></div>
+        <div class="wave-layer wave-top top-2"></div>
+        <div class="wave-layer wave-bottom bottom-1"></div>
+        <div class="wave-layer wave-bottom bottom-2"></div>
+    </div>
+    
+    <!-- HEADER/NAVIGASI UTAMA -->
+    <header id="main-header" class="p-4 md:px-8 bg-secondary-bg/95 backdrop-blur-sm shadow-xl w-full flex justify-between items-center rounded-b-xl border-b border-gray-700">
+        <div class="flex items-center space-x-2 cursor-pointer transition duration-300 transform hover:scale-105" onclick="showView('initial')">
+            <i class="fas fa-laptop-code text-logo-color text-3xl logo-glow"></i>
+            <span class="port-logo text-logo-color logo-glow">DIGILife</span>
+        </div>
+    </header>
+
+    <!-- CONTAINER UTAMA -->
+    <main id="main-content-container" class="flex-grow flex items-center justify-center">
+        <!-- Konten akan dimuat di sini oleh JavaScript -->
+    </main>
+    
+    <!-- FOOTER -->
+    <footer class="p-4 text-center text-gray-500 text-sm mt-10">
+        &copy; 2025 DIGILife. Dibuat dengan semangat.
+    </footer>
+
+    <script>
+        // Data Anggota Tim
+        const members = {
+            leo: {
+                name: "LEONALDI AHMAD IBRAHIM",
+                tagline: "Web-Developer",
+                color: "accent-leo",
+                img: "assets/images/leoganteng.jpg",
+                ig_link: "https://www.instagram.com/l_nlibrhm?igsh=MXFpemFhNHowd252YQ==",
+                description: "I am a **Web-Developer** and i m a passionate Junior Web Developer dedicated and committed to creating engaging and functional web experiences.,",
+                roles: ["Full-Stack Developer", "Maintenance", "Web Developer", "UI/UX Enthusiast", "Debugging Expert"]
+            },
+            miftah: {
+                name: "MIFTAKHUL ACHYAR",
+                tagline: "Programmer",
+                color: "accent-miftah",
+                img: "assets/images/miftah.jpg",
+                ig_link: "https://www.instagram.com/mft4h_17",
+                description: "I am a dedicated **Software Engineer** specializing in problem-solving and clean code architecture. My focus is on optimizing performance and ensuring a seamless user experience across all platforms. Ready to tackle any coding challenge.",
+                roles: ["Software Engineer", "Problem Solver", "Debugging Expert", "Programmer Inti"]
+            }
+        };
+
+        const container = document.getElementById('main-content-container');
+
+        // ==============================================
+        // 1. TAMPILAN KARTU AWAL (2 PROFIL)
+        // ==============================================
+
+        function renderInitialView() {
+            if (window.typingTimeout) clearTimeout(window.typingTimeout);
+
+            container.innerHTML = `
+                <div class="w-full max-w-4xl text-center p-4 text-content">
+                    <h2 class="text-4xl font-extrabold main-title mb-4">Tim Pengembang <span class="logo-glow">DIGILife</span></h2>
+                    <p class="text-gray-300 mb-10">Pilih profil di bawah untuk melihat portofolio lengkap.</p>
+                    <div class="flex flex-col md:flex-row gap-8 justify-center">
+                        ${Object.keys(members).map(key => `
+                            <div id="${key}-card" class="profile-card ${key} p-8 w-full md:w-1/2 shadow-2xl transition duration-500 border-t-4 border-${members[key].color}" onclick="showView('portfolio', '${key}')">
+                                <div class="card-inner">
+                                    <img src="${members[key].img}" 
+                                         onerror="this.onerror=null; this.src='https://via.placeholder.com/120x120/9b59b6/ffffff?text=${key.toUpperCase().charAt(0)}'; console.warn('Gambar tidak ditemukan: ${members[key].img}');" 
+                                         alt="Foto ${members[key].name}" loading="lazy"
+                                         class="w-32 h-32 rounded-full object-cover border-4 border-${members[key].color} mx-auto mb-6 shadow-lg transition duration-300 hover:scale-105">
+                                    <h4 class="text-2xl font-bold high-contrast-text mb-2">${members[key].name}</h4>
+                                    <p class="text-${members[key].color} font-medium mb-6 text-lg">${members[key].tagline}</p>
+                                    
+                                    <button class="mt-4 px-6 py-2 bg-logo-color text-btn-text font-extrabold rounded-full shadow-lg hover:opacity-90 transition duration-300 uppercase tracking-wider btn-glow">
+                                        <i class="fas fa-arrow-circle-right"></i> Lebih Lanjut
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==============================================
+        // 2. TAMPILAN PORTOFOLIO INDIVIDUAL
+        // ==============================================
+
+        function renderPortfolioView(key) {
+            const member = members[key];
+            const accentClass = member.color;
+
+            container.innerHTML = `
+                <div class="container mx-auto max-w-7xl p-4 pt-10 min-h-screen flex items-center text-content">
+                    <div class="flex flex-col md:flex-row items-center md:space-x-16 w-full py-10">
+                        
+                        <div class="md:w-3/5 text-center md:text-left mb-10 md:mb-0">
+                            <p class="text-${accentClass} text-xl font-semibold mb-3">Welcome to DIGILife</p>
+                            
+                            <h1 class="text-5xl sm:text-6xl lg:text-8xl font-extrabold leading-tight mb-6">
+                                Hi! I'm <span class="text-logo-color logo-glow">${key.toUpperCase()}</span>
+                                <br>
+                                <span id="role-title" class="text-${accentClass} typing-effect mt-2"></span>
+                            </h1>
+                            
+                            <p class="description-text text-base md:text-lg max-w-xl mx-auto md:mx-0 mb-10">
+                                ${member.description.replace(/\*\*(.*?)\*\*/g, '<strong class="text-logo-color">$1</strong>')}
+                            </p>
+                            
+                            <a href="${member.ig_link}" target="_blank" class="inline-flex items-center px-8 py-3 bg-logo-color text-btn-text font-extrabold rounded-full transition duration-300 hover:opacity-90 shadow-2xl shadow-logo-color/50 uppercase tracking-wider btn-glow">
+                                Let's Connect <i class="fab fa-instagram ml-3 text-xl"></i>
+                            </a>
+                        </div>
+
+                        <div class="md:w-2/5 flex justify-center">
+                            <div class="relative">
+                                <div class="absolute inset-0 m-auto w-full h-full rounded-full opacity-30 blur-xl bg-${accentClass} neon-glow-ring"></div>
+
+                                <img 
+                                    src="${member.img}" 
+                                    onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300/9b59b6/ffffff?text=${key.toUpperCase()}'; console.warn('Gambar tidak ditemukan: ${member.img}');" 
+                                    alt="Foto ${member.name}" loading="lazy"
+                                    class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full object-cover border-4 border-logo-color transition duration-500 transform hover:scale-105 shadow-2xl"
+                                >
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+            startTypingEffect(member.roles);
+        }
+        
+        // ==============================================
+        // 3. LOGIKA UTAMA & EFEK TYPING
+        // ==============================================
+        
+        function showView(viewName, memberKey = null) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            if (viewName === 'initial') {
+                renderInitialView();
+            } else if (viewName === 'portfolio' && memberKey) {
+                renderPortfolioView(memberKey);
+            }
+        }
+
+        function startTypingEffect(roles) {
+            if (window.typingTimeout) clearTimeout(window.typingTimeout);
+
+            const data = {
+                typingElement: document.getElementById('role-title'),
+                roles: roles,
+                roleIndex: 0,
+                charIndex: 0,
+                isDeleting: false
+            };
+
+            function typeLoop() {
+                if (!data.typingElement) return;
+                
+                const currentRole = data.roles[data.roleIndex];
+                
+                if (data.isDeleting) {
+                    data.typingElement.textContent = currentRole.substring(0, data.charIndex - 1);
+                    data.charIndex--;
+                } else {
+                    data.typingElement.textContent = currentRole.substring(0, data.charIndex + 1);
+                    data.charIndex++;
+                }
+
+                let typeSpeed = 100;
+                if (data.isDeleting) { typeSpeed /= 2; }
+
+                if (!data.isDeleting && data.charIndex === currentRole.length) {
+                    typeSpeed = 2000;
+                    data.isDeleting = true;
+                } else if (data.isDeleting && data.charIndex === 0) {
+                    data.isDeleting = false;
+                    data.roleIndex = (data.roleIndex + 1) % data.roles.length;
+                    typeSpeed = 500;
+                }
+                
+                window.typingTimeout = setTimeout(typeLoop, typeSpeed);
+            }
+            typeLoop();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            showView('initial');
+        });
+    </script>
+</body>
+</html>
