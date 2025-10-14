@@ -350,6 +350,8 @@ body {
 .bubble-btn.zakat-btn:hover { background: #00cec9; }
 .bubble-btn.decision-btn { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 3px #2ecc71; }
 .bubble-btn.decision-btn:hover { background: #2ecc71; }
+.bubble-btn.games-btn { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 3px #f39c12; }
+.bubble-btn.games-btn:hover { background: #f39c12; }
 .btn-icon {
     font-size: 1.2em;
 }
@@ -784,6 +786,9 @@ body {
                 <button class="bubble-btn decision-btn" onclick="openFeatureModal('keputusan.html')">
                     <span class="btn-icon">🎯</span> Decision Maker
                 </button>
+                <button class="bubble-btn games-btn" onclick="openFeatureModal('games.html')">
+                    <span class="btn-icon">🎮</span> Games
+                </button>
             </div>
             <div class="author-button-container">
                 <button class="bubble-btn author-btn" onclick="openFeatureModal('author.html')">
@@ -923,7 +928,7 @@ body {
             }
 
             // Minimum length
-            if (name.length < 3) {
+                        if (name.length < 3) {
                 inputElement.placeholder = 'Nama minimal 3 karakter!';
                 inputElement.style.borderColor = '#e74c3c';
                 setTimeout(() => {
