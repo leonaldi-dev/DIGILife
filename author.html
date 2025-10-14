@@ -2,22 +2,23 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- PERBAIKAN 1: VIEWPORT SAMA DENGAN PARENT -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Profil & Portofolio Tim DIGILife</title>
-    <!-- Tailwind CSS (Untuk styling modern) -->
+    
+    <!-- Tailwind CSS (Diperlukan untuk JIT custom colors) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Tailwind configuration
+        // FIX: Konfigurasi Tailwind dikembalikan agar kelas kustom seperti 'bg-logo-color' berfungsi.
+        // Catatan: Peringatan 'should not be used in production' akan muncul kembali karena menggunakan CDN.
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         'bg-dark': 'var(--primary-bg)',
                         'card-dark': 'var(--secondary-bg)',
-                        'accent-leo': 'var(--text-purple)', // SEKARANG PAKAI VARIABLE BERBEDA
-                        'accent-miftah': '#03dac6',
-                        'logo-color': 'var(--logo-yellow)',
+                        'accent-leo': 'var(--text-purple)',
+                        'accent-miftah': 'var(--accent-miftah)',
+                        'logo-color': 'var(--logo-yellow)', // INI YANG MEMBUAT TOMBOL KUNING
                         'btn-text': 'var(--button-text)',
                         'text-light': 'var(--text-light)',
                     },
@@ -28,12 +29,14 @@
             }
         }
     </script>
+    
+    <!-- Link Font & Ikon -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
         /* ==================== */
-        /* 1. PALET WARNA & FONT - DIPISAH! */
+        /* 1. PALET WARNA & FONT */
         /* ==================== */
         :root {
             --primary-bg: #0d1117;
@@ -41,13 +44,15 @@
             --text-light: #f0f6fc;
             
             /* WARNA BACKGROUND GELOMBANG */
-            --bg-purple: #4b0273; /* INI UNTUK BACKGROUND SAJA */
+            --bg-purple: #4b0273;
             
-            /* WARNA UNGU UNTUK TEKS DAN ELEMEN LAIN */
-            --text-purple: #c862ff; /* INI UNTUK TEKS DAN KARTU */
+            /* WARNA UNGU UNTUK TEKS DAN ELEMEN LEO */
+            --text-purple: #c862ff; 
             
+            /* WARNA HIJAU UNTUK TEKS DAN ELEMEN MIFTAH */
             --accent-miftah: #03dac6;
-            --logo-yellow: #fdd835;
+            
+            --logo-yellow: #fdd835; /* WARNA KUNING TOMBOL */
             --button-text: #161b22;
         }
 
@@ -57,25 +62,39 @@
             box-sizing: border-box;
         }
 
-        /* PERBAIKAN 2: BODY UNTUK IFRAME */
         body {
             background-color: var(--primary-bg); 
             color: var(--text-light);
             min-height: 100vh;
             width: 100%;
-            /* PERBAIKAN: Hapus flex dan ganti dengan block */
             display: block;
             padding: 0;
             margin: 0;
             overflow-x: hidden;
             position: relative; 
+            font-family: 'Inter', sans-serif;
         }
         
+        /* Hilangkan Scrollbar */
         body::-webkit-scrollbar { display: none; }
         body { scrollbar-width: none; -ms-overflow-style: none; }
         
         /* ==================== */
-        /* 2. BACKGROUND VISUAL GELOMBANG - PAKAI VARIABLE BG */
+        /* 2. CUSTOM ACCENT CLASSES (Tetap dipertahankan untuk keamanan) */
+        /* ==================== */
+        
+        /* Meskipun Tailwind config sudah dikembalikan, kita pastikan warna dinamis bekerja */
+        .text-accent-leo { color: var(--text-purple); }
+        .border-accent-leo { border-color: var(--text-purple); }
+        .bg-accent-leo { background-color: var(--text-purple); }
+
+        .text-accent-miftah { color: var(--accent-miftah); }
+        .border-accent-miftah { border-color: var(--accent-miftah); }
+        .bg-accent-miftah { background-color: var(--accent-miftah); }
+
+
+        /* ==================== */
+        /* 3. BACKGROUND VISUAL GELOMBANG */
         /* ==================== */
         
         #wave-container {
@@ -96,7 +115,7 @@
             height: 300px;
             background: linear-gradient(90deg, 
                 transparent 0%, 
-                var(--bg-purple) 45%, /* PAKAI VARIABLE BG */
+                var(--bg-purple) 45%, 
                 var(--bg-purple) 55%, 
                 transparent 100%
             );
@@ -118,17 +137,14 @@
             100% { transform: translateX(-50%) scaleY(1); }
         }
         
-        .wave-top {
-            top: -150px;
-            transform: rotate(180deg);
-        }
-
         .wave-layer.top-1 { 
             animation: waveMove 40s linear infinite;
             height: 250px;
             opacity: 0.9;
-            box-shadow: 0 0 150px 60px var(--bg-purple); /* PAKAI VARIABLE BG */
+            box-shadow: 0 0 150px 60px var(--bg-purple); 
             filter: blur(5px);
+            top: -150px;
+            transform: rotate(180deg) translateX(0);
         }
         .wave-layer.top-2 { 
             animation: waveMoveReverse 35s linear infinite;
@@ -136,19 +152,17 @@
             top: -200px;
             opacity: 0.7; 
             filter: blur(10px);
-            box-shadow: 0 0 120px 50px var(--bg-purple); /* PAKAI VARIABLE BG */
+            box-shadow: 0 0 120px 50px var(--bg-purple); 
+            transform: rotate(180deg) translateX(-50%);
         }
 
-        .wave-bottom {
-            bottom: -150px;
-        }
-        
         .wave-layer.bottom-1 { 
             animation: waveMove 25s linear infinite;
             height: 350px;
             opacity: 1.0;
-            box-shadow: 0 0 180px 80px var(--bg-purple); /* PAKAI VARIABLE BG */
+            box-shadow: 0 0 180px 80px var(--bg-purple); 
             filter: blur(7px);
+            bottom: -150px;
         }
         .wave-layer.bottom-2 { 
             animation: waveMoveReverse 30s linear infinite;
@@ -156,15 +170,14 @@
             bottom: -200px;
             opacity: 0.8; 
             filter: blur(10px);
-            box-shadow: 0 0 140px 60px var(--bg-purple); /* PAKAI VARIABLE BG */
+            box-shadow: 0 0 140px 60px var(--bg-purple); 
         }
 
         /* ==================== */
-        /* 3. KOMPONEN TEKS & KARTU - PAKAI VARIABLE TEXT */
+        /* 4. KOMPONEN TEKS & KARTU */
         /* ==================== */
 
         .port-logo {
-            font-family: 'Inter', sans-serif;
             font-size: 2rem;
             font-weight: 900;
             line-height: 1;
@@ -197,7 +210,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
         
-        /* KARTU LEO PAKAI VARIABLE TEXT */
         .profile-card.leo:hover {
             box-shadow: 0 0 15px var(--text-purple), 0 0 35px var(--text-purple);
             transform: scale(1.03);
@@ -227,11 +239,6 @@
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
         
-        .profile-card h4 {
-            color: var(--text-light);
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-        }
-        
         .main-title {
             color: var(--text-light);
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
@@ -242,15 +249,7 @@
             line-height: 1.6;
         }
         
-        .border-accent-leo {
-            border-color: var(--text-purple); /* PAKAI VARIABLE TEXT */
-        }
-        
-        .border-accent-miftah {
-            border-color: var(--accent-miftah);
-        }
-
-        /* PERBAIKAN 4: CONTAINER UTAMA UNTUK IFRAME */
+        /* PERBAIKAN RESPONSIVE & IFRAME */
         #main-content-container {
             width: 100%;
             max-width: 100%;
@@ -259,14 +258,12 @@
             box-sizing: border-box;
         }
 
-        /* PERBAIKAN 5: HEADER FIXED UNTUK IFRAME */
         #main-header {
-            position: relative; /* Ganti dari fixed untuk iframe */
+            position: relative; 
             margin-bottom: 20px;
             border-radius: 0 0 15px 15px;
         }
 
-        /* PERBAIKAN 6: RESPONSIVE UNTUK IFRAME */
         @media (max-width: 480px) {
             body {
                 padding: 0;
@@ -299,7 +296,6 @@
     </style>
 </head>
 
-<!-- PERBAIKAN 7: HAPUS PADDING DARI BODY -->
 <body class="antialiased p-0">
     <!-- BACKGROUND VISUAL: GELOMBANG UNGU DI ATAS & BAWAH -->
     <div id="wave-container">
@@ -359,6 +355,11 @@
         function renderInitialView() {
             if (window.typingTimeout) clearTimeout(window.typingTimeout);
 
+            // Placeholder image helper to determine colors based on member key
+            const getPlaceholderColor = (key) => {
+                return key === 'leo' ? 'c862ff' : '03dac6'; // Use hex values for placeholder URL
+            };
+
             container.innerHTML = `
                 <div class="w-full max-w-4xl text-center p-4 text-content">
                     <h2 class="text-4xl font-extrabold main-title mb-4">Tim Pengembang <span class="logo-glow">DIGILife</span></h2>
@@ -368,12 +369,13 @@
                             <div id="${key}-card" class="profile-card ${key} p-8 w-full md:w-1/2 shadow-2xl transition duration-500 border-t-4 border-${members[key].color}" onclick="showView('portfolio', '${key}')">
                                 <div class="card-inner">
                                     <img src="${members[key].img}" 
-                                         onerror="this.onerror=null; this.src='https://via.placeholder.com/120x120/9b59b6/ffffff?text=${key.toUpperCase().charAt(0)}'; console.warn('Gambar tidak ditemukan: ${members[key].img}');" 
-                                         alt="Foto ${members[key].name}" loading="lazy"
-                                         class="w-32 h-32 rounded-full object-cover border-4 border-${members[key].color} mx-auto mb-6 shadow-lg transition duration-300 hover:scale-105">
+                                        onerror="this.onerror=null;this.src='https://placehold.co/120x120/${getPlaceholderColor(key)}/ffffff?text=${key.toUpperCase().charAt(0)}';" 
+                                        alt="Foto ${members[key].name}" 
+                                        class="w-32 h-32 rounded-full object-cover border-4 border-${members[key].color} mx-auto mb-6 shadow-lg transition duration-300 hover:scale-105">
                                     <h4 class="text-2xl font-bold high-contrast-text mb-2">${members[key].name}</h4>
                                     <p class="text-${members[key].color} font-medium mb-6 text-lg">${members[key].tagline}</p>
                                     
+                                    <!-- FIX: bg-logo-color SEKARANG BERFUNGSI -->
                                     <button class="mt-4 px-6 py-2 bg-logo-color text-btn-text font-extrabold rounded-full shadow-lg hover:opacity-90 transition duration-300 uppercase tracking-wider btn-glow">
                                         <i class="fas fa-arrow-circle-right"></i> Lebih Lanjut
                                     </button>
@@ -393,6 +395,11 @@
             const member = members[key];
             const accentClass = member.color;
 
+            // Placeholder image helper to determine colors based on member key
+            const getPlaceholderColor = (key) => {
+                return key === 'leo' ? 'c862ff' : '03dac6'; // Use hex values for placeholder URL
+            };
+
             container.innerHTML = `
                 <div class="container mx-auto max-w-7xl p-4 pt-10 min-h-screen flex items-center text-content">
                     <div class="flex flex-col md:flex-row items-center md:space-x-16 w-full py-10">
@@ -410,6 +417,7 @@
                                 ${member.description.replace(/\*\*(.*?)\*\*/g, '<strong class="text-logo-color">$1</strong>')}
                             </p>
                             
+                            <!-- FIX: bg-logo-color SEKARANG BERFUNGSI -->
                             <a href="${member.ig_link}" target="_blank" class="inline-flex items-center px-8 py-3 bg-logo-color text-btn-text font-extrabold rounded-full transition duration-300 hover:opacity-90 shadow-2xl shadow-logo-color/50 uppercase tracking-wider btn-glow">
                                 Let's Connect <i class="fab fa-instagram ml-3 text-xl"></i>
                             </a>
@@ -421,8 +429,8 @@
 
                                 <img 
                                     src="${member.img}" 
-                                    onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300/9b59b6/ffffff?text=${key.toUpperCase()}'; console.warn('Gambar tidak ditemukan: ${member.img}');" 
-                                    alt="Foto ${member.name}" loading="lazy"
+                                    onerror="this.onerror=null;this.src='https://placehold.co/300x300/${getPlaceholderColor(key)}/ffffff?text=${key.toUpperCase()}';" 
+                                    alt="Foto ${member.name}" 
                                     class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full object-cover border-4 border-logo-color transition duration-500 transform hover:scale-105 shadow-2xl"
                                 >
                             </div>
