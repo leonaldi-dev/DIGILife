@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DIGILife - Dashboard Asisten</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+:root {
+--primary-bg: #1f2a38;
+--secondary-bg: #2c3e50;
+--text-light: #ecf0f1;
+--accent-purple: #9b59b6;
+--accent-purple-dark: #8e44ad;
+--logo-yellow: #f1c40f;
+--shadow-color: rgba(0, 0, 0, 0.4);
+--header-bg: rgba(31, 42, 56, 0.95);
+--indigo-color: #6366f1;
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Poppins', sans-serif;
+scroll-behavior: smooth;
+}
+body {
+background-color: var(--primary-bg);
+color: var(--text-light);
+min-height: 100vh;
+width: 100%;
+overflow-x: hidden;
+position: relative;
+}
+.background-blob {
+position: absolute;
+width: clamp(80px, 15vw, 250px);
+height: clamp(80px, 15vw, 250px);
+background: var(--accent-purple);
+border-radius: 50%;
+opacity: 0.1;
+filter: blur(20px);
+z-index: 0;
+animation: moveBlob 25s infinite alternate ease-in-out;
+will-change: transform;
+}
+.background-blob:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+.background-blob:nth-child(2) { top: 70%; left: 80%; background: var(--logo-yellow); animation-delay: 4s; }
+.background-blob:nth-child(3) { top: 50%; left: 15%; animation-delay: 8s; }
+.background-blob:nth-child(4) { top: 20%; left: 60%; background: #e74c3c; animation-delay: 12s; }
+@keyframes moveBlob {
+0% { transform: translate(0, 0) scale(1); }
+100% { transform: translate(50px, 50px) scale(1.1); }
+}
+#splash-screen, #welcome-layer {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: var(--primary-bg);
+z-index: 1000;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+transition: opacity 0.5s ease-out;
+padding: 20px;
+}
+#welcome-layer {
+z-index: 999;
+pointer-events: none;
+opacity: 0;
+background: linear-gradient(135deg, var(--accent-purple-dark) 0%, var(--secondary-bg) 100%);
+}
+.splash-logo {
+font-family: 'Fredoka One', cursive;
+color: var(--logo-yellow);
+text-shadow: 0 0 10px rgba(241, 196, 15, 0.8),
+0 0 20px rgba(241, 196, 15, 0.6);
+font-size: clamp(2rem, 8vw, 3em);
+}
+.name-input-area input {
+padding: 12px 20px;
+border-radius: 10px;
+border: 2px solid var(--accent-purple);
+background: #121c27;
+color: var(--text-light);
+font-size: 1em;
+text-align: center;
+transition: border-color 0.3s;
+max-width: 90%;
+width: 300px;
+}
+.name-input-area input:focus {
+outline: none;
+border-color: var(--logo-yellow);
+}
+.welcome-icon-container {
+display: flex;
+gap: 20px;
+font-size: clamp(1.5rem, 6vw, 3em);
+margin-bottom: 30px;
+}
+.welcome-icon-container i {
+color: var(--accent-purple);
+transition: transform 0.3s ease;
+}
+.welcome-icon-container i:hover {
+transform: scale(1.1);
+}
+.welcome-text-container {
+font-size: clamp(1rem, 4vw, 1.8em);
+font-weight: 700;
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+padding: 0 5%;
+width: 100%;
+max-width: 600px;
+overflow: visible;
+}
+.typed-text-line {
+display: block;
+overflow: visible;
+margin-bottom: 10px;
+text-wrap: wrap;
+word-break: break-word;
+line-height: 1.4;
+}
+#typed-output-1 {
+font-family: 'Fredoka One', cursive;
+font-size: 1.6em;
+color: var(--logo-yellow);
+text-shadow: 0 0 15px rgba(241, 196, 15, 0.9),
+0 0 25px rgba(241, 196, 15, 0.6);
+letter-spacing: 1.5px;
+margin-bottom: 8px;
+-webkit-text-stroke: 0.5px rgba(241, 196, 15, 0.3);
+}
+.main-content {
+z-index: 10;
+position: relative;
+padding-top: 80px;
+width: 100%;
+overflow-x: hidden;
+}
+.header {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 15px 5%;
+background-color: var(--header-bg);
+backdrop-filter: blur(5px);
+box-shadow: 0 4px 15px var(--shadow-color);
+z-index: 900;
+}
+.logo {
+font-family: 'Fredoka One', cursive;
+font-size: clamp(1.2rem, 5vw, 1.8em);
+color: var(--logo-yellow);
+text-decoration: none;
+text-shadow: 0 0 8px rgba(241, 196, 15, 0.9),
+0 0 15px rgba(241, 196, 15, 0.5);
+white-space: nowrap;
+}
+.nav {
+display: flex;
+gap: 30px;
+}
+.nav a {
+color: var(--text-light);
+text-decoration: none;
+font-weight: 600;
+padding: 8px 16px;
+position: relative;
+transition: all 0.3s ease;
+border-radius: 5px;
+}
+.nav a::before {
+content: '';
+position: absolute;
+bottom: -2px;
+left: 0;
+width: 0;
+height: 3px;
+background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+background-size: 200% 100%;
+transition: width 0.4s ease, background-position 0.4s ease;
+border-radius: 2px;
+}
+.nav a:hover {
+color: var(--indigo-color);
+transform: translateY(-2px);
+}
+.nav a:hover::before {
+width: 100%;
+background-position: 100% 0;
+}
+.nav a:active {
+transform: translateY(0);
+color: var(--accent-purple);
+}
+.nav a.active {
+color: var(--indigo-color);
+}
+.nav a.active::before {
+width: 100%;
+background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+background-size: 200% 100%;
+animation: rainbowActive 2s infinite;
+}
+@keyframes rainbowActive {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+.hamburger {
+display: none;
+background: none;
+border: none;
+color: var(--text-light);
+font-size: 1.5em;
+cursor: pointer;
+z-index: 901;
+padding: 8px;
+border-radius: 5px;
+transition: all 0.3s ease;
+position: relative;
+overflow: hidden;
+}
+.hamburger::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.2), transparent);
+transition: left 0.5s ease;
+}
+.hamburger:hover {
+color: var(--indigo-color);
+transform: scale(1.1);
+}
+.hamburger:hover::before {
+left: 100%;
+}
+.hamburger:active {
+transform: scale(0.95);
+}
+.hamburger.active {
+color: var(--accent-purple);
+}
+.hamburger.active .fa-bars {
+animation: hamburgerSpin 0.5s ease;
+}
+@keyframes hamburgerSpin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(180deg); }
+}
+.hero {
+text-align: center;
+padding: 80px 20px 60px;
+background: linear-gradient(180deg, rgba(31, 42, 56, 0.8) 0%, rgba(31, 42, 56, 0) 100%);
+width: 100%;
+}
+.hero h1 {
+font-size: clamp(2rem, 5vw, 3.5rem);
+margin-bottom: 10px;
+font-weight: 900;
+background: linear-gradient(45deg, var(--logo-yellow), var(--accent-purple));
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+text-shadow: 0 0 8px rgba(241, 196, 15, 0.3);
+padding: 0 10px;
+word-break: break-word;
+}
+.hero p {
+color: #bdc3c7;
+font-size: 1.1em;
+font-weight: 600;
+padding: 0 15px;
+}
+.feature-section {
+padding: 40px 5%;
+text-align: center;
+width: 100%;
+}
+.feature-section h2 {
+font-size: clamp(1.5rem, 4vw, 2em);
+margin-bottom: 40px;
+color: var(--logo-yellow);
+}
+.bubble-container {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+gap: 25px;
+max-width: 900px;
+margin: 0 auto 50px auto;
+width: 100%;
+padding: 0 10px;
+}
+.bubble-btn {
+background: var(--secondary-bg);
+color: var(--text-light);
+padding: 20px 30px;
+border-radius: 50px;
+border: none;
+cursor: pointer;
+font-size: 1.1em;
+font-weight: 600;
+box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 3px var(--accent-purple);
+transition: all 0.3s ease;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 10px;
+width: 100%;
+}
+.bubble-btn:focus {
+outline: 2px solid var(--logo-yellow);
+outline-offset: 2px;
+}
+.bubble-btn:hover {
+background: var(--accent-purple);
+transform: translateY(-5px) scale(1.05);
+box-shadow: 0 15px 15px rgba(155, 89, 182, 0.01);
+}
+.bubble-btn:active {
+transform: translateY(0);
+}
+.bubble-btn.todo { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 3px #2ecc71; }
+.bubble-btn.todo:hover { background: #2ecc71; }
+.bubble-btn.budget { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 3px #3498db; }
+.bubble-btn.budget:hover { background: #3498db; }
+.bubble-btn.author-btn { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 3px #e67e22; }
+.bubble-btn.author-btn:hover { background: #e67e22; }
+.bubble-btn.calculator-btn { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 3px #e84393; }
+.bubble-btn.calculator-btn:hover { background: #e84393; }
+.bubble-btn.zakat-btn { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 3px #00cec9; }
+.bubble-btn.zakat-btn:hover { background: #00cec9; }
+.bubble-btn.decision-btn { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 0 0 3px #2ecc71; }
+.bubble-btn.decision-btn:hover { background: #2ecc71; }
+.btn-icon {
+font-size: 1.2em;
+}
+.author-button-container {
+text-align: center;
+max-width: 900px;
+margin: 0 auto;
+padding-top: 20px;
+border-top: 1px solid rgba(255, 255, 255, 0.05);
+width: 100%;
+padding: 0 10px;
+}
+#feature-modal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.8);
+z-index: 1100;
+display: none;
+justify-content: center;
+align-items: center;
+opacity: 0;
+transition: opacity 0.3s ease-in-out;
+padding: 10px;
+}
+#feature-modal.active {
+display: flex;
+opacity: 1;
+}
+.modal-content-wrapper {
+background: var(--secondary-bg);
+border-radius: 15px;
+box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
+width: 95%;
+height: 95%;
+max-width: 1000px;
+max-height: 800px;
+position: relative;
+transform: scale(0.9);
+transition: transform 0.3s ease-out;
+}
+#feature-modal.active .modal-content-wrapper {
+transform: scale(1);
+}
+#feature-iframe {
+width: 100%;
+height: 100%;
+border: none;
+border-radius: 15px;
+}
+.modal-close-btn {
+position: absolute;
+top: -15px;
+right: -15px;
+background-color: #e74c3c;
+color: white;
+border: 3px solid var(--primary-bg);
+border-radius: 50%;
+width: 40px;
+height: 40px;
+font-size: 1.5em;
+cursor: pointer;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+transition: transform 0.2s;
+z-index: 1101;
+}
+.modal-close-btn:focus {
+outline: 2px solid var(--logo-yellow);
+outline-offset: 2px;
+}
+.modal-close-btn:hover {
+transform: rotate(90deg) scale(1.1);
+}
+#change-name-modal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.85);
+backdrop-filter: blur(5px);
+z-index: 1200;
+display: none;
+justify-content: center;
+align-items: center;
+opacity: 0;
+transition: opacity 0.3s ease-in-out;
+padding: 20px;
+}
+#change-name-modal.active {
+display: flex;
+opacity: 1;
+}
+.change-name-content {
+background: linear-gradient(135deg, var(--secondary-bg) 0%, #34495e 100%);
+border-radius: 25px;
+padding: 40px 30px;
+box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+width: 90%;
+max-width: 450px;
+position: relative;
+transform: scale(0.8) translateY(-50px);
+transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+border: 3px solid var(--accent-purple);
+text-align: center;
+}
+#change-name-modal.active .change-name-content {
+transform: scale(1) translateY(0);
+}
+.change-name-header {
+margin-bottom: 30px;
+position: relative;
+}
+.change-name-icon {
+font-size: 3.5em;
+color: var(--logo-yellow);
+animation: bounceIcon 2s infinite ease-in-out;
+display: inline-block;
+margin-bottom: 15px;
+}
+@keyframes bounceIcon {
+0%, 100% { transform: translateY(0) rotate(0deg); }
+25% { transform: translateY(-10px) rotate(-5deg); }
+75% { transform: translateY(-5px) rotate(5deg); }
+}
+.change-name-title {
+font-size: 1.8em;
+font-weight: 800;
+background: linear-gradient(45deg, var(--logo-yellow), #ff6b6b, #48dbfb);
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+margin-bottom: 10px;
+animation: gradientShift 3s infinite;
+background-size: 200% 200%;
+}
+@keyframes gradientShift {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+.change-name-subtitle {
+color: #dfe6e9;
+font-size: 0.95em;
+margin-bottom: 5px;
+}
+.current-name-display {
+display: inline-block;
+background: rgba(241, 196, 15, 0.1);
+color: var(--logo-yellow);
+padding: 8px 20px;
+border-radius: 20px;
+font-weight: 700;
+margin-top: 10px;
+border: 2px solid rgba(241, 196, 15, 0.3);
+}
+.change-name-input-wrapper {
+position: relative;
+margin-bottom: 25px;
+}
+#new-name-input {
+width: 100%;
+padding: 15px 20px;
+border-radius: 15px;
+border: 3px solid var(--accent-purple);
+background: rgba(18, 28, 39, 0.8);
+color: var(--text-light);
+font-size: 1.1em;
+text-align: center;
+transition: all 0.3s ease;
+font-weight: 600;
+}
+#new-name-input:focus {
+outline: none;
+border-color: var(--logo-yellow);
+box-shadow: 0 0 20px rgba(241, 196, 15, 0.3);
+transform: scale(1.02);
+}
+#new-name-input::placeholder {
+color: #7f8c8d;
+}
+.change-name-buttons {
+display: flex;
+gap: 15px;
+margin-top: 25px;
+}
+.change-name-btn {
+flex: 1;
+padding: 15px 25px;
+border-radius: 15px;
+border: none;
+font-size: 1.05em;
+font-weight: 700;
+cursor: pointer;
+transition: all 0.3s ease;
+text-transform: uppercase;
+letter-spacing: 1px;
+position: relative;
+overflow: hidden;
+}
+.change-name-btn::before {
+content: '';
+position: absolute;
+top: 50%;
+left: 50%;
+width: 0;
+height: 0;
+border-radius: 50%;
+background: rgba(255, 255, 255, 0.3);
+transform: translate(-50%, -50%);
+transition: width 0.6s, height 0.6s;
+}
+.change-name-btn:hover::before {
+width: 300px;
+height: 300px;
+}
+.change-name-btn span {
+position: relative;
+z-index: 1;
+}
+.btn-save {
+background: linear-gradient(135deg, #2ecc71, #27ae60);
+color: white;
+box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+.btn-save:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 20px rgba(46, 204, 113, 0.6);
+}
+.btn-save:active {
+transform: translateY(0);
+}
+.btn-cancel {
+background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+color: white;
+box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4);
+}
+.btn-cancel:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 20px rgba(149, 165, 166, 0.6);
+}
+.btn-cancel:active {
+transform: translateY(0);
+}
+.sparkle {
+position: absolute;
+width: 4px;
+height: 4px;
+background: var(--logo-yellow);
+border-radius: 50%;
+pointer-events: none;
+animation: sparkleFloat 1s ease-out forwards;
+}
+@keyframes sparkleFloat {
+0% {
+transform: translate(0, 0) scale(1);
+opacity: 1;
+}
+100% {
+transform: translate(var(--random-x), var(--random-y)) scale(0);
+opacity: 0;
+}
+}
+.footer {
+text-align: center;
+padding: 20px;
+font-size: 0.85em;
+color: #95a5a6;
+border-top: 1px solid rgba(255, 255, 255, 0.05);
+background-color: var(--primary-bg);
+width: 100%;
+}
+@media (max-width: 768px) {
+.nav {
+display: none;
+flex-direction: column;
+position: absolute;
+top: 70px;
+left: 0;
+width: 100%;
+background-color: var(--primary-bg);
+box-shadow: 0 4px 15px var(--shadow-color);
+padding: 20px 0;
+gap: 0;
+}
+.nav.active {
+display: flex;
+animation: slideDown 0.3s ease-out;
+}
+@keyframes slideDown {
+from {
+opacity: 0;
+transform: translateY(-10px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+.nav a {
+margin: 0;
+padding: 15px 5%;
+text-align: center;
+border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+transition: all 0.3s ease;
+}
+.nav a:active {
+background-color: rgba(99, 102, 241, 0.1);
+transform: scale(0.98);
+}
+.hamburger {
+display: block;
+}
+.hero {
+padding-top: 50px;
+}
+.bubble-container {
+display: flex;
+flex-direction: column;
+gap: 15px;
+max-width: 100%;
+margin-bottom: 30px;
+}
+.change-name-content {
+padding: 30px 20px;
+}
+.change-name-title {
+font-size: 1.5em;
+}
+.change-name-buttons {
+flex-direction: column;
+}
+}
+@media (max-width: 480px) {
+.hero h1 {
+font-size: 2.5rem;
+}
+.bubble-btn {
+padding: 15px 25px;
+font-size: 1em;
+}
+.name-input-area input {
+width: 90%;
+max-width: 280px;
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.background-blob {
+animation: none;
+filter: none;
+}
+.sparkle {
+animation: none;
+}
+}
+</style>
+</head>
+<body>
+<div class="background-blob"></div>
+<div class="background-blob"></div>
+<div class="background-blob"></div>
+<div class="background-blob"></div>
+<div id="splash-screen">
+<h1 class="splash-logo">DIGILife</h1>
+<div class="name-input-area">
+<p style="margin-bottom: 10px; font-weight: 600;">Masukkan Nama Anda:</p>
+<input type="text" id="splash-input" placeholder="Nama Panggilan" maxlength="20">
+</div>
+</div>
+<div id="welcome-layer">
+<div class="welcome-icon-container">
+<i class="fa-solid fa-graduation-cap"></i>
+<i class="fa-solid fa-laptop-code"></i>
+<i class="fa-solid fa-users-gear"></i>
+</div>
+<div class="welcome-text-container">
+<span class="typed-text-line">
+<span id="typed-output-1" class="typing-target"></span>
+</span>
+<span class="typed-text-line">
+<span id="typed-output-2" class="typing-target"></span>
+</span>
+<span class="typed-text-line" style="font-size: 0.8em; font-weight: 400;">
+<span id="typed-output-3" class="typing-target"></span>
+</span>
+</div>
+</div>
+<main id="main-content" class="main-content" style="display: none;">
+<header class="header">
+<a href="#" class="logo">DIGILife</a>
+<nav class="nav" id="mainNav">
+<a href="#" class="active">Beranda</a>
+<a href="#fitur">Fitur</a>
+<a href="#" onclick="openChangeNameModal(); return false;">
+<i class="fa-solid fa-user-pen"></i> Ubah Nama
+</a>
+<a href="#" onclick="openFeatureModal('author.html')">Author</a>
+</nav>
+<button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+<i class="fa-solid fa-bars"></i>
+</button>
+</header>
+<section class="hero">
+<h1 id="welcome-message">Hai! Selamat Datang di DIGILife!</h1>
+<p>Asisten Pintar Anda untuk membantu tugas sehari-hari.</p>
+</section>
+<section id="fitur" class="feature-section">
+<h2>Pilih Asisten Anda</h2>
+<div class="bubble-container">
+<button class="bubble-btn calculator-btn" onclick="openFeatureModal('cal.html')">
+<span class="btn-icon">🧮</span> Kalkulator
+</button>
+<button class="bubble-btn todo" onclick="openFeatureModal('todo.html')">
+<span class="btn-icon">📝</span> To-Do List
+</button>
+<button class="bubble-btn" onclick="openFeatureModal('bmi.html')">
+<span class="btn-icon">⚖</span> BMI
+</button>
+<button class="bubble-btn budget" onclick="openFeatureModal('budget.html')">
+<span class="btn-icon">💰</span> Budget Planner
+</button>
+<button class="bubble-btn zakat-btn" onclick="openFeatureModal('zakat.html')">
+<span class="btn-icon">💵</span> Kalkulator Zakat
+</button>
+<button class="bubble-btn decision-btn" onclick="openFeatureModal('keputusan.html')">
+<span class="btn-icon">🎯</span> Decision Maker
+</button>
+</div>
+<div class="author-button-container">
+<button class="bubble-btn author-btn" onclick="openFeatureModal('author.html')">
+<span class="btn-icon">👑</span> Tentang Kami (Author)
+</button>
+</div>
+</section>
+</main>
+<footer class="footer">
+&copy; 2025 DIGILife. Dibuat dengan HTML. Dan sepenuh hati
+</footer>
+<div id="feature-modal" onclick="closeFeatureModal(event)">
+<div class="modal-content-wrapper" onclick="event.stopPropagation()">
+<iframe id="feature-iframe" src="" title="Feature Content"></iframe>
+<button class="modal-close-btn" onclick="closeFeatureModal(event)" aria-label="Tutup modal">×</button>
+</div>
+</div>
+<div id="change-name-modal">
+<div class="change-name-content">
+<div class="change-name-header">
+<div class="change-name-icon">
+<i class="fa-solid fa-user-pen"></i>
+</div>
+<h2 class="change-name-title">Ubah Nama</h2>
+<p class="change-name-subtitle">Nama saat ini:</p>
+<div class="current-name-display" id="current-name-display">User</div>
+</div>
+<div class="change-name-input-wrapper">
+<input
+type="text"
+id="new-name-input"
+placeholder="Masukkan nama baru..."
+maxlength="20"
+>
+</div>
+<div class="change-name-buttons">
+<button class="change-name-btn btn-save" onclick="saveNewName()">
+<span><i class="fa-solid fa-check"></i> Simpan</span>
+</button>
+<button class="change-name-btn btn-cancel" onclick="closeChangeNameModal()">
+<span><i class="fa-solid fa-times"></i> Batal</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+const splashScreen = document.getElementById('splash-screen');
+const welcomeLayer = document.getElementById('welcome-layer');
+const mainContent = document.getElementById('main-content');
+const splashInput = document.getElementById('splash-input');
+const welcomeMessage = document.getElementById('welcome-message');
+const mainNav = document.getElementById('mainNav');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const navLinks = document.querySelectorAll('.nav a');
+const featureModal = document.getElementById('feature-modal');
+const featureIframe = document.getElementById('feature-iframe');
+const changeNameModal = document.getElementById('change-name-modal');
+const currentNameDisplay = document.getElementById('current-name-display');
+const newNameInput = document.getElementById('new-name-input');
+const typedOutput1 = document.getElementById('typed-output-1');
+const typedOutput2 = document.getElementById('typed-output-2');
+const typedOutput3 = document.getElementById('typed-output-3');
+const typedTextLines = [
+"Selamat Datang",
+"DIGILife Siap Membantumu Mengatur Kehidupan Digital dan Tugas Sehari-hari Anda!",
+];
+let userName = localStorage.getItem('digilife_username');
+function typeWriter(targetElement, text, delay) {
+return new Promise(resolve => {
+setTimeout(() => {
+let i = 0;
+targetElement.innerHTML = '';
+targetElement.style.visibility = 'visible';
+function typing() {
+if (i < text.length) {
+targetElement.innerHTML += text.charAt(i);
+i++;
+const speed = text.length > 50 ? 30 : 50;
+setTimeout(typing, speed);
+} else {
+resolve();
+}
+}
+typing();
+}, delay);
+});
+}
+function loadMainContent() {
+splashScreen.style.display = 'none';
+welcomeLayer.style.opacity = '0';
+setTimeout(() => {
+welcomeLayer.style.display = 'none';
+mainContent.style.display = 'block';
+welcomeMessage.textContent = `Hai ${userName}! Selamat Datang di DIGILife!`;
+mainContent.style.opacity = '0';
+setTimeout(() => {
+mainContent.style.opacity = '1';
+mainContent.style.transition = 'opacity 0.8s ease-in';
+}, 50);
+}, 500);
+}
+async function startWelcomeSequence() {
+splashScreen.style.opacity = '0';
+welcomeLayer.style.opacity = '1';
+await new Promise(r => setTimeout(r, 600));
+const line1 = `Halo, ${userName}!`;
+await typeWriter(typedOutput1, line1, 0);
+await typeWriter(typedOutput2, typedTextLines[0], 500);
+await typeWriter(typedOutput3, typedTextLines[1], 500);
+setTimeout(loadMainContent, 1500);
+}
+function validateName(inputElement, name) {
+if (name === '') {
+inputElement.placeholder = 'Nama tidak boleh kosong!';
+inputElement.style.borderColor = '#e74c3c';
+setTimeout(() => {
+inputElement.style.borderColor = '';
+inputElement.placeholder = 'Masukkan nama baru...';
+}, 2000);
+return false;
+}
+if (name.length < 3) {
+inputElement.placeholder = 'Nama minimal 3 karakter!';
+inputElement.style.borderColor = '#e74c3c';
+setTimeout(() => {
+inputElement.style.borderColor = '';
+inputElement.placeholder = 'Masukkan nama baru...';
+}, 2000);
+return false;
+}
+if (!/^[a-zA-Z0-9\s]+$/.test(name)) {
+inputElement.placeholder = 'Hanya huruf, angka, dan spasi diizinkan!';
+inputElement.style.borderColor = '#e74c3c';
+setTimeout(() => {
+inputElement.style.borderColor = '';
+inputElement.placeholder = 'Masukkan nama baru...';
+}, 2000);
+return false;
+}
+return true;
+}
+splashInput.addEventListener('keydown', (event) => {
+if (event.key === 'Enter') {
+const name = splashInput.value.trim();
+if (validateName(splashInput, name)) {
+userName = name;
+localStorage.setItem('digilife_username', userName);
+startWelcomeSequence();
+}
+}
+});
+function openFeatureModal(url) {
+featureIframe.src = url;
+featureIframe.onload = () => {
+setTimeout(() => {  // Delay 500ms untuk pastikan load selesai
+if (featureIframe.contentDocument == null || featureIframe.contentDocument.body.innerHTML.trim() === '') {
+alert('Gagal memuat fitur. Pastikan file tersedia atau coba lagi nanti.');
+closeFeatureModal({ target: featureModal });
+}
+}, 500);
+};
+featureIframe.onerror = () => {
+alert('Gagal memuat fitur. Terjadi kesalahan.');
+closeFeatureModal({ target: featureModal });
+};
+featureModal.classList.add('active');
+document.body.style.overflow = 'hidden';
+}
+function closeFeatureModal(event) {
+if (event.target === featureModal || event.target.className === 'modal-close-btn') {
+featureModal.classList.remove('active');
+featureIframe.src = ""; // Clear tanpa check ulang error
+document.body.style.overflow = 'auto';
+}
+}
+function openChangeNameModal() {
+currentNameDisplay.textContent = userName;
+newNameInput.value = '';
+changeNameModal.classList.add('active');
+document.body.style.overflow = 'hidden';
+if (window.innerWidth <= 768) {
+mainNav.classList.remove('active');
+hamburgerBtn.classList.remove('active');
+}
+setTimeout(() => {
+newNameInput.focus();
+}, 400);
+}
+function closeChangeNameModal() {
+changeNameModal.classList.remove('active');
+document.body.style.overflow = 'auto';
+}
+function createSparkles(x, y) {
+for (let i = 0; i < 15; i++) {
+const sparkle = document.createElement('div');
+sparkle.className = 'sparkle';
+sparkle.style.left = x + 'px';
+sparkle.style.top = y + 'px';
+const randomX = (Math.random() - 0.5) * 100;
+const randomY = (Math.random() - 0.5) * 100;
+sparkle.style.setProperty('--random-x', randomX + 'px');
+sparkle.style.setProperty('--random-y', randomY + 'px');
+document.body.appendChild(sparkle);
+setTimeout(() => {
+sparkle.remove();
+}, 1000);
+}
+}
+function saveNewName() {
+const newName = newNameInput.value.trim();
+if (!validateName(newNameInput, newName)) {
+return;
+}
+if (newName === userName) {
+newNameInput.placeholder = 'Nama sama dengan sebelumnya!';
+newNameInput.style.borderColor = '#f39c12';
+setTimeout(() => {
+newNameInput.style.borderColor = '';
+newNameInput.placeholder = 'Masukkan nama baru...';
+}, 2000);
+return;
+}
+userName = newName;
+localStorage.setItem('digilife_username', userName);
+welcomeMessage.textContent = `Hai ${userName}! Selamat Datang di DIGILife!`;
+const modalRect = changeNameModal.getBoundingClientRect();
+createSparkles(modalRect.left + modalRect.width / 2, modalRect.top + modalRect.height / 2);
+closeChangeNameModal();
+const messageDiv = document.createElement('div');
+messageDiv.style.cssText = `
+position: fixed;
+top: 100px;
+left: 50%;
+transform: translateX(-50%);
+background: linear-gradient(135deg, #2ecc71, #27ae60);
+color: white;
+padding: 20px 40px;
+border-radius: 15px;
+font-weight: 700;
+font-size: 1.1em;
+z-index: 2000;
+box-shadow: 0 10px 30px rgba(46, 204, 113, 0.5);
+animation: slideInDown 0.5s ease-out;
+`;
+messageDiv.innerHTML = `<i class="fa-solid fa-check-circle"></i> Nama berhasil diubah menjadi "${userName}"!`;
+document.body.appendChild(messageDiv);
+setTimeout(() => {
+messageDiv.style.animation = 'slideOutUp 0.5s ease-in';
+setTimeout(() => {
+messageDiv.remove();
+}, 500);
+}, 3000);
+}
+newNameInput.addEventListener('keydown', (event) => {
+if (event.key === 'Enter') {
+saveNewName();
+} else if (event.key === 'Escape') {
+closeChangeNameModal();
+}
+});
+changeNameModal.addEventListener('click', (event) => {
+if (event.target === changeNameModal) {
+closeChangeNameModal();
+}
+});
+window.openFeatureModal = openFeatureModal;
+window.openChangeNameModal = openChangeNameModal;
+window.closeChangeNameModal = closeChangeNameModal;
+window.saveNewName = saveNewName;
+hamburgerBtn.addEventListener('click', () => {
+mainNav.classList.toggle('active');
+hamburgerBtn.classList.toggle('active');
+});
+navLinks.forEach(link => {
+link.addEventListener('click', function(e) {
+if (!this.getAttribute('onclick') || this.getAttribute('href') === '#fitur') {
+navLinks.forEach(l => l.classList.remove('active'));
+this.classList.add('active');
+}
+if (window.innerWidth <= 768) {
+mainNav.classList.remove('active');
+hamburgerBtn.classList.remove('active');
+}
+});
+});
+const style = document.createElement('style');
+style.textContent = `
+@keyframes slideInDown {
+from {
+opacity: 0;
+transform: translateX(-50%) translateY(-100px);
+}
+to {
+opacity: 1;
+transform: translateX(-50%) translateY(0);
+}
+}
+@keyframes slideOutUp {
+from {
+opacity: 1;
+transform: translateX(-50%) translateY(0);
+}
+to {
+opacity: 0;
+transform: translateX(-50%) translateY(-100px);
+}
+}
+`;
+document.head.appendChild(style);
+document.addEventListener('DOMContentLoaded', () => {
+if (userName) {
+splashScreen.style.display = 'none';
+welcomeLayer.style.opacity = '1';
+welcomeLayer.style.zIndex = '1000';
+startWelcomeSequence();
+} else {
+splashScreen.style.display = 'flex';
+mainContent.style.display = 'none';
+if (window.innerWidth > 768) {
+splashInput.focus();
+}
+}
+});
+</script>
+</body>
+</html> 
