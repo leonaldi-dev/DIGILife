@@ -54,9 +54,10 @@ z-index: 0;
 animation: moveBlob 25s infinite alternate ease-in-out;
 will-change: transform;
 }
+
 .background-blob:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
 .background-blob:nth-child(2) { top: 70%; left: 80%; background: var(--logo-yellow); animation-delay: 4s; }
-.background-blob: #e74c3c; animation-delay: 12s; }
+.background-blob:nth-child(3) { top: 40%; left: 30%; background: #e74c3c; animation-delay: 12s; }
 @keyframes moveBlob {
 0% { transform: translate(0, 0) scale(1); }
 100% { transform: translate(50px, 50px) scale(1.1); }
@@ -277,7 +278,7 @@ animation: hamburgerSpin 0.5s ease;
 .hero {
 text-align: center;
 padding: 80px 20px 60px;
-background: linear-gradient(180deg, rgba(31, 42, 56, 0.8) 0%, rgba University's 31, 42, 56, 0) 100%);
+background: linear-gradient(180deg, rgba(31, 42, 56, 0.8) 0%, rgba(31, 42, 56, 0) 100%);
 width: 100%;
 }
 .hero h1 {
