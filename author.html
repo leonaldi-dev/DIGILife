@@ -64,7 +64,79 @@
             overflow-x: hidden;
             position: relative;
             font-family: 'Inter', sans-serif;
+            opacity: 0;
+            animation: pageFadeIn 1.2s ease-out forwards;
         }
+        
+        /* Animasi fade in untuk seluruh halaman */
+        @keyframes pageFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Animasi untuk konten utama */
+        @keyframes contentSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Class untuk animasi konten */
+        .content-fade-in {
+            animation: contentSlideUp 0.8s ease-out forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+        
+        /* Animasi untuk header */
+        @keyframes headerSlideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header-fade-in {
+            animation: headerSlideDown 0.8s ease-out forwards;
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+        
+        /* Animasi untuk kartu profil */
+        @keyframes cardFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .card-fade-in {
+            animation: cardFadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        /* Stagger animation untuk multiple cards */
+        .card-fade-in:nth-child(1) { animation-delay: 0.4s; }
+        .card-fade-in:nth-child(2) { animation-delay: 0.6s; }
         
         /* Hilangkan Scrollbar */
         body::-webkit-scrollbar { display: none; }
@@ -94,6 +166,18 @@
             height: 100%;
             z-index: -10;
             overflow: hidden;
+            opacity: 0;
+            animation: waveFadeIn 1.5s ease-out forwards;
+            animation-delay: 0.2s;
+        }
+        
+        @keyframes waveFadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
         }
 
         .wave-layer {
@@ -295,10 +379,10 @@
         }
 
         /* ==================== */
-        /* 5. ANIMASI BARU YANG DIMINTA */
+        /* 5. ANIMASI BARU YANG DIMINTA - EFFECT FOTO PROFIL */
         /* ==================== */
         
-        /* Container untuk foto dengan efek cahaya garis */
+        /* Container untuk foto dengan efek keren */
         .profile-img-container {
             position: relative;
             display: inline-block;
@@ -306,75 +390,94 @@
             border-radius: 50%;
         }
         
-        /* Efek cahaya garis yang melintas */
-        .light-beam {
+        /* Efek foto profil baru dengan shadow glow putih */
+        .profile-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+            transform: transition-all duration-700;
+        }
+        
+        .profile-image-wrapper:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Border glow effect */
+        .profile-border {
             position: absolute;
-            width: 40px;
-            height: 150%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(200, 98, 255, 0.9),
-                rgba(255, 255, 255, 1),
-                rgba(200, 98, 255, 0.9),
-                transparent
-            );
-            top: -25%;
-            left: -50%;
-            transform: rotate(45deg);
+            inset: 0;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            z-index: 20;
+            transition: all 0.7s;
+        }
+        
+        .profile-image-wrapper:hover .profile-border {
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+        
+        /* Gradient overlay effects */
+        .gradient-overlay-1 {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), transparent, rgba(0, 0, 0, 0.4));
+            z-index: 10;
+            transition: opacity 0.7s;
+        }
+        
+        .profile-image-wrapper:hover .gradient-overlay-1 {
             opacity: 0;
-            z-index: 5;
-            filter: blur(1px);
-            pointer-events: none;
         }
         
-        .light-beam-miftah {
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(3, 218, 198, 0.9),
-                rgba(255, 255, 255, 1),
-                rgba(3, 218, 198, 0.9),
-                transparent
-            );
+        .gradient-overlay-2 {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(200, 98, 255, 0.2), transparent, rgba(3, 218, 198, 0.2));
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.7s;
         }
         
-        /* Animasi untuk masuk (kiri ke kanan) */
-        @keyframes beamIn {
-            0% {
-                left: -50%;
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                left: 150%;
-                opacity: 0;
-            }
+        .profile-image-wrapper:hover .gradient-overlay-2 {
+            opacity: 1;
         }
         
-        /* Animasi untuk keluar (kanan ke kiri) */
-        @keyframes beamOut {
-            0% {
-                left: 150%;
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                left: -50%;
-                opacity: 0;
-            }
+        /* Gradient khusus untuk Leo dan Miftah */
+        .gradient-overlay-leo {
+            background: linear-gradient(to top, rgba(200, 98, 255, 0.3), transparent, rgba(200, 98, 255, 0.1));
         }
         
-        .beam-in {
-            animation: beamIn 0.6s ease-out forwards;
+        .gradient-overlay-miftah {
+            background: linear-gradient(to top, rgba(3, 218, 198, 0.3), transparent, rgba(3, 218, 198, 0.1));
         }
         
-        .beam-out {
-            animation: beamOut 0.6s ease-out forwards;
+        /* Image styling dengan efek hover */
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.7s;
+        }
+        
+        .profile-image-wrapper:hover .profile-image {
+            transform: scale(1.1) rotate(2deg);
+        }
+        
+        /* Additional glow effect */
+        .profile-glow {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: all 0.7s;
+            z-index: 20;
+        }
+        
+        .profile-image-wrapper:hover .profile-glow {
+            opacity: 1;
         }
         
         /* Animasi mengetik dengan kursor berkedip */
@@ -405,21 +508,6 @@
         .parallax-container {
             perspective: 500px;
         }
-        
-        /* Glow effect tambahan */
-        .img-glow {
-            box-shadow: 
-                0 0 20px rgba(200, 98, 255, 0.3),
-                0 0 40px rgba(200, 98, 255, 0.2),
-                0 0 60px rgba(200, 98, 255, 0.1);
-        }
-        
-        .img-glow-miftah {
-            box-shadow: 
-                0 0 20px rgba(3, 218, 198, 0.3),
-                0 0 40px rgba(3, 218, 198, 0.2),
-                0 0 60px rgba(3, 218, 198, 0.1);
-        }
     </style>
 </head>
 
@@ -433,7 +521,7 @@
     </div>
     
     <!-- HEADER/NAVIGASI UTAMA -->
-    <header id="main-header" class="p-4 md:px-8 bg-card-dark/95 backdrop-blur-sm shadow-xl w-full flex justify-between items-center rounded-b-xl border-b border-gray-700">
+    <header id="main-header" class="header-fade-in p-4 md:px-8 bg-card-dark/95 backdrop-blur-sm shadow-xl w-full flex justify-between items-center rounded-b-xl border-b border-gray-700">
         <div class="flex items-center space-x-2 cursor-pointer transition duration-300 transform hover:scale-105" onclick="window.parent.showView('initial')">
             <i class="fas fa-laptop-code text-logo-color text-3xl logo-glow"></i>
             <span class="port-logo text-logo-color logo-glow">DIGILife</span>
@@ -446,7 +534,7 @@
     </main>
     
     <!-- FOOTER -->
-    <footer class="p-4 text-center text-gray-500 text-sm mt-10">
+    <footer class="p-4 text-center text-gray-500 text-sm mt-10 content-fade-in">
         &copy; 2025 DIGILife. Dibuat dengan semangat.
     </footer>
 
@@ -483,26 +571,30 @@
             if (window.typingTimeout) clearTimeout(window.typingTimeout);
 
             container.innerHTML = `
-                <div class="w-full max-w-4xl text-center p-4 text-content">
+                <div class="w-full max-w-4xl text-center p-4 text-content content-fade-in">
                     <h2 class="text-4xl font-extrabold main-title mb-4">Tim Pengembang <span class="logo-glow">DIGILife</span></h2>
                     <p class="text-gray-300 mb-10">Pilih profil di bawah untuk melihat portofolio lengkap.</p>
                     <div class="flex flex-col md:flex-row gap-8 justify-center">
-                        ${Object.keys(members).map(key => {
+                        ${Object.keys(members).map((key, index) => {
                             const member = members[key];
-                            const borderClass = key === 'leo' ? 'custom-border-leo' : 'custom-border-miftah';
                             const textColorClass = key === 'leo' ? 'text-accent-leo' : 'text-accent-miftah';
-                            const glowClass = key === 'leo' ? 'img-glow' : 'img-glow-miftah';
+                            const gradientClass = key === 'leo' ? 'gradient-overlay-leo' : 'gradient-overlay-miftah';
                             
                             return `
-                                <div id="${key}-card" class="profile-card ${key} p-8 w-full md:w-1/2 shadow-2xl transition duration-500 border-t-4 ${borderClass.replace('custom-border', 'border')}" onclick="showView('portfolio', '${key}')">
+                                <div id="${key}-card" class="profile-card ${key} card-fade-in p-8 w-full md:w-1/2 shadow-2xl transition duration-500 border-t-4 ${key === 'leo' ? 'border-accent-leo' : 'border-accent-miftah'}" onclick="showView('portfolio', '${key}')" style="animation-delay: ${0.4 + (index * 0.2)}s">
                                     <div class="card-inner">
-                                        <div class="profile-img-container parallax-container relative mx-auto mb-6">
-                                            <img src="${member.img}" 
-                                                onerror="this.onerror=null; this.src='https://placehold.co/200x200/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar gagal load:', '${member.img}')"
-                                                alt="Foto ${member.name}" 
-                                                class="w-32 h-32 rounded-full object-cover ${borderClass} ${glowClass} shadow-lg transition duration-300 hover:scale-105 cursor-pointer parallax-img"
-                                                id="${key}-img">
-                                            <div class="light-beam ${key === 'leo' ? '' : 'light-beam-miftah'}" id="${key}-beam"></div>
+                                        <div class="profile-img-container parallax-container relative mx-auto mb-6 w-32 h-32 sm:w-36 sm:h-36">
+                                            <div class="profile-image-wrapper w-full h-full">
+                                                <div class="profile-border"></div>
+                                                <div class="gradient-overlay-1 hidden sm:block"></div>
+                                                <div class="gradient-overlay-2 ${gradientClass} hidden sm:block"></div>
+                                                <img src="${member.img}" 
+                                                    onerror="this.onerror=null; this.src='https://placehold.co/200x200/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar gagal load:', '${member.img}')"
+                                                    alt="Foto ${member.name}" 
+                                                    class="profile-image"
+                                                    loading="lazy">
+                                                <div class="profile-glow opacity-0 group-hover:opacity-100 transition-all duration-700 z-20 hidden sm:block"></div>
+                                            </div>
                                         </div>
                                         <h4 class="text-2xl font-bold high-contrast-text mb-2">${member.name}</h4>
                                         <p class="${textColorClass} font-medium mb-6 text-lg">${member.tagline}</p>
@@ -518,8 +610,7 @@
                 </div>
             `;
             
-            // Inisialisasi efek parallax dan cahaya
-            initializeLightEffect();
+            // Inisialisasi efek parallax
             initializeParallaxEffect();
         }
 
@@ -530,11 +621,10 @@
         function renderPortfolioView(key) {
             const member = members[key];
             const textColorClass = key === 'leo' ? 'text-accent-leo' : 'text-accent-miftah';
-            const borderClass = key === 'leo' ? 'custom-border-leo' : 'custom-border-miftah';
-            const glowClass = key === 'leo' ? 'img-glow' : 'img-glow-miftah';
+            const gradientClass = key === 'leo' ? 'gradient-overlay-leo' : 'gradient-overlay-miftah';
 
             container.innerHTML = `
-                <div class="container mx-auto max-w-7xl p-4 pt-10 min-h-screen flex items-center text-content">
+                <div class="container mx-auto max-w-7xl p-4 pt-10 min-h-screen flex items-center text-content content-fade-in">
                     <div class="flex flex-col md:flex-row items-center md:space-x-16 w-full py-10">
                         
                         <div class="md:w-3/5 text-center md:text-left mb-10 md:mb-0">
@@ -554,7 +644,7 @@
                                 <a href="${member.ig_link}" target="_blank" class="inline-flex items-center justify-center px-8 py-3 bg-logo-color text-btn-text font-extrabold rounded-full transition duration-300 hover:opacity-90 shadow-2xl shadow-logo-color/50 uppercase tracking-wider btn-glow">
                                     Let's Connect <i class="fab fa-instagram ml-3 text-xl"></i>
                                 </a>
-                                <button onclick="showView('initial')" class="inline-flex items-center justify-center px-8 py-3 border-2 ${borderClass} text-${member.color} font-extrabold rounded-full transition duration-300 hover:bg-${member.color} hover:text-btn-text uppercase tracking-wider">
+                                <button onclick="showView('initial')" class="inline-flex items-center justify-center px-8 py-3 border-2 ${key === 'leo' ? 'border-accent-leo' : 'border-accent-miftah'} text-${member.color} font-extrabold rounded-full transition duration-300 hover:bg-${member.color} hover:text-btn-text uppercase tracking-wider">
                                     <i class="fas fa-arrow-left mr-3"></i> Back to Team
                                 </button>
                             </div>
@@ -564,15 +654,20 @@
                             <div class="relative parallax-container">
                                 <div class="absolute inset-0 m-auto w-full h-full rounded-full opacity-30 blur-xl ${key === 'leo' ? 'bg-accent-leo' : 'bg-accent-miftah'} neon-glow-ring"></div>
 
-                                <div class="profile-img-container relative">
-                                    <img 
-                                        src="${member.img}" 
-                                        onerror="this.onerror=null; this.src='https://placehold.co/300x300/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar portfolio gagal load:', '${member.img}')"
-                                        alt="Foto ${member.name}" 
-                                        class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full object-cover ${borderClass} ${glowClass} transition duration-500 transform hover:scale-105 shadow-2xl cursor-pointer parallax-img"
-                                        id="portfolio-${key}-img"
-                                    >
-                                    <div class="light-beam ${key === 'leo' ? '' : 'light-beam-miftah'}" id="portfolio-${key}-beam"></div>
+                                <div class="profile-img-container relative card-fade-in w-64 h-64 md:w-80 md:h-80" style="animation-delay: 0.5s">
+                                    <div class="profile-image-wrapper w-full h-full">
+                                        <div class="profile-border"></div>
+                                        <div class="gradient-overlay-1 hidden sm:block"></div>
+                                        <div class="gradient-overlay-2 ${gradientClass} hidden sm:block"></div>
+                                        <img 
+                                            src="${member.img}" 
+                                            onerror="this.onerror=null; this.src='https://placehold.co/300x300/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar portfolio gagal load:', '${member.img}')"
+                                            alt="Foto ${member.name}" 
+                                            class="profile-image"
+                                            loading="lazy"
+                                        >
+                                        <div class="profile-glow opacity-0 group-hover:opacity-100 transition-all duration-700 z-20 hidden sm:block"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -582,7 +677,6 @@
             `;
             
             startTypingEffect(member.roles);
-            initializeLightEffect();
             initializeParallaxEffect();
         }
         
@@ -645,67 +739,14 @@
         }
         
         // ==============================================
-        // 4. ANIMASI CAHAYA & PARALLAX YANG DIPERBAIKI
+        // 4. ANIMASI PARALLAX YANG DIPERBAIKI
         // ==============================================
         
-        function initializeLightEffect() {
-            const profileContainers = document.querySelectorAll('.profile-img-container');
-            
-            profileContainers.forEach(container => {
-                const lightBeam = container.querySelector('.light-beam');
-                let isAnimating = false;
-                
-                // Saat kursor MASUK - cahaya melintas dari kiri ke kanan
-                container.addEventListener('mouseenter', () => {
-                    if (!isAnimating) {
-                        isAnimating = true;
-                        
-                        // Hapus animasi sebelumnya
-                        lightBeam.classList.remove('beam-in', 'beam-out');
-                        
-                        // Trigger reflow
-                        void lightBeam.offsetWidth;
-                        
-                        // Jalankan animasi masuk
-                        lightBeam.classList.add('beam-in');
-                        
-                        // Reset status setelah animasi selesai
-                        setTimeout(() => {
-                            isAnimating = false;
-                            lightBeam.classList.remove('beam-in');
-                        }, 600);
-                    }
-                });
-                
-                // Saat kursor KELUAR - cahaya melintas dari kanan ke kiri
-                container.addEventListener('mouseleave', () => {
-                    if (!isAnimating) {
-                        isAnimating = true;
-                        
-                        // Hapus animasi sebelumnya
-                        lightBeam.classList.remove('beam-in', 'beam-out');
-                        
-                        // Trigger reflow
-                        void lightBeam.offsetWidth;
-                        
-                        // Jalankan animasi keluar
-                        lightBeam.classList.add('beam-out');
-                        
-                        // Reset status setelah animasi selesai
-                        setTimeout(() => {
-                            isAnimating = false;
-                            lightBeam.classList.remove('beam-out');
-                        }, 600);
-                    }
-                });
-            });
-        }
-        
         function initializeParallaxEffect() {
-            const profileImages = document.querySelectorAll('.parallax-img');
+            const profileImages = document.querySelectorAll('.profile-image');
             
             profileImages.forEach(img => {
-                const container = img.parentElement;
+                const container = img.closest('.profile-img-container');
                 
                 container.addEventListener('mousemove', (e) => {
                     const rect = container.getBoundingClientRect();
@@ -733,13 +774,14 @@
                             translate(${moveX}px, ${moveY}px) 
                             rotateY(${rotateY}deg) 
                             rotateX(${rotateX}deg)
+                            scale(1.1)
                         `;
                     }
                 });
                 
                 // Reset saat mouse keluar dari container
                 container.addEventListener('mouseleave', () => {
-                    img.style.transform = 'translate(0, 0) rotateY(0) rotateX(0)';
+                    img.style.transform = 'translate(0, 0) rotateY(0) rotateX(0) scale(1)';
                     img.style.transition = 'transform 0.3s ease';
                     
                     // Kembali ke transition cepat setelah reset
