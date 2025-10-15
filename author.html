@@ -562,7 +562,7 @@
         /* ==================== */
         /* 6. EFEK LIGHT YANG LEWAT DARI KIRI BAWAH KE KANAN ATAS */
         /* ==================== */
-        
+
         .light-sweep-effect {
             position: absolute;
             inset: 0;
@@ -573,7 +573,7 @@
             overflow: hidden;
             border-radius: 50%;
         }
-        
+
         .light-sweep {
             position: absolute;
             inset: 0;
@@ -581,48 +581,117 @@
                 45deg,
                 transparent 0%,
                 transparent 35%,
-                rgba(255, 255, 255, 0.3) 45%,
-                rgba(255, 255, 255, 0.5) 50%,
-                rgba(255, 255, 255, 0.3) 55%,
+                rgba(255, 255, 255, 0.4) 45%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0.4) 55%,
                 transparent 65%,
                 transparent 100%
             );
             transform: translateX(-100%) translateY(100%);
             transition: transform 0.7s ease;
         }
-        
+
+        /* CROSS LIGHT YANG IKUT BERGERAK */
+        .cross-light-moving {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 26;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateX(-100%) translateY(100%);
+            transition: transform 0.7s ease, opacity 0.7s ease;
+        }
+
+        /* Garis horizontal - DIPERTEBAL */
+        .cross-light-moving::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px; /* DIPERTEBAL dari 2px ke 4px */
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.9), 
+                rgba(255, 255, 255, 1),
+                rgba(255, 255, 255, 0.9), 
+                transparent
+            );
+            transform: translateY(-50%);
+            filter: blur(2px); /* DIPERTEBAL blur */
+        }
+
+        /* Garis vertikal - DIPERTEBAL */
+        .cross-light-moving::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px; /* DIPERTEBAL dari 2px ke 4px */
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.9), 
+                rgba(255, 255, 255, 1),
+                rgba(255, 255, 255, 0.9), 
+                transparent
+            );
+            transform: translateX(-50%);
+            filter: blur(2px); /* DIPERTEBAL blur */
+        }
+
         .profile-image-wrapper:hover .light-sweep-effect {
             opacity: 1;
         }
-        
+
         .profile-image-wrapper:hover .light-sweep {
             transform: translateX(100%) translateY(-100%);
         }
-        
+
+        .profile-image-wrapper:hover .cross-light-moving {
+            opacity: 1;
+            transform: translateX(100%) translateY(-100%);
+        }
+
         /* Variasi warna berdasarkan member */
         .light-sweep-leo {
             background: linear-gradient(
                 45deg,
                 transparent 0%,
                 transparent 35%,
-                rgba(200, 98, 255, 0.4) 45%,
-                rgba(200, 98, 255, 0.7) 50%,
-                rgba(200, 98, 255, 0.4) 55%,
+                rgba(200, 98, 255, 0.5) 45%,
+                rgba(200, 98, 255, 0.9) 50%,
+                rgba(200, 98, 255, 0.5) 55%,
                 transparent 65%,
                 transparent 100%
             );
         }
-        
+
         .light-sweep-miftah {
             background: linear-gradient(
                 45deg,
                 transparent 0%,
                 transparent 35%,
-                rgba(3, 218, 198, 0.4) 45%,
-                rgba(3, 218, 198, 0.7) 50%,
-                rgba(3, 218, 198, 0.4) 55%,
+                rgba(3, 218, 198, 0.5) 45%,
+                rgba(3, 218, 198, 0.9) 50%,
+                rgba(3, 218, 198, 0.5) 55%,
                 transparent 65%,
                 transparent 100%
+            );
+        }
+
+        /* Cross light dengan warna putih terang */
+        .cross-light-white::before,
+        .cross-light-white::after {
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.9), 
+                rgba(255, 255, 255, 1),
+                rgba(255, 255, 255, 0.9), 
+                transparent
             );
         }
         
@@ -725,10 +794,15 @@
                                                 <div class="gradient-overlay-1 hidden sm:block"></div>
                                                 <div class="gradient-overlay-2 ${gradientClass} hidden sm:block"></div>
                                                 <div class="cross-light hidden sm:block" id="${key}-cross-light"></div>
-                                                <!-- EFEK LIGHT YANG LEWAT -->
+                                                
+                                                <!-- EFEK LIGHT YANG LEWAT + CROSS LIGHT BERGERAK -->
                                                 <div class="light-sweep-effect hidden sm:block">
                                                     <div class="light-sweep ${key === 'leo' ? 'light-sweep-leo' : 'light-sweep-miftah'}"></div>
                                                 </div>
+                                                
+                                                <!-- CROSS LIGHT PUTIH YANG IKUT BERGERAK -->
+                                                <div class="cross-light-moving cross-light-white hidden sm:block"></div>
+                                                
                                                 <img src="${member.img}" 
                                                     onerror="this.onerror=null; this.src='https://placehold.co/200x200/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar gagal load:', '${member.img}')"
                                                     alt="Foto ${member.name}" 
@@ -801,10 +875,15 @@
                                         <div class="gradient-overlay-1 hidden sm:block"></div>
                                         <div class="gradient-overlay-2 ${gradientClass} hidden sm:block"></div>
                                         <div class="cross-light hidden sm:block" id="portfolio-${key}-cross-light"></div>
-                                        <!-- EFEK LIGHT YANG LEWAT -->
+                                        
+                                        <!-- EFEK LIGHT YANG LEWAT + CROSS LIGHT BERGERAK -->
                                         <div class="light-sweep-effect hidden sm:block">
                                             <div class="light-sweep ${key === 'leo' ? 'light-sweep-leo' : 'light-sweep-miftah'}"></div>
                                         </div>
+                                        
+                                        <!-- CROSS LIGHT PUTIH YANG IKUT BERGERAK -->
+                                        <div class="cross-light-moving cross-light-white hidden sm:block"></div>
+                                        
                                         <img 
                                             src="${member.img}" 
                                             onerror="this.onerror=null; this.src='https://placehold.co/300x300/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar portfolio gagal load:', '${member.img}')"
@@ -826,7 +905,7 @@
             initializeCrossLightEffect();
         }
         
-        // ==============================================
+                // ==============================================
         // 3. LOGIKA UTAMA & EFEK TYPING
         // ==============================================
         
@@ -917,7 +996,7 @@
                     }
                 });
                 
-                                // Saat kursor KELUAR - cahaya silang keluar
+                // Saat kursor KELUAR - cahaya silang keluar
                 container.addEventListener('mouseleave', () => {
                     if (!isAnimating) {
                         isAnimating = true;
@@ -968,3 +1047,4 @@
     </script>
 </body>
 </html>
+        
