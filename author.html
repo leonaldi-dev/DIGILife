@@ -298,7 +298,7 @@
         /* 5. ANIMASI BARU YANG DIMINTA */
         /* ==================== */
         
-        /* Efek cahaya yang mengikuti kursor HANYA di foto */
+        /* Container untuk foto dengan efek cahaya garis */
         .profile-img-container {
             position: relative;
             display: inline-block;
@@ -306,26 +306,75 @@
             border-radius: 50%;
         }
         
-        .cursor-light {
+        /* Efek cahaya garis yang melintas */
+        .light-beam {
             position: absolute;
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, rgba(200, 98, 255, 0.6) 0%, rgba(200, 98, 255, 0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 5;
+            width: 40px;
+            height: 150%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(200, 98, 255, 0.9),
+                rgba(255, 255, 255, 1),
+                rgba(200, 98, 255, 0.9),
+                transparent
+            );
+            top: -25%;
+            left: -50%;
+            transform: rotate(45deg);
             opacity: 0;
-            transition: opacity 0.3s;
-            mix-blend-mode: screen;
+            z-index: 5;
+            filter: blur(1px);
+            pointer-events: none;
         }
         
-        .cursor-light.active {
-            opacity: 1;
+        .light-beam-miftah {
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(3, 218, 198, 0.9),
+                rgba(255, 255, 255, 1),
+                rgba(3, 218, 198, 0.9),
+                transparent
+            );
         }
         
-        .cursor-light-miftah {
-            background: radial-gradient(circle, rgba(3, 218, 198, 0.6) 0%, rgba(3, 218, 198, 0) 70%);
+        /* Animasi untuk masuk (kiri ke kanan) */
+        @keyframes beamIn {
+            0% {
+                left: -50%;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                left: 150%;
+                opacity: 0;
+            }
+        }
+        
+        /* Animasi untuk keluar (kanan ke kiri) */
+        @keyframes beamOut {
+            0% {
+                left: 150%;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                left: -50%;
+                opacity: 0;
+            }
+        }
+        
+        .beam-in {
+            animation: beamIn 0.6s ease-out forwards;
+        }
+        
+        .beam-out {
+            animation: beamOut 0.6s ease-out forwards;
         }
         
         /* Animasi mengetik dengan kursor berkedip */
@@ -347,10 +396,29 @@
             51%, 100% { opacity: 0; }
         }
         
-        /* Efek parallax untuk foto profil */
+        /* Efek parallax yang lebih tepat */
         .parallax-img {
-            transition: transform 0.2s ease-out;
+            transition: transform 0.1s linear;
             will-change: transform;
+        }
+        
+        .parallax-container {
+            perspective: 500px;
+        }
+        
+        /* Glow effect tambahan */
+        .img-glow {
+            box-shadow: 
+                0 0 20px rgba(200, 98, 255, 0.3),
+                0 0 40px rgba(200, 98, 255, 0.2),
+                0 0 60px rgba(200, 98, 255, 0.1);
+        }
+        
+        .img-glow-miftah {
+            box-shadow: 
+                0 0 20px rgba(3, 218, 198, 0.3),
+                0 0 40px rgba(3, 218, 198, 0.2),
+                0 0 60px rgba(3, 218, 198, 0.1);
         }
     </style>
 </head>
@@ -414,12 +482,6 @@
         function renderInitialView() {
             if (window.typingTimeout) clearTimeout(window.typingTimeout);
 
-            // Debug info
-            console.log('=== DEBUG GAMBAR ===');
-            Object.keys(members).forEach(key => {
-                console.log(`Gambar ${key}:`, members[key].img);
-            });
-
             container.innerHTML = `
                 <div class="w-full max-w-4xl text-center p-4 text-content">
                     <h2 class="text-4xl font-extrabold main-title mb-4">Tim Pengembang <span class="logo-glow">DIGILife</span></h2>
@@ -429,17 +491,18 @@
                             const member = members[key];
                             const borderClass = key === 'leo' ? 'custom-border-leo' : 'custom-border-miftah';
                             const textColorClass = key === 'leo' ? 'text-accent-leo' : 'text-accent-miftah';
+                            const glowClass = key === 'leo' ? 'img-glow' : 'img-glow-miftah';
                             
                             return `
                                 <div id="${key}-card" class="profile-card ${key} p-8 w-full md:w-1/2 shadow-2xl transition duration-500 border-t-4 ${borderClass.replace('custom-border', 'border')}" onclick="showView('portfolio', '${key}')">
                                     <div class="card-inner">
-                                        <div class="profile-img-container relative mx-auto mb-6">
+                                        <div class="profile-img-container parallax-container relative mx-auto mb-6">
                                             <img src="${member.img}" 
                                                 onerror="this.onerror=null; this.src='https://placehold.co/200x200/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar gagal load:', '${member.img}')"
                                                 alt="Foto ${member.name}" 
-                                                class="w-32 h-32 rounded-full object-cover ${borderClass} shadow-lg transition duration-300 hover:scale-105 cursor-pointer parallax-img"
+                                                class="w-32 h-32 rounded-full object-cover ${borderClass} ${glowClass} shadow-lg transition duration-300 hover:scale-105 cursor-pointer parallax-img"
                                                 id="${key}-img">
-                                            <div class="cursor-light ${key === 'leo' ? '' : 'cursor-light-miftah'}" id="${key}-light"></div>
+                                            <div class="light-beam ${key === 'leo' ? '' : 'light-beam-miftah'}" id="${key}-beam"></div>
                                         </div>
                                         <h4 class="text-2xl font-bold high-contrast-text mb-2">${member.name}</h4>
                                         <p class="${textColorClass} font-medium mb-6 text-lg">${member.tagline}</p>
@@ -455,7 +518,7 @@
                 </div>
             `;
             
-            // Inisialisasi efek cahaya dan parallax
+            // Inisialisasi efek parallax dan cahaya
             initializeLightEffect();
             initializeParallaxEffect();
         }
@@ -468,6 +531,7 @@
             const member = members[key];
             const textColorClass = key === 'leo' ? 'text-accent-leo' : 'text-accent-miftah';
             const borderClass = key === 'leo' ? 'custom-border-leo' : 'custom-border-miftah';
+            const glowClass = key === 'leo' ? 'img-glow' : 'img-glow-miftah';
 
             container.innerHTML = `
                 <div class="container mx-auto max-w-7xl p-4 pt-10 min-h-screen flex items-center text-content">
@@ -497,7 +561,7 @@
                         </div>
 
                         <div class="md:w-2/5 flex justify-center">
-                            <div class="relative">
+                            <div class="relative parallax-container">
                                 <div class="absolute inset-0 m-auto w-full h-full rounded-full opacity-30 blur-xl ${key === 'leo' ? 'bg-accent-leo' : 'bg-accent-miftah'} neon-glow-ring"></div>
 
                                 <div class="profile-img-container relative">
@@ -505,10 +569,10 @@
                                         src="${member.img}" 
                                         onerror="this.onerror=null; this.src='https://placehold.co/300x300/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar portfolio gagal load:', '${member.img}')"
                                         alt="Foto ${member.name}" 
-                                        class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full object-cover ${borderClass} transition duration-500 transform hover:scale-105 shadow-2xl cursor-pointer parallax-img"
+                                        class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full object-cover ${borderClass} ${glowClass} transition duration-500 transform hover:scale-105 shadow-2xl cursor-pointer parallax-img"
                                         id="portfolio-${key}-img"
                                     >
-                                    <div class="cursor-light ${key === 'leo' ? '' : 'cursor-light-miftah'}" id="portfolio-${key}-light"></div>
+                                    <div class="light-beam ${key === 'leo' ? '' : 'light-beam-miftah'}" id="portfolio-${key}-beam"></div>
                                 </div>
                             </div>
                         </div>
@@ -533,14 +597,6 @@
                 renderInitialView();
             } else if (viewName === 'portfolio' && memberKey) {
                 renderPortfolioView(memberKey);
-            }
-        }
-        
-        function closeAuthorView() {
-            if (window.parent && window.parent.showView) {
-                window.parent.showView('initial');
-            } else {
-                showView('initial');
             }
         }
 
@@ -589,34 +645,58 @@
         }
         
         // ==============================================
-        // 4. ANIMASI CAHAYA & PARALLAX EFFECT
+        // 4. ANIMASI CAHAYA & PARALLAX YANG DIPERBAIKI
         // ==============================================
         
         function initializeLightEffect() {
-            // Cari semua container foto profil
             const profileContainers = document.querySelectorAll('.profile-img-container');
             
             profileContainers.forEach(container => {
-                const light = container.querySelector('.cursor-light');
-                const img = container.querySelector('img');
+                const lightBeam = container.querySelector('.light-beam');
+                let isAnimating = false;
                 
-                // Tambahkan event listener untuk menggerakkan cahaya
-                container.addEventListener('mousemove', (e) => {
-                    const rect = container.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    light.style.left = `${x}px`;
-                    light.style.top = `${y}px`;
-                });
-                
-                // Tampilkan/sembunyikan cahaya
+                // Saat kursor MASUK - cahaya melintas dari kiri ke kanan
                 container.addEventListener('mouseenter', () => {
-                    light.classList.add('active');
+                    if (!isAnimating) {
+                        isAnimating = true;
+                        
+                        // Hapus animasi sebelumnya
+                        lightBeam.classList.remove('beam-in', 'beam-out');
+                        
+                        // Trigger reflow
+                        void lightBeam.offsetWidth;
+                        
+                        // Jalankan animasi masuk
+                        lightBeam.classList.add('beam-in');
+                        
+                        // Reset status setelah animasi selesai
+                        setTimeout(() => {
+                            isAnimating = false;
+                            lightBeam.classList.remove('beam-in');
+                        }, 600);
+                    }
                 });
                 
+                // Saat kursor KELUAR - cahaya melintas dari kanan ke kiri
                 container.addEventListener('mouseleave', () => {
-                    light.classList.remove('active');
+                    if (!isAnimating) {
+                        isAnimating = true;
+                        
+                        // Hapus animasi sebelumnya
+                        lightBeam.classList.remove('beam-in', 'beam-out');
+                        
+                        // Trigger reflow
+                        void lightBeam.offsetWidth;
+                        
+                        // Jalankan animasi keluar
+                        lightBeam.classList.add('beam-out');
+                        
+                        // Reset status setelah animasi selesai
+                        setTimeout(() => {
+                            isAnimating = false;
+                            lightBeam.classList.remove('beam-out');
+                        }, 600);
+                    }
                 });
             });
         }
@@ -624,43 +704,53 @@
         function initializeParallaxEffect() {
             const profileImages = document.querySelectorAll('.parallax-img');
             
-            // Reset semua transformasi
             profileImages.forEach(img => {
-                img.style.transform = 'translate(0, 0) rotate(0)';
-            });
-            
-            // Tambahkan event listener untuk efek parallax
-            document.addEventListener('mousemove', (e) => {
-                const mouseX = e.clientX / window.innerWidth;
-                const mouseY = e.clientY / window.innerHeight;
+                const container = img.parentElement;
                 
-                profileImages.forEach(img => {
-                    const container = img.parentElement;
+                container.addEventListener('mousemove', (e) => {
                     const rect = container.getBoundingClientRect();
                     
-                    // Cek jika kursor berada di dalam container foto
+                    // Pastikan kursor benar-benar di atas foto
                     if (
                         e.clientX >= rect.left && 
                         e.clientX <= rect.right && 
                         e.clientY >= rect.top && 
                         e.clientY <= rect.bottom
                     ) {
-                        const moveX = (mouseX - 0.5) * 15; // Max 15px movement
-                        const moveY = (mouseY - 0.5) * 15; // Max 15px movement
-                        const rotateY = (mouseX - 0.5) * 10; // Max 10deg rotation
-                        const rotateX = (0.5 - mouseY) * 10; // Max 10deg rotation
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
                         
-                        img.style.transform = `translate(${moveX}px, ${moveY}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
-                    } else {
-                        img.style.transform = 'translate(0, 0) rotateY(0) rotateX(0)';
+                        const relX = (e.clientX - centerX) / (rect.width / 2);
+                        const relY = (e.clientY - centerY) / (rect.height / 2);
+                        
+                        // Efek parallax yang lebih kecil dan tepat
+                        const moveX = relX * 8; // Max 8px movement
+                        const moveY = relY * 8; // Max 8px movement
+                        const rotateY = relX * 5; // Max 5deg rotation
+                        const rotateX = -relY * 5; // Max 5deg rotation
+                        
+                        img.style.transform = `
+                            translate(${moveX}px, ${moveY}px) 
+                            rotateY(${rotateY}deg) 
+                            rotateX(${rotateX}deg)
+                        `;
                     }
                 });
-            });
-            
-            // Reset saat mouse keluar dari window
-            document.addEventListener('mouseleave', () => {
-                profileImages.forEach(img => {
+                
+                // Reset saat mouse keluar dari container
+                container.addEventListener('mouseleave', () => {
                     img.style.transform = 'translate(0, 0) rotateY(0) rotateX(0)';
+                    img.style.transition = 'transform 0.3s ease';
+                    
+                    // Kembali ke transition cepat setelah reset
+                    setTimeout(() => {
+                        img.style.transition = 'transform 0.1s linear';
+                    }, 300);
+                });
+                
+                // Set transition cepat untuk responsivitas
+                container.addEventListener('mouseenter', () => {
+                    img.style.transition = 'transform 0.1s linear';
                 });
             });
         }
