@@ -367,17 +367,6 @@
             }
         }
 
-        /* FIX: Custom border classes untuk gambar */
-        .custom-border-leo {
-            border-color: #c862ff !important;
-            border-width: 4px;
-        }
-        
-        .custom-border-miftah {
-            border-color: #03dac6 !important;
-            border-width: 4px;
-        }
-
         /* ==================== */
         /* 5. ANIMASI BARU YANG DIMINTA - EFFECT FOTO PROFIL */
         /* ==================== */
@@ -398,7 +387,7 @@
             border-radius: 50%;
             overflow: hidden;
             box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
-            transform: transition-all duration-700;
+            transition: all 0.7s ease;
         }
         
         .profile-image-wrapper:hover {
@@ -460,11 +449,66 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: all 0.7s;
+            transition: all 0.7s ease;
         }
         
         .profile-image-wrapper:hover .profile-image {
             transform: scale(1.1) rotate(2deg);
+        }
+        
+        /* EFEK CAHAYA SILANG PUTIH */
+        .cross-light {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Garis horizontal */
+        .cross-light::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.8), 
+                rgba(255, 255, 255, 1),
+                rgba(255, 255, 255, 0.8), 
+                transparent
+            );
+            transform: translateY(-50%);
+            filter: blur(1px);
+        }
+        
+        /* Garis vertikal */
+        .cross-light::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.8), 
+                rgba(255, 255, 255, 1),
+                rgba(255, 255, 255, 0.8), 
+                transparent
+            );
+            transform: translateX(-50%);
+            filter: blur(1px);
+        }
+        
+        .profile-image-wrapper:hover .cross-light {
+            opacity: 1;
         }
         
         /* Additional glow effect */
@@ -497,16 +541,6 @@
         @keyframes blink {
             0%, 50% { opacity: 1; }
             51%, 100% { opacity: 0; }
-        }
-        
-        /* Efek parallax yang lebih tepat */
-        .parallax-img {
-            transition: transform 0.1s linear;
-            will-change: transform;
-        }
-        
-        .parallax-container {
-            perspective: 500px;
         }
     </style>
 </head>
@@ -583,11 +617,12 @@
                             return `
                                 <div id="${key}-card" class="profile-card ${key} card-fade-in p-8 w-full md:w-1/2 shadow-2xl transition duration-500 border-t-4 ${key === 'leo' ? 'border-accent-leo' : 'border-accent-miftah'}" onclick="showView('portfolio', '${key}')" style="animation-delay: ${0.4 + (index * 0.2)}s">
                                     <div class="card-inner">
-                                        <div class="profile-img-container parallax-container relative mx-auto mb-6 w-32 h-32 sm:w-36 sm:h-36">
+                                        <div class="profile-img-container relative mx-auto mb-6 w-32 h-32 sm:w-36 sm:h-36">
                                             <div class="profile-image-wrapper w-full h-full">
                                                 <div class="profile-border"></div>
                                                 <div class="gradient-overlay-1 hidden sm:block"></div>
                                                 <div class="gradient-overlay-2 ${gradientClass} hidden sm:block"></div>
+                                                <div class="cross-light hidden sm:block"></div>
                                                 <img src="${member.img}" 
                                                     onerror="this.onerror=null; this.src='https://placehold.co/200x200/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar gagal load:', '${member.img}')"
                                                     alt="Foto ${member.name}" 
@@ -609,9 +644,6 @@
                     </div>
                 </div>
             `;
-            
-            // Inisialisasi efek parallax
-            initializeParallaxEffect();
         }
 
         // ==============================================
@@ -651,7 +683,7 @@
                         </div>
 
                         <div class="md:w-2/5 flex justify-center">
-                            <div class="relative parallax-container">
+                            <div class="relative">
                                 <div class="absolute inset-0 m-auto w-full h-full rounded-full opacity-30 blur-xl ${key === 'leo' ? 'bg-accent-leo' : 'bg-accent-miftah'} neon-glow-ring"></div>
 
                                 <div class="profile-img-container relative card-fade-in w-64 h-64 md:w-80 md:h-80" style="animation-delay: 0.5s">
@@ -659,6 +691,7 @@
                                         <div class="profile-border"></div>
                                         <div class="gradient-overlay-1 hidden sm:block"></div>
                                         <div class="gradient-overlay-2 ${gradientClass} hidden sm:block"></div>
+                                        <div class="cross-light hidden sm:block"></div>
                                         <img 
                                             src="${member.img}" 
                                             onerror="this.onerror=null; this.src='https://placehold.co/300x300/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar portfolio gagal load:', '${member.img}')"
@@ -677,7 +710,6 @@
             `;
             
             startTypingEffect(member.roles);
-            initializeParallaxEffect();
         }
         
         // ==============================================
@@ -736,65 +768,6 @@
             if (data.typingElement) {
                 typeLoop();
             }
-        }
-        
-        // ==============================================
-        // 4. ANIMASI PARALLAX YANG DIPERBAIKI
-        // ==============================================
-        
-        function initializeParallaxEffect() {
-            const profileImages = document.querySelectorAll('.profile-image');
-            
-            profileImages.forEach(img => {
-                const container = img.closest('.profile-img-container');
-                
-                container.addEventListener('mousemove', (e) => {
-                    const rect = container.getBoundingClientRect();
-                    
-                    // Pastikan kursor benar-benar di atas foto
-                    if (
-                        e.clientX >= rect.left && 
-                        e.clientX <= rect.right && 
-                        e.clientY >= rect.top && 
-                        e.clientY <= rect.bottom
-                    ) {
-                        const centerX = rect.left + rect.width / 2;
-                        const centerY = rect.top + rect.height / 2;
-                        
-                        const relX = (e.clientX - centerX) / (rect.width / 2);
-                        const relY = (e.clientY - centerY) / (rect.height / 2);
-                        
-                        // Efek parallax yang lebih kecil dan tepat
-                        const moveX = relX * 8; // Max 8px movement
-                        const moveY = relY * 8; // Max 8px movement
-                        const rotateY = relX * 5; // Max 5deg rotation
-                        const rotateX = -relY * 5; // Max 5deg rotation
-                        
-                        img.style.transform = `
-                            translate(${moveX}px, ${moveY}px) 
-                            rotateY(${rotateY}deg) 
-                            rotateX(${rotateX}deg)
-                            scale(1.1)
-                        `;
-                    }
-                });
-                
-                // Reset saat mouse keluar dari container
-                container.addEventListener('mouseleave', () => {
-                    img.style.transform = 'translate(0, 0) rotateY(0) rotateX(0) scale(1)';
-                    img.style.transition = 'transform 0.3s ease';
-                    
-                    // Kembali ke transition cepat setelah reset
-                    setTimeout(() => {
-                        img.style.transition = 'transform 0.1s linear';
-                    }, 300);
-                });
-                
-                // Set transition cepat untuk responsivitas
-                container.addEventListener('mouseenter', () => {
-                    img.style.transition = 'transform 0.1s linear';
-                });
-            });
         }
 
         // ==============================================
