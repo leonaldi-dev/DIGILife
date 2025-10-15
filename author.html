@@ -293,6 +293,65 @@
             border-color: #03dac6 !important;
             border-width: 4px;
         }
+
+        /* ==================== */
+        /* 5. ANIMASI BARU YANG DIMINTA */
+        /* ==================== */
+        
+        /* Efek cahaya yang mengikuti kursor HANYA di foto */
+        .profile-img-container {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+        
+        .cursor-light {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(200, 98, 255, 0.6) 0%, rgba(200, 98, 255, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.3s;
+            mix-blend-mode: screen;
+        }
+        
+        .cursor-light.active {
+            opacity: 1;
+        }
+        
+        .cursor-light-miftah {
+            background: radial-gradient(circle, rgba(3, 218, 198, 0.6) 0%, rgba(3, 218, 198, 0) 70%);
+        }
+        
+        /* Animasi mengetik dengan kursor berkedip */
+        .typing-effect {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .typing-effect::after {
+            content: '|';
+            position: absolute;
+            right: -8px;
+            animation: blink 1s infinite;
+            color: inherit;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Efek parallax untuk foto profil */
+        .parallax-img {
+            transition: transform 0.2s ease-out;
+            will-change: transform;
+        }
     </style>
 </head>
 
@@ -374,10 +433,14 @@
                             return `
                                 <div id="${key}-card" class="profile-card ${key} p-8 w-full md:w-1/2 shadow-2xl transition duration-500 border-t-4 ${borderClass.replace('custom-border', 'border')}" onclick="showView('portfolio', '${key}')">
                                     <div class="card-inner">
-                                        <img src="${member.img}" 
-                                            onerror="this.onerror=null; this.src='https://placehold.co/200x200/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt[0]}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar gagal load:', '${member.img}')"
-                                            alt="Foto ${member.name}" 
-                                            class="w-32 h-32 rounded-full object-cover ${borderClass} mx-auto mb-6 shadow-lg transition duration-300 hover:scale-105">
+                                        <div class="profile-img-container relative mx-auto mb-6">
+                                            <img src="${member.img}" 
+                                                onerror="this.onerror=null; this.src='https://placehold.co/200x200/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar gagal load:', '${member.img}')"
+                                                alt="Foto ${member.name}" 
+                                                class="w-32 h-32 rounded-full object-cover ${borderClass} shadow-lg transition duration-300 hover:scale-105 cursor-pointer parallax-img"
+                                                id="${key}-img">
+                                            <div class="cursor-light ${key === 'leo' ? '' : 'cursor-light-miftah'}" id="${key}-light"></div>
+                                        </div>
                                         <h4 class="text-2xl font-bold high-contrast-text mb-2">${member.name}</h4>
                                         <p class="${textColorClass} font-medium mb-6 text-lg">${member.tagline}</p>
                                         
@@ -391,9 +454,13 @@
                     </div>
                 </div>
             `;
+            
+            // Inisialisasi efek cahaya dan parallax
+            initializeLightEffect();
+            initializeParallaxEffect();
         }
 
-                // ==============================================
+        // ==============================================
         // 2. TAMPILAN PORTOFOLIO INDIVIDUAL
         // ==============================================
 
@@ -433,34 +500,26 @@
                             <div class="relative">
                                 <div class="absolute inset-0 m-auto w-full h-full rounded-full opacity-30 blur-xl ${key === 'leo' ? 'bg-accent-leo' : 'bg-accent-miftah'} neon-glow-ring"></div>
 
-                                <img 
-                                    src="${member.img}" 
-                                    onerror="this.onerror=null; this.src='https://placehold.co/300x300/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar portfolio gagal load:', '${member.img}')"
-                                    alt="Foto ${member.name}" 
-                                    class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full object-cover ${borderClass} transition duration-500 transform hover:scale-105 shadow-2xl"
-                                >
+                                <div class="profile-img-container relative">
+                                    <img 
+                                        src="${member.img}" 
+                                        onerror="this.onerror=null; this.src='https://placehold.co/300x300/${key === 'leo' ? 'c862ff' : '03dac6'}/ffffff?text=${member.name.split(' ')[0].charAt(0)}${member.name.split(' ')[1].charAt(0)}'; console.error('Gambar portfolio gagal load:', '${member.img}')"
+                                        alt="Foto ${member.name}" 
+                                        class="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full object-cover ${borderClass} transition duration-500 transform hover:scale-105 shadow-2xl cursor-pointer parallax-img"
+                                        id="portfolio-${key}-img"
+                                    >
+                                    <div class="cursor-light ${key === 'leo' ? '' : 'cursor-light-miftah'}" id="portfolio-${key}-light"></div>
+                                </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
-                
-                <!-- Skills & Roles Section -->
-                <div class="container mx-auto max-w-7xl p-4 mb-16">
-                    <div class="bg-card-dark rounded-2xl p-8 shadow-2xl">
-                        <h3 class="text-3xl font-bold text-center ${textColorClass} mb-8">Skills & Expertise</h3>
-                        <div class="flex flex-wrap justify-center gap-4">
-                            ${member.roles.map(role => `
-                                <span class="px-6 py-3 ${key === 'leo' ? 'bg-accent-leo' : 'bg-accent-miftah'} text-btn-text font-bold rounded-full shadow-lg transition transform hover:scale-105">
-                                    ${role}
-                                </span>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
             `;
             
             startTypingEffect(member.roles);
+            initializeLightEffect();
+            initializeParallaxEffect();
         }
         
         // ==============================================
@@ -528,9 +587,86 @@
                 typeLoop();
             }
         }
+        
+        // ==============================================
+        // 4. ANIMASI CAHAYA & PARALLAX EFFECT
+        // ==============================================
+        
+        function initializeLightEffect() {
+            // Cari semua container foto profil
+            const profileContainers = document.querySelectorAll('.profile-img-container');
+            
+            profileContainers.forEach(container => {
+                const light = container.querySelector('.cursor-light');
+                const img = container.querySelector('img');
+                
+                // Tambahkan event listener untuk menggerakkan cahaya
+                container.addEventListener('mousemove', (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    light.style.left = `${x}px`;
+                    light.style.top = `${y}px`;
+                });
+                
+                // Tampilkan/sembunyikan cahaya
+                container.addEventListener('mouseenter', () => {
+                    light.classList.add('active');
+                });
+                
+                container.addEventListener('mouseleave', () => {
+                    light.classList.remove('active');
+                });
+            });
+        }
+        
+        function initializeParallaxEffect() {
+            const profileImages = document.querySelectorAll('.parallax-img');
+            
+            // Reset semua transformasi
+            profileImages.forEach(img => {
+                img.style.transform = 'translate(0, 0) rotate(0)';
+            });
+            
+            // Tambahkan event listener untuk efek parallax
+            document.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX / window.innerWidth;
+                const mouseY = e.clientY / window.innerHeight;
+                
+                profileImages.forEach(img => {
+                    const container = img.parentElement;
+                    const rect = container.getBoundingClientRect();
+                    
+                    // Cek jika kursor berada di dalam container foto
+                    if (
+                        e.clientX >= rect.left && 
+                        e.clientX <= rect.right && 
+                        e.clientY >= rect.top && 
+                        e.clientY <= rect.bottom
+                    ) {
+                        const moveX = (mouseX - 0.5) * 15; // Max 15px movement
+                        const moveY = (mouseY - 0.5) * 15; // Max 15px movement
+                        const rotateY = (mouseX - 0.5) * 10; // Max 10deg rotation
+                        const rotateX = (0.5 - mouseY) * 10; // Max 10deg rotation
+                        
+                        img.style.transform = `translate(${moveX}px, ${moveY}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+                    } else {
+                        img.style.transform = 'translate(0, 0) rotateY(0) rotateX(0)';
+                    }
+                });
+            });
+            
+            // Reset saat mouse keluar dari window
+            document.addEventListener('mouseleave', () => {
+                profileImages.forEach(img => {
+                    img.style.transform = 'translate(0, 0) rotateY(0) rotateX(0)';
+                });
+            });
+        }
 
         // ==============================================
-        // 4. INISIALISASI
+        // 5. INISIALISASI
         // ==============================================
 
         document.addEventListener('DOMContentLoaded', () => {
