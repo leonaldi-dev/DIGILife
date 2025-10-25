@@ -1,652 +1,967 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kalkulator Zakat (DIGILife)</title>
     <!-- Menggunakan font Poppins dan Fredoka One -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fredoka+One&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-        /* Definisi Warna */
-        :root {
-            --primary-dark: #2c3e50; 
-            --secondary-dark: #34495e; 
-            --button-orange: #f39c12; 
-            --button-red: #e74c3c; 
-            --button-green: #2ecc71; 
-            --text-light: #ecf0f1;
-            --font-main: 'Poppins', sans-serif;
-            --background-purple: #6a5acd; 
-            --secondary-purple: #a491f2; 
-            --popup-purple: #8b5cf6; /* Warna ungu cerah untuk popup */
-        }
+      /* Definisi Warna */
+      :root {
+        --primary-dark: #2c3e50;
+        --secondary-dark: #34495e;
+        --button-orange: #f39c12;
+        --button-red: #e74c3c;
+        --button-green: #2ecc71;
+        --text-light: #ecf0f1;
+        --font-main: "Poppins", sans-serif;
+        --background-purple: #6a5acd;
+        --secondary-purple: #a491f2;
+        --popup-purple: #8b5cf6; /* Warna ungu cerah untuk popup */
+      }
 
-        /* Styling Body */
-        body {
-            background: linear-gradient(135deg, var(--secondary-purple) 0%, var(--background-purple) 100%);
-            color: var(--text-light);
-            font-family: var(--font-main);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding: 20px 10px;
-        }
+      /* Styling Body */
+      body {
+        background: linear-gradient(
+          135deg,
+          var(--secondary-purple) 0%,
+          var(--background-purple) 100%
+        );
+        color: var(--text-light);
+        font-family: var(--font-main);
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 20px 10px;
+      }
 
-        /* Container Kalkulator */
-        .main-container {
-            width: 100%;
-            max-width: 450px; 
-            background-color: transparent;
-            padding: 0;
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        .calculator-card {
-            background-color: var(--primary-dark); 
-            border-radius: 0 0 20px 20px; /* Hapus radius atas agar menyatu dengan tab header */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            padding: 30px;
-            margin-top: 0; /* Dihapus agar menyambung dengan tab */
-        }
+      /* Container Kalkulator */
+      .main-container {
+        width: 100%;
+        max-width: 450px;
+        background-color: transparent;
+        padding: 0;
+        animation: fadeIn 0.5s ease-out;
+      }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+      .calculator-card {
+        background-color: var(--primary-dark);
+        border-radius: 0 0 20px 20px; /* Hapus radius atas agar menyatu dengan tab header */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        padding: 30px;
+        margin-top: 0; /* Dihapus agar menyambung dengan tab */
+      }
 
-        /* Header */
-        .calculator-card h2 {
-            font-family: 'Fredoka One', cursive;
-            color: #ffc107; 
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.6em;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-        /* --- NAVIGASI TAB BARU (Inovatif & Interaktif) --- */
-        .tab-nav {
-            display: flex;
-            justify-content: space-around;
-            background-color: var(--secondary-dark); /* Latar belakang untuk header tab */
-            border-radius: 20px 20px 0 0;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        .tab-button {
-            flex-grow: 1;
-            padding: 15px 10px 12px 10px; /* Padding disesuaikan untuk garis bawah */
-            background-color: transparent; 
-            color: #bdc3c7; /* Warna abu-abu untuk non-aktif */
-            border: none;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: color 0.3s;
-            text-align: center;
-            position: relative; 
-            border-bottom: 2px solid rgba(236, 240, 241, 0.2); /* Garis bawah dasar */
-        }
-        .tab-button.active {
-            color: var(--button-orange); 
-        }
-        .tab-button:hover {
-            color: var(--text-light); /* Lebih terang saat hover */
-        }
+      /* Header */
+      .calculator-card h2 {
+        font-family: "Fredoka One", cursive;
+        color: #ffc107;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.6em;
+      }
 
-        /* Animated Underline (Garis Kuning) */
-        .tab-button::after {
-            content: '';
-            position: absolute;
-            bottom: -2px; /* Posisi di atas garis dasar */
-            left: 50%; 
-            transform: translateX(-50%); 
-            height: 4px;
-            background-color: var(--button-orange); 
-            width: 0;
-            border-radius: 2px;
-            /* Transisi "springy" untuk kesan inovatif */
-            transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-        }
-        
-        /* State saat kursor menunjuk (hover) */
-        .tab-button:hover::after {
-            width: 70%; 
-        }
-        
-        /* State saat tab aktif */
-        .tab-button.active::after {
-            width: 100%; 
-        }
-        /* --- END NAVIGASI TAB BARU --- */
+      /* --- NAVIGASI TAB BARU (Inovatif & Interaktif) --- */
+      .tab-nav {
+        display: flex;
+        justify-content: space-around;
+        background-color: var(
+          --secondary-dark
+        ); /* Latar belakang untuk header tab */
+        border-radius: 20px 20px 0 0;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+      .tab-button {
+        flex-grow: 1;
+        padding: 15px 10px 12px 10px; /* Padding disesuaikan untuk garis bawah */
+        background-color: transparent;
+        color: #bdc3c7; /* Warna abu-abu untuk non-aktif */
+        border: none;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.3s;
+        text-align: center;
+        position: relative;
+        border-bottom: 2px solid rgba(236, 240, 241, 0.2); /* Garis bawah dasar */
+      }
+      .tab-button.active {
+        color: var(--button-orange);
+      }
+      .tab-button:hover {
+        color: var(--text-light); /* Lebih terang saat hover */
+      }
 
+      /* Animated Underline (Garis Kuning) */
+      .tab-button::after {
+        content: "";
+        position: absolute;
+        bottom: -2px; /* Posisi di atas garis dasar */
+        left: 50%;
+        transform: translateX(-50%);
+        height: 4px;
+        background-color: var(--button-orange);
+        width: 0;
+        border-radius: 2px;
+        /* Transisi "springy" untuk kesan inovatif */
+        transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
 
-        /* Form Group dan Input Styling */
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-        .label-icon { color: var(--button-orange); }
-        
-        .input-wrapper {
-            display: flex; align-items: center; background-color: var(--secondary-dark); 
-            border-radius: 10px; padding: 0 12px; box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
-            transition: box-shadow 0.3s;
-        }
-        .input-wrapper:focus-within {
-             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5), 0 0 0 2px var(--button-green);
-        }
+      /* State saat kursor menunjuk (hover) */
+      .tab-button:hover::after {
+        width: 70%;
+      }
 
-        .input-prefix { color: var(--text-light); font-size: 1.1em; font-weight: 600; padding-right: 8px; }
-        .form-group input {
-            width: 100%; padding: 12px 0; border: none; background-color: transparent; 
-            color: var(--text-light); font-size: 1.1em; text-align: right; 
-        }
-        .form-group input:focus { outline: none; box-shadow: none; }
-        
-        /* Tombol Hitung */
-        .calculate-btn {
-            width: 100%; padding: 15px; background-color: var(--button-green); color: var(--primary-dark);
-            border: none; border-radius: 10px; font-size: 1.2em; font-weight: 700; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: background-color 0.2s, transform 0.2s;
-            margin-top: 10px;
-        }
-        .calculate-btn:hover { background-color: #27ae60; transform: translateY(-2px); }
-        
-        /* Area Hasil - DIPERBARUI */
-        .result-area {
-            background-color: var(--secondary-dark); 
-            padding: 20px; 
-            border-radius: 15px;
-            margin-top: 25px; 
-            text-align: center; 
-            min-height: 120px; 
-            display: flex;
-            flex-direction: column; 
-            justify-content: center; 
-            gap: 8px;
-            transition: all 0.5s ease-out;
-            position: relative;
-            overflow: hidden;
-        }
+      /* State saat tab aktif */
+      .tab-button.active::after {
+        width: 100%;
+      }
+      /* --- END NAVIGASI TAB BARU --- */
 
-        /* Shadowbox Animasi - BARU */
-        .result-area.wajib-zakat {
-            animation: shadowBlinkGreen 2s infinite;
-            border: 2px solid var(--button-green);
-        }
+      /* Progress Bar Container */
+      .progress-container {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        margin: 16px 0;
+        overflow: hidden;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
 
-        .result-area.belum-wajib {
-            animation: shadowBlinkRed 2s infinite;
-            border: 2px solid var(--button-red);
-        }
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--button-green),
+          var(--button-orange)
+        );
+        border-radius: 4px;
+        transition: width 0.8s ease;
+        width: 0%;
+        position: relative;
+        overflow: hidden;
+      }
 
-        .result-area.fitrah-zakat {
-            animation: shadowBlinkGreen 2s infinite;
-            border: 2px solid var(--button-green);
-        }
+      .progress-bar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        animation: progressShine 2s infinite;
+      }
 
-        @keyframes shadowBlinkGreen {
-            0%, 100% { 
-                box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
-            }
-            50% { 
-                box-shadow: 0 0 30px rgba(46, 204, 113, 0.8);
-            }
+      @keyframes progressShine {
+        0% {
+          left: -100%;
         }
+        100% {
+          left: 100%;
+        }
+      }
 
-        @keyframes shadowBlinkRed {
-            0%, 100% { 
-                box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
-            }
-            50% { 
-                box-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
-            }
-        }
+      .progress-text {
+        font-size: 0.8em;
+        color: #bdc3c7;
+        text-align: center;
+        margin-top: 5px;
+        font-weight: 600;
+      }
 
-        .result-area h3 { 
-            color: var(--button-orange); 
-            font-size: 1.1em; 
-            margin: 0; 
-        }
+      /* Form Group dan Input Styling */
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+      }
+      .label-icon {
+        color: var(--button-orange);
+      }
 
-        /* Teks Hasil (Angka) - DIPERBARUI */
-        .result-amount {
-            font-family: 'Fredoka One', cursive;
-            font-size: 2.2em;
-            color: var(--text-light); 
-            transition: all 0.3s ease;
-            margin: 5px 0;
-        }
+      .input-wrapper {
+        display: flex;
+        align-items: center;
+        background-color: var(--secondary-dark);
+        border-radius: 10px;
+        padding: 0 12px;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+        transition: box-shadow 0.3s;
+      }
+      .input-wrapper:focus-within {
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5),
+          0 0 0 2px var(--button-green);
+      }
 
-        /* Teks Kekurangan - BARU */
-        .shortfall-text {
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.4em;
-            color: var(--button-red);
-            margin: 5px 0;
-            animation: textPulse 1.5s infinite;
-        }
+      .input-prefix {
+        color: var(--text-light);
+        font-size: 1.1em;
+        font-weight: 600;
+        padding-right: 8px;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 12px 0;
+        border: none;
+        background-color: transparent;
+        color: var(--text-light);
+        font-size: 1.1em;
+        text-align: right;
+        /* Tambahan untuk input yang lebih baik */
+        outline: none;
+        font-family: var(--font-main);
+      }
+      .form-group input:focus {
+        outline: none;
+        box-shadow: none;
+      }
 
-        @keyframes textPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-        }
+      /* Tombol Hitung - DIPERBAIKI dengan pointer-events yang benar */
+      .calculate-btn {
+        width: 100%;
+        padding: 15px;
+        background-color: var(--button-green);
+        color: var(--primary-dark);
+        border: none;
+        border-radius: 10px;
+        font-size: 1.2em;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.2s, transform 0.2s;
+        margin-top: 10px;
+        /* Pastikan tombol bisa diklik di mana saja */
+        pointer-events: auto;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+      }
+      .calculate-btn:hover {
+        background-color: #27ae60;
+        transform: translateY(-2px);
+      }
 
-        .funny-text {
-            font-family: 'Comic Neue', cursive;
-            font-size: 1.1em;
-            color: #f39c12;
-            font-weight: 700;
-            margin: 5px 0;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .result-message { 
-            font-weight: 400; 
-            font-style: italic; 
-            color: rgba(236, 240, 241, 0.9); 
-            font-size: 0.9em; 
-            margin-top: 5px;
-        }
-        
-        .note { 
-            font-size: 0.8em; 
-            color: #bdc3c7; 
-            margin-top: 5px; 
-            text-align: center; 
-            padding: 0 10px; 
-        }
+      /* Area Hasil - DIPERBARUI */
+      .result-area {
+        background-color: var(--secondary-dark);
+        padding: 20px;
+        border-radius: 15px;
+        margin-top: 25px;
+        text-align: center;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.5s ease-out;
+        position: relative;
+        overflow: hidden;
+      }
 
-        /* Konten Tab */
-        .tab-content { display: none; }
-        .tab-content.active { 
-            display: block; 
-            /* Memberi jarak atas dari header tab */
-            border-top: 2px solid var(--primary-dark);
-        }
+      /* Shadowbox Animasi - BARU */
+      .result-area.wajib-zakat {
+        animation: shadowBlinkGreen 2s infinite;
+        border: 2px solid var(--button-green);
+      }
 
-        /* === POPUP STYLES BARU === */
-        .popup-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: linear-gradient(135deg, var(--popup-purple) 0%, #7c3aed 100%);
-            color: white;
-            padding: 25px 30px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.4);
-            text-align: center;
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.4em;
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-width: 300px;
-            width: 80%;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-        }
+      .result-area.belum-wajib {
+        animation: shadowBlinkRed 2s infinite;
+        border: 2px solid var(--button-red);
+      }
 
-        .popup-message.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
+      .result-area.fitrah-zakat {
+        animation: shadowBlinkGreen 2s infinite;
+        border: 2px solid var(--button-green);
+      }
 
-        .popup-message .popup-emoji {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            display: block;
+      @keyframes shadowBlinkGreen {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
         }
-
-        .popup-message .popup-text {
-            line-height: 1.4;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        50% {
+          box-shadow: 0 0 30px rgba(46, 204, 113, 0.8);
         }
+      }
 
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
+      @keyframes shadowBlinkRed {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
         }
-
-        .popup-overlay.show {
-            opacity: 1;
-            pointer-events: all;
+        50% {
+          box-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
         }
+      }
 
-        @keyframes popupBounce {
-            0% { transform: translate(-50%, -50%) scale(0.8); }
-            50% { transform: translate(-50%, -50%) scale(1.1); }
-            100% { transform: translate(-50%, -50%) scale(1); }
+      .result-area h3 {
+        color: var(--button-orange);
+        font-size: 1.1em;
+        margin: 0;
+      }
+
+      /* Teks Hasil (Angka) - DIPERBARUI dengan font yang konsisten */
+      .result-amount {
+        font-family: "Fredoka One", cursive;
+        font-size: 2.2em;
+        color: var(--text-light);
+        transition: all 0.3s ease;
+        margin: 5px 0;
+      }
+
+      /* Teks Kekurangan - DIPERBAIKI dengan font yang sama */
+      .shortfall-text {
+        font-family: "Fredoka One", cursive;
+        font-size: 2.2em; /* Sama dengan result-amount */
+        color: var(--button-red);
+        margin: 5px 0;
+        animation: textPulse 1.5s infinite;
+      }
+
+      @keyframes textPulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
         }
-
-        .popup-message.bounce {
-            animation: popupBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        50% {
+          opacity: 0.8;
+          transform: scale(1.05);
         }
+      }
 
+      .funny-text {
+        font-family: "Fredoka One", cursive; /* Diubah ke Fredoka One */
+        font-size: 1.1em;
+        color: var(--button-orange);
+        font-weight: 700;
+        margin: 5px 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .result-message {
+        font-weight: 400;
+        font-style: italic;
+        color: rgba(236, 240, 241, 0.9);
+        font-size: 0.9em;
+        margin-top: 5px;
+      }
+
+      .note {
+        font-size: 0.8em;
+        color: #bdc3c7;
+        margin-top: 5px;
+        text-align: center;
+        padding: 0 10px;
+      }
+
+      /* Konten Tab */
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+        /* Memberi jarak atas dari header tab */
+        border-top: 2px solid var(--primary-dark);
+      }
+
+      /* === POPUP STYLES BARU === */
+      .popup-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        background: linear-gradient(
+          135deg,
+          var(--popup-purple) 0%,
+          #7c3aed 100%
+        );
+        color: white;
+        padding: 25px 30px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(139, 92, 246, 0.4);
+        text-align: center;
+        font-family: "Fredoka One", cursive;
+        font-size: 1.4em;
+        z-index: 1000;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        max-width: 300px;
+        width: 80%;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .popup-message.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .popup-message .popup-emoji {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .popup-message .popup-text {
+        line-height: 1.4;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      .popup-overlay.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      @keyframes popupBounce {
+        0% {
+          transform: translate(-50%, -50%) scale(0.8);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+
+      .popup-message.bounce {
+        animation: popupBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <!-- Popup Overlay -->
     <div class="popup-overlay" id="popupOverlay"></div>
 
     <!-- Popup Message -->
     <div class="popup-message" id="popupMessage">
-        <span class="popup-emoji" id="popupEmoji">💪</span>
-        <div class="popup-text" id="popupText">Semangat kerja yaaa!</div>
+      <span class="popup-emoji" id="popupEmoji">💪</span>
+      <div class="popup-text" id="popupText">Semangat kerja yaaa!</div>
     </div>
 
     <div class="main-container">
-        
-        <!-- Navigasi Tab BARU -->
-        <div class="tab-nav">
-            <button class="tab-button active" onclick="showTab('mal')">Zakat Mal</button>
-            <button class="tab-button" onclick="showTab('fitrah')">Zakat Fitrah</button>
-        </div>
+      <!-- Navigasi Tab BARU -->
+      <div class="tab-nav">
+        <button class="tab-button active" onclick="showTab('mal')">
+          Zakat Mal
+        </button>
+        <button class="tab-button" onclick="showTab('fitrah')">
+          Zakat Fitrah
+        </button>
+      </div>
 
-        <!-- Zakat Mal Content -->
-        <div id="mal-content" class="tab-content active calculator-card">
-            <h2>Kalkulator Zakat Mal (Harta)</h2>
-            
-            <form id="zakatMalForm">
-                <div class="form-group">
-                    <label for="nisabPrice"><span class="label-icon">💰</span> Harga Emas per Gram Hari Ini</label>
-                    <div class="input-wrapper">
-                        <span class="input-prefix">Rp</span>
-                        <!-- Harga emas manual dengan contoh harga hari ini -->
-                        <input type="text" id="nisabPrice" value="1.250.000" placeholder="1.250.000" required>
-                    </div>
-                    <div class="note" id="nisabNote">
-                        *Contoh harga emas 24 karat per gram: <strong>Rp 1.250.000</strong>. 
-                        Silakan update dengan harga terkini dari toko emas terpercaya.
-                    </div>
-                </div>
+      <!-- Zakat Mal Content -->
+      <div id="mal-content" class="tab-content active calculator-card">
+        <h2>Kalkulator Zakat Mal (Harta)</h2>
 
-                <div class="form-group">
-                    <label for="totalSavings"><span class="label-icon">💸</span> Total Tabungan/Harta yang Dimiliki (sudah haul/setahun)</label>
-                     <div class="input-wrapper">
-                        <span class="input-prefix">Rp</span>
-                        <input type="text" id="totalSavings" placeholder="Misal: 50.000.000" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="calculate-btn">
-                    HITUNG ZAKAT MAL (2.5%)
-                </button>
-            </form>
-
-            <div class="result-area" id="malResultArea">
-                <h3>Hasil Perhitungan Zakat Mal:</h3>
-                <div id="malResultContent">
-                    <p class="result-amount" id="malResultZakat">Rp 0</p>
-                    <p class="result-message" id="malResultMessage">Masukkan angka dan tekan hitung.</p>
-                </div>
+        <form id="zakatMalForm">
+          <div class="form-group">
+            <label for="nisabPrice"
+              ><span class="label-icon">💰</span> Harga Emas per Gram Hari
+              Ini</label
+            >
+            <div class="input-wrapper">
+              <span class="input-prefix">Rp</span>
+              <!-- Harga emas manual dengan contoh harga hari ini -->
+              <input
+                type="text"
+                id="nisabPrice"
+                value="1.250.000"
+                placeholder="1.250.000"
+                required
+              />
             </div>
-            
-        </div>
-
-        <!-- Zakat Fitrah Content -->
-        <div id="fitrah-content" class="tab-content calculator-card">
-            <h2>Kalkulator Zakat Fitrah</h2>
-
-            <form id="zakatFitrahForm">
-                <div class="form-group">
-                    <label for="ricePrice"><span class="label-icon">🍚</span> Harga Beras Rata-rata per Kilogram</label>
-                    <div class="input-wrapper">
-                        <span class="input-prefix">Rp</span>
-                        <input type="text" id="ricePrice" value="15.000" placeholder="15.000" required>
-                    </div>
-                    <div class="note">*Zakat Fitrah dihitung setara 2.5 kg makanan pokok per jiwa.</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="numPeople"><span class="label-icon">👨‍👩‍👧‍👦</span> Jumlah Jiwa yang Ditanggung</label>
-                     <div class="input-wrapper">
-                        <span class="input-prefix">Jiwa</span>
-                        <input type="number" id="numPeople" value="1" min="1" required style="text-align: left;">
-                    </div>
-                </div>
-
-                <button type="submit" class="calculate-btn" id="fitrahCalculateBtn">
-                    HITUNG ZAKAT FITRAH
-                </button>
-            </form>
-
-            <div class="result-area" id="fitrahResultArea">
-                <h3>Hasil Perhitungan Zakat Fitrah:</h3>
-                <div id="fitrahResultContent">
-                    <p class="result-amount" id="fitrahResultZakat">Rp 0</p>
-                    <p class="result-message" id="fitrahResultMessage">Masukkan data dan tekan hitung.</p>
-                </div>
+            <div class="note" id="nisabNote">
+              *Contoh harga emas 24 karat per gram:
+              <strong>Rp 1.250.000</strong>. Silakan update dengan harga terkini
+              dari toko emas terpercaya.
             </div>
+          </div>
 
+          <div class="form-group">
+            <label for="totalSavings"
+              ><span class="label-icon">💸</span> Total Tabungan/Harta yang
+              Dimiliki (sudah haul/setahun)</label
+            >
+            <div class="input-wrapper">
+              <span class="input-prefix">Rp</span>
+              <input
+                type="text"
+                id="totalSavings"
+                placeholder="Misal: 50.000.000"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Progress Bar untuk Zakat Mal -->
+          <div class="progress-container">
+            <div class="progress-bar" id="nisabProgress"></div>
+          </div>
+          <div class="progress-text" id="progressText">
+            Menuju batas nisab: 0%
+          </div>
+
+          <button type="button" class="calculate-btn" id="calculateMalBtn">
+            HITUNG ZAKAT MAL (2.5%)
+          </button>
+        </form>
+
+        <div class="result-area" id="malResultArea">
+          <h3>Hasil Perhitungan Zakat Mal:</h3>
+          <div id="malResultContent">
+            <p class="result-amount" id="malResultZakat">Rp 0</p>
+            <p class="result-message" id="malResultMessage">
+              Masukkan angka dan tekan hitung.
+            </p>
+          </div>
         </div>
-        
+      </div>
+
+      <!-- Zakat Fitrah Content -->
+      <div id="fitrah-content" class="tab-content calculator-card">
+        <h2>Kalkulator Zakat Fitrah</h2>
+
+        <form id="zakatFitrahForm">
+          <div class="form-group">
+            <label for="ricePrice"
+              ><span class="label-icon">🍚</span> Harga Beras Rata-rata per
+              Kilogram</label
+            >
+            <div class="input-wrapper">
+              <span class="input-prefix">Rp</span>
+              <input
+                type="text"
+                id="ricePrice"
+                value="15.000"
+                placeholder="15.000"
+                required
+              />
+            </div>
+            <div class="note">
+              *Zakat Fitrah dihitung setara 2.5 kg makanan pokok per jiwa.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="numPeople"
+              ><span class="label-icon">👨‍👩‍👧‍👦</span> Jumlah Jiwa yang
+              Ditanggung</label
+            >
+            <div class="input-wrapper">
+              <span class="input-prefix">Jiwa</span>
+              <input
+                type="number"
+                id="numPeople"
+                value="1"
+                min="1"
+                required
+                style="text-align: left"
+              />
+            </div>
+          </div>
+
+          <button type="button" class="calculate-btn" id="calculateFitrahBtn">
+            HITUNG ZAKAT FITRAH
+          </button>
+        </form>
+
+        <div class="result-area" id="fitrahResultArea">
+          <h3>Hasil Perhitungan Zakat Fitrah:</h3>
+          <div id="fitrahResultContent">
+            <p class="result-amount" id="fitrahResultZakat">Rp 0</p>
+            <p class="result-message" id="fitrahResultMessage">
+              Masukkan data dan tekan hitung.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-        // --- GLOBAL HELPER FUNCTIONS ---
+      // --- GLOBAL HELPER FUNCTIONS ---
 
-        // Fungsi untuk membersihkan dan memformat angka (menambahkan titik ribuan)
-        function formatInputAsRupiah(input) {
-            let value = input.value.replace(/[^0-9]/g, ''); 
-            if (value) {
-                input.value = new Intl.NumberFormat('id-ID').format(value);
-            } else {
-                input.value = '';
-            }
+      // Fungsi untuk membersihkan dan memformat angka (menambahkan titik ribuan)
+      function formatInputAsRupiah(input) {
+        // Simpan posisi kursor
+        const cursorPosition = input.selectionStart;
+        const originalLength = input.value.length;
+
+        let value = input.value.replace(/[^0-9]/g, "");
+        if (value) {
+          input.value = new Intl.NumberFormat("id-ID").format(value);
+
+          // Kembalikan posisi kursor dengan adjustment
+          const newLength = input.value.length;
+          const lengthDiff = newLength - originalLength;
+          const newPosition = cursorPosition + lengthDiff;
+          input.setSelectionRange(newPosition, newPosition);
+        } else {
+          input.value = "";
         }
+      }
 
-        // Fungsi untuk memformat angka hasil perhitungan ke format Rupiah (tanpa desimal)
-        function formatNumber(num) {
-            if (num === 0) return '0';
-            const roundedNum = Math.floor(num);
-            return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(roundedNum);
+      // Fungsi untuk memformat angka hasil perhitungan ke format Rupiah (tanpa desimal)
+      function formatNumber(num) {
+        if (num === 0) return "0";
+        const roundedNum = Math.floor(num);
+        return new Intl.NumberFormat("id-ID", {
+          maximumFractionDigits: 0,
+        }).format(roundedNum);
+      }
+
+      // Fungsi untuk update progress bar
+      function updateProgressBar(savings, threshold) {
+        const progressBar = document.getElementById("nisabProgress");
+        const progressText = document.getElementById("progressText");
+
+        const percentage = Math.min((savings / threshold) * 100, 100);
+        progressBar.style.width = percentage + "%";
+
+        if (percentage >= 100) {
+          progressText.textContent =
+            "🎉 Selamat! Anda telah mencapai batas nisab";
+          progressText.style.color = "var(--button-green)";
+        } else {
+          progressText.textContent = `Menuju batas nisab: ${Math.round(
+            percentage
+          )}%`;
+          progressText.style.color = "#bdc3c7";
         }
+      }
 
-        // --- POPUP FUNCTIONS ---
-        function showPopup(emoji, message) {
-            const popup = document.getElementById('popupMessage');
-            const overlay = document.getElementById('popupOverlay');
-            const popupEmoji = document.getElementById('popupEmoji');
-            const popupText = document.getElementById('popupText');
-            
-            popupEmoji.textContent = emoji;
-            popupText.textContent = message;
-            
-            // Show overlay and popup
-            overlay.classList.add('show');
-            popup.classList.add('show', 'bounce');
-            
-            // Auto hide after 3 seconds
-            setTimeout(() => {
-                hidePopup();
-            }, 3000);
-        }
+      // --- POPUP FUNCTIONS ---
+      function showPopup(emoji, message) {
+        const popup = document.getElementById("popupMessage");
+        const overlay = document.getElementById("popupOverlay");
+        const popupEmoji = document.getElementById("popupEmoji");
+        const popupText = document.getElementById("popupText");
 
-        function hidePopup() {
-            const popup = document.getElementById('popupMessage');
-            const overlay = document.getElementById('popupOverlay');
-            
-            popup.classList.remove('show', 'bounce');
-            overlay.classList.remove('show');
-        }
+        popupEmoji.textContent = emoji;
+        popupText.textContent = message;
 
-        // Close popup when clicking overlay
-        document.getElementById('popupOverlay').addEventListener('click', hidePopup);
+        // Show overlay and popup
+        overlay.classList.add("show");
+        popup.classList.add("show", "bounce");
 
-        // --- TAB NAVIGATION LOGIC ---
-        function showTab(tabName) {
-            const contents = document.querySelectorAll('.tab-content');
-            const buttons = document.querySelectorAll('.tab-button');
+        // Auto hide after 3 seconds
+        setTimeout(() => {
+          hidePopup();
+        }, 3000);
+      }
 
-            contents.forEach(content => content.classList.remove('active'));
-            buttons.forEach(button => button.classList.remove('active'));
+      function hidePopup() {
+        const popup = document.getElementById("popupMessage");
+        const overlay = document.getElementById("popupOverlay");
 
-            document.getElementById(tabName + '-content').classList.add('active');
-            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
-        }
+        popup.classList.remove("show", "bounce");
+        overlay.classList.remove("show");
+      }
 
-        // --- ZAKAT FITRAH LOGIC - DIPERBAIKI ---
-        document.getElementById('zakatFitrahForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Tombol Zakat Fitrah diklik!'); // Debug log
+      // Close popup when clicking overlay
+      document
+        .getElementById("popupOverlay")
+        .addEventListener("click", hidePopup);
 
-            const ricePriceText = document.getElementById('ricePrice').value;
-            const numPeople = parseInt(document.getElementById('numPeople').value);
-            
-            const ricePrice = parseFloat(ricePriceText.replace(/[^0-9]/g, ''));
-            const fitrahAmountKg = 2.5; // Batas Zakat Fitrah per jiwa (2.5 kg)
+      // --- TAB NAVIGATION LOGIC ---
+      function showTab(tabName) {
+        const contents = document.querySelectorAll(".tab-content");
+        const buttons = document.querySelectorAll(".tab-button");
 
-            const resultArea = document.getElementById('fitrahResultArea');
-            const resultContent = document.getElementById('fitrahResultContent');
-            
-            if (isNaN(ricePrice) || ricePrice <= 0 || isNaN(numPeople) || numPeople <= 0) {
-                resultContent.innerHTML = `
+        contents.forEach((content) => content.classList.remove("active"));
+        buttons.forEach((button) => button.classList.remove("active"));
+
+        document.getElementById(tabName + "-content").classList.add("active");
+        document
+          .querySelector(`[onclick="showTab('${tabName}')"]`)
+          .classList.add("active");
+      }
+
+      // --- ZAKAT FITRAH LOGIC - DIPERBAIKI ---
+      function calculateZakatFitrah() {
+        const ricePriceText = document.getElementById("ricePrice").value;
+        const numPeople = parseInt(document.getElementById("numPeople").value);
+
+        const ricePrice = parseFloat(ricePriceText.replace(/[^0-9]/g, ""));
+        const fitrahAmountKg = 2.5; // Batas Zakat Fitrah per jiwa (2.5 kg)
+
+        const resultArea = document.getElementById("fitrahResultArea");
+        const resultContent = document.getElementById("fitrahResultContent");
+
+        if (
+          isNaN(ricePrice) ||
+          ricePrice <= 0 ||
+          isNaN(numPeople) ||
+          numPeople <= 0
+        ) {
+          resultContent.innerHTML = `
                     <p class="result-amount" style="color: var(--button-red);">Rp 0</p>
                     <p class="result-message">Aduh! Angka yang kamu masukkan tidak valid.</p>
                 `;
-                return;
-            }
+          return;
+        }
 
-            // Perhitungan: Harga Beras * 2.5 kg * Jumlah Jiwa
-            const zakatAmount = ricePrice * fitrahAmountKg * numPeople;
-            
-            // Tampilkan Hasil dengan animasi
-            resultContent.innerHTML = `
-                <p class="result-amount" style="color: var(--button-green);">Rp ${formatNumber(zakatAmount)}</p>
-                <p class="result-message">Alhamdulillah! Total Zakat Fitrah untuk <strong>${numPeople} jiwa</strong> adalah senilai uang Rp ${formatNumber(zakatAmount)} (atau ${numPeople * fitrahAmountKg} kg beras).</p>
+        // Perhitungan: Harga Beras * 2.5 kg * Jumlah Jiwa
+        const zakatAmount = ricePrice * fitrahAmountKg * numPeople;
+
+        // Tampilkan Hasil dengan animasi
+        resultContent.innerHTML = `
+                <p class="result-amount" style="color: var(--button-green);">Rp ${formatNumber(
+                  zakatAmount
+                )}</p>
+                <p class="result-message">Alhamdulillah! Total Zakat Fitrah untuk <strong>${numPeople} jiwa</strong> adalah senilai uang Rp ${formatNumber(
+          zakatAmount
+        )} (atau ${numPeople * fitrahAmountKg} kg beras).</p>
             `;
-            
-            // Tambahkan animasi shadowbox
-            resultArea.classList.remove('fitrah-zakat');
-            setTimeout(() => {
-                resultArea.classList.add('fitrah-zakat');
-            }, 10);
 
-            // Show popup
-            showPopup("🕌", "Alhamdulillah! Siap tunaikan zakat fitrah!");
-        });
+        // Tambahkan animasi shadowbox
+        resultArea.classList.remove("fitrah-zakat");
+        setTimeout(() => {
+          resultArea.classList.add("fitrah-zakat");
+        }, 10);
 
-        // --- ZAKAT MAL LOGIC (Manual Input) - DIPERBARUI ---
-        document.getElementById('zakatMalForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Show popup
+        showPopup("🕌", "Alhamdulillah! Siap tunaikan zakat fitrah!");
+      }
 
-            const nisabValueText = document.getElementById('nisabPrice').value;
-            const savingsValueText = document.getElementById('totalSavings').value;
-            
-            const nisabPrice = parseFloat(nisabValueText.replace(/[^0-9]/g, ''));
-            const totalSavings = parseFloat(savingsValueText.replace(/[^0-9]/g, ''));
+      // --- ZAKAT MAL LOGIC (Manual Input) - DIPERBARUI ---
+      function calculateZakatMal() {
+        const nisabValueText = document.getElementById("nisabPrice").value;
+        const savingsValueText = document.getElementById("totalSavings").value;
 
-            const resultArea = document.getElementById('malResultArea');
-            const resultContent = document.getElementById('malResultContent');
+        const nisabPrice = parseFloat(nisabValueText.replace(/[^0-9]/g, ""));
+        const totalSavings = parseFloat(
+          savingsValueText.replace(/[^0-9]/g, "")
+        );
 
-            const nisabThreshold = nisabPrice * 85; 
-            const zakatPercentage = 0.025; 
+        const resultArea = document.getElementById("malResultArea");
+        const resultContent = document.getElementById("malResultContent");
 
-            if (isNaN(totalSavings) || totalSavings <= 0 || isNaN(nisabPrice) || nisabPrice <= 0) {
-                resultContent.innerHTML = `
+        const nisabThreshold = nisabPrice * 85;
+        const zakatPercentage = 0.025;
+
+        // Update progress bar
+        updateProgressBar(totalSavings, nisabThreshold);
+
+        if (
+          isNaN(totalSavings) ||
+          totalSavings <= 0 ||
+          isNaN(nisabPrice) ||
+          nisabPrice <= 0
+        ) {
+          resultContent.innerHTML = `
                     <p class="result-amount" style="color: var(--button-red);">Rp 0</p>
                     <p class="result-message">Aduh! Angka yang kamu masukkan tidak valid. Coba lagi ya!</p>
                 `;
-                return;
-            }
+          return;
+        }
 
-            // Reset result area
-            resultArea.classList.remove('wajib-zakat', 'belum-wajib');
+        // Reset result area
+        resultArea.classList.remove("wajib-zakat", "belum-wajib");
 
-            let zakatAmount = 0;
-            let isWajib = false;
+        let zakatAmount = 0;
+        let isWajib = false;
 
-            if (totalSavings >= nisabThreshold) {
-                zakatAmount = totalSavings * zakatPercentage;
-                isWajib = true;
-                
-                // Tampilkan hasil untuk WAJIB zakat
-                resultContent.innerHTML = `
-                    <p class="result-amount" style="color: var(--button-green);">Rp ${formatNumber(zakatAmount)}</p>
-                    <p class="result-message">🎉 <strong>WAJIB ZAKAT!</strong> Harta Anda (Rp ${formatNumber(totalSavings)}) telah melampaui Nisab (Rp ${formatNumber(nisabThreshold)}). Yuk, tunaikan zakat sebesar:</p>
+        if (totalSavings >= nisabThreshold) {
+          zakatAmount = totalSavings * zakatPercentage;
+          isWajib = true;
+
+          // Tampilkan hasil untuk WAJIB zakat
+          resultContent.innerHTML = `
+                    <p class="result-amount" style="color: var(--button-green);">Rp ${formatNumber(
+                      zakatAmount
+                    )}</p>
+                    <p class="result-message">🎉 <strong>WAJIB ZAKAT!</strong> Harta Anda (Rp ${formatNumber(
+                      totalSavings
+                    )}) telah melampaui Nisab (Rp ${formatNumber(
+            nisabThreshold
+          )}). Yuk, tunaikan zakat sebesar:</p>
                 `;
-                resultArea.classList.add('wajib-zakat');
-                
-                // Popup untuk yang WAJIB zakat
-                showPopup("🎊", "Alhamdulillah! Yuk tunaikan zakat!");
-                
-            } else {
-                const shortfall = nisabThreshold - totalSavings;
-                zakatAmount = 0;
-                isWajib = false;
-                
-                // Teks lucu random
-                const funnyTexts = [
-                    "Wah... kurang Rp {shortfall} nih!",
-                    "Aduh... masih kurang Rp {shortfall}!",
-                    "Yah... kurang Rp {shortfall} lagi!",
-                    "Waduh... Rp {shortfall} lagi nih!",
-                    "Hmm... kurang Rp {shortfall} aja kok!",
-                    "Oops... Rp {shortfall} lagi deh!"
-                ];
-                
-                const randomFunnyText = funnyTexts[Math.floor(Math.random() * funnyTexts.length)]
-                    .replace('{shortfall}', formatNumber(shortfall));
-                
-                // Tampilkan hasil untuk BELUM WAJIB zakat
-                resultContent.innerHTML = `
-                    <p class="shortfall-text">- Rp ${formatNumber(shortfall)}</p>
+          resultArea.classList.add("wajib-zakat");
+
+          // Popup untuk yang WAJIB zakat
+          showPopup("🎊", "Alhamdulillah! Yuk tunaikan zakat!");
+        } else {
+          const shortfall = nisabThreshold - totalSavings;
+          zakatAmount = 0;
+          isWajib = false;
+
+          // Teks lucu random
+          const funnyTexts = [
+            "Wah... kurang Rp {shortfall} nih!",
+            "Aduh... masih kurang Rp {shortfall}!",
+            "Yah... kurang Rp {shortfall} lagi!",
+            "Waduh... Rp {shortfall} lagi nih!",
+            "Hmm... kurang Rp {shortfall} aja kok!",
+            "Oops... Rp {shortfall} lagi deh!",
+          ];
+
+          const randomFunnyText = funnyTexts[
+            Math.floor(Math.random() * funnyTexts.length)
+          ].replace("{shortfall}", formatNumber(shortfall));
+
+          // Tampilkan hasil untuk BELUM WAJIB zakat - DIPERBAIKI dengan font yang sama
+          resultContent.innerHTML = `
+                    <p class="shortfall-text">- Rp ${formatNumber(
+                      shortfall
+                    )}</p>
                     <p class="funny-text">${randomFunnyText}</p>
-                    <p class="result-message">Nisab Anda adalah Rp ${formatNumber(nisabThreshold)}. Harta Anda masih kurang dari batas wajib zakat.</p>
+                    <p class="result-message">Nisab Anda adalah Rp ${formatNumber(
+                      nisabThreshold
+                    )}. Harta Anda masih kurang dari batas wajib zakat.</p>
                 `;
-                resultArea.classList.add('belum-wajib');
-                
-                // Popup LUCU untuk yang BELUM WAJIB zakat
-                const randomMessages = [
-                    { emoji: "💪", text: "Semangat kerja yaaa!" },
-                    { emoji: "🚀", text: "Ayo nabung lagi! Almost there!" },
-                    { emoji: "💰", text: "Sedikit lagi nih! Semangat menabung!" },
-                    { emoji: "🎯", text: "Target hampir tercapai! Gas poll!" },
-                    { emoji: "⚡", text: "Semangat cari rezeki!" }
-                ];
-                
-                const randomMsg = randomMessages[Math.floor(Math.random() * randomMessages.length)];
-                showPopup(randomMsg.emoji, randomMsg.text);
-            }
+          resultArea.classList.add("belum-wajib");
+
+          // Popup LUCU untuk yang BELUM WAJIB zakat
+          const randomMessages = [
+            { emoji: "💪", text: "Semangat kerja yaaa!" },
+            { emoji: "🚀", text: "Ayo nabung lagi! Almost there!" },
+            { emoji: "💰", text: "Sedikit lagi nih! Semangat menabung!" },
+            { emoji: "🎯", text: "Target hampir tercapai! Gas poll!" },
+            { emoji: "⚡", text: "Semangat cari rezeki!" },
+          ];
+
+          const randomMsg =
+            randomMessages[Math.floor(Math.random() * randomMessages.length)];
+          showPopup(randomMsg.emoji, randomMsg.text);
+        }
+      }
+
+      // Event listeners untuk memformat input dan update progress bar real-time
+      document
+        .getElementById("nisabPrice")
+        .addEventListener("input", function () {
+          formatInputAsRupiah(this);
+          // Update progress ketika harga emas berubah
+          updateProgressFromInputs();
         });
 
-        // Event listeners untuk memformat input
-        document.getElementById('nisabPrice').addEventListener('keyup', function() {
-            formatInputAsRupiah(this);
-        });
-        document.getElementById('totalSavings').addEventListener('keyup', function() {
-            formatInputAsRupiah(this);
-        });
-        document.getElementById('ricePrice').addEventListener('keyup', function() {
-            formatInputAsRupiah(this);
+      document
+        .getElementById("totalSavings")
+        .addEventListener("input", function () {
+          formatInputAsRupiah(this);
+          // Update progress ketika tabungan berubah
+          updateProgressFromInputs();
         });
 
-        // --- INISIALISASI ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Format nilai default saat halaman dimuat
-            formatInputAsRupiah(document.getElementById('nisabPrice'));
-            formatInputAsRupiah(document.getElementById('ricePrice'));
-            
-            // Inisialisasi pesan awal
-            document.getElementById('malResultMessage').textContent = "Masukkan angka dan tekan hitung.";
-            document.getElementById('fitrahResultMessage').textContent = "Masukkan data dan tekan hitung.";
-            
-            console.log('Zakat Fitrah form loaded successfully'); // Debug log
+      document
+        .getElementById("ricePrice")
+        .addEventListener("input", function () {
+          formatInputAsRupiah(this);
         });
 
+      // Event listeners untuk tombol hitung - DIPERBAIKI
+      document
+        .getElementById("calculateMalBtn")
+        .addEventListener("click", calculateZakatMal);
+      document
+        .getElementById("calculateFitrahBtn")
+        .addEventListener("click", calculateZakatFitrah);
+
+      // Event listeners untuk tombol navigasi (biarkan user bisa klik di mana saja di input)
+      document
+        .getElementById("nisabPrice")
+        .addEventListener("click", function (e) {
+          e.target.setSelectionRange(
+            e.target.value.length,
+            e.target.value.length
+          );
+        });
+
+      document
+        .getElementById("totalSavings")
+        .addEventListener("click", function (e) {
+          e.target.setSelectionRange(
+            e.target.value.length,
+            e.target.value.length
+          );
+        });
+
+      document
+        .getElementById("ricePrice")
+        .addEventListener("click", function (e) {
+          e.target.setSelectionRange(
+            e.target.value.length,
+            e.target.value.length
+          );
+        });
+
+      // Fungsi untuk update progress bar dari input
+      function updateProgressFromInputs() {
+        const nisabValueText = document.getElementById("nisabPrice").value;
+        const savingsValueText = document.getElementById("totalSavings").value;
+
+        const nisabPrice = parseFloat(nisabValueText.replace(/[^0-9]/g, ""));
+        const totalSavings = parseFloat(
+          savingsValueText.replace(/[^0-9]/g, "")
+        );
+
+        if (!isNaN(nisabPrice) && !isNaN(totalSavings) && nisabPrice > 0) {
+          const nisabThreshold = nisabPrice * 85;
+          updateProgressBar(totalSavings, nisabThreshold);
+        }
+      }
+
+      // --- INISIALISASI ---
+      document.addEventListener("DOMContentLoaded", () => {
+        // Format nilai default saat halaman dimuat
+        formatInputAsRupiah(document.getElementById("nisabPrice"));
+        formatInputAsRupiah(document.getElementById("ricePrice"));
+
+        // Inisialisasi pesan awal
+        document.getElementById("malResultMessage").textContent =
+          "Masukkan angka dan tekan hitung.";
+        document.getElementById("fitrahResultMessage").textContent =
+          "Masukkan data dan tekan hitung.";
+
+        // Inisialisasi progress bar
+        updateProgressFromInputs();
+      });
     </script>
-
-</body>
+  </body>
 </html>
