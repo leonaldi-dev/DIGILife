@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Calculator - Fun Edition</title>
+    <title>Super Calculator - Fun Edition</title>
     <!-- Memuat Font Poppins dan Fredoka One -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -18,6 +18,12 @@
             --op-blue-gray-shadow: #263849;
             --op-orange: #e67e22;
             --op-orange-shadow: #d35400;
+            --op-purple: #9b59b6;
+            --op-purple-shadow: #8e44ad;
+            --op-red: #e74c3c;
+            --op-red-shadow: #c0392b;
+            --op-blue: #3498db;
+            --op-blue-shadow: #2980b9;
         }
 
         * {
@@ -34,6 +40,14 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+        }
+
+        .calculator-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
         }
 
         .calculator {
@@ -114,6 +128,9 @@
             min-height: 70px;
             box-shadow: 0 5px var(--op-blue-gray-shadow); 
             line-height: 1; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         button:hover {
@@ -129,28 +146,39 @@
         
         /* === SKEMA WARNA TOMBOL KHUSUS === */
 
-        .operator {
-            background: #e74c3c;
-            box-shadow: 0 5px #b1372d;
+        /* Tombol Clear */
+        .clear {
+            background: var(--op-red);
+            box-shadow: 0 5px var(--op-red-shadow);
         }
-        .operator:hover { background: #c0392b; box-shadow: 0 9px #b1372d; }
-        .operator:active { box-shadow: 0 3px #b1372d; }
+        .clear:hover { background: #c0392b; box-shadow: 0 9px var(--op-red-shadow); }
+        .clear:active { box-shadow: 0 3px var(--op-red-shadow); }
         
-        /* Tombol + (plus) dengan warna oranye */
-        .plus {
+        /* Tombol Memory */
+        .memory {
+            background: var(--op-purple);
+            box-shadow: 0 5px var(--op-purple-shadow);
+            font-size: 1.2rem;
+        }
+        .memory:hover { background: #8e44ad; box-shadow: 0 9px var(--op-purple-shadow); }
+        .memory:active { box-shadow: 0 3px var(--op-purple-shadow); }
+        
+        /* Tombol Operator */
+        .operator {
             background: var(--op-orange);
             box-shadow: 0 5px var(--op-orange-shadow);
         }
-        .plus:hover { background: #f39c12; box-shadow: 0 9px var(--op-orange-shadow); }
-        .plus:active { box-shadow: 0 3px var(--op-orange-shadow); }
+        .operator:hover { background: #f39c12; box-shadow: 0 9px var(--op-orange-shadow); }
+        .operator:active { box-shadow: 0 3px var(--op-orange-shadow); }
         
-        /* Tombol +/-, C, CE menggunakan warna Clear */
-        .clear {
-            background: #d35400;
-            box-shadow: 0 5px #a04100;
+        /* Tombol Fungsi Khusus */
+        .function {
+            background: var(--op-blue);
+            box-shadow: 0 5px var(--op-blue-shadow);
+            font-size: 1.3rem;
         }
-        .clear:hover { background: #ff7f00; box-shadow: 0 9px #a04100; }
-        .clear:active { box-shadow: 0 3px #a04100; }
+        .function:hover { background: #2980b9; box-shadow: 0 9px var(--op-blue-shadow); }
+        .function:active { box-shadow: 0 3px var(--op-blue-shadow); }
         
         /* Tombol Equals */
         .equals {
@@ -171,8 +199,92 @@
             100% { box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); transform: scale(1); }
         }
 
+        /* Animasi Error */
+        .error-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
         .double {
             grid-column: span 2;
+        }
+
+        /* Panel History */
+        .history-panel {
+            background: #2c3e50;
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.1);
+            max-width: 400px;
+            width: 100%;
+            color: #ecf0f1;
+            display: none;
+        }
+
+        .history-panel h3 {
+            font-family: 'Fredoka One', cursive;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #ffcc00;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #1a252f;
+            border-radius: 10px;
+        }
+
+        .history-item {
+            padding: 8px;
+            border-bottom: 1px solid #34495e;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .clear-history {
+            background: #d35400;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+        }
+
+        .toggle-history {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+        }
+
+        /* Layout untuk desktop */
+        @media (min-width: 768px) {
+            .calculator-container {
+                flex-direction: row;
+                justify-content: center;
+            }
+            
+            .history-panel {
+                display: block;
+            }
         }
 
         @media (max-width: 480px) {
@@ -187,46 +299,72 @@
             .current-value {
                 font-size: 2rem;
             }
+            
+            .history-panel {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="calculator" id="calc">
-        <div class="display">
-            <!-- Tempat untuk Teks Operasi / Pesan Lucu -->
-            <div class="current-operation" id="operation"></div> 
-            <!-- Tempat untuk Nilai yang Sedang Diketik/Hasil -->
-            <div class="current-value" id="display">0</div>
+    <div class="calculator-container">
+        <div class="calculator" id="calc">
+            <div class="display">
+                <!-- Tempat untuk Teks Operasi / Pesan Lucu -->
+                <div class="current-operation" id="operation"></div> 
+                <!-- Tempat untuk Nilai yang Sedang Diketik/Hasil -->
+                <div class="current-value" id="display">0</div>
+            </div>
+            <div class="buttons">
+                <!-- Baris 1: Memory Functions -->
+                <button class="memory" onclick="memoryClear()">MC</button>
+                <button class="memory" onclick="memoryRecall()">MR</button>
+                <button class="memory" onclick="memoryAdd()">M+</button>
+                <button class="memory" onclick="memorySubtract()">M-</button>
+                
+                <!-- Baris 2: Clear Functions -->
+                <button class="clear" onclick="clearCalculator()">C</button>
+                <button class="clear" onclick="clearEntry()">CE</button>
+                <button class="function" onclick="backspace()">⌫</button>
+                <button class="function" onclick="toggleSign()">+/-</button>
+                
+                <!-- Baris 3: Fungsi Khusus dan Operator -->
+                <button class="function" onclick="calculatePercentage()">%</button>
+                <button class="function" onclick="calculateSquareRoot()">√</button>
+                <button class="operator" onclick="appendOperator('/')">/</button>
+                <button class="operator" onclick="appendOperator('*')">×</button>
+                
+                <!-- Baris 4: Angka 7-9 dan Operator -->
+                <button onclick="appendNumber('7')">7</button>
+                <button onclick="appendNumber('8')">8</button>
+                <button onclick="appendNumber('9')">9</button>
+                <button class="operator" onclick="appendOperator('-')">-</button>
+                
+                <!-- Baris 5: Angka 4-6 dan Operator -->
+                <button onclick="appendNumber('4')">4</button>
+                <button onclick="appendNumber('5')">5</button>
+                <button onclick="appendNumber('6')">6</button>
+                <button class="operator" onclick="appendOperator('+')">+</button>
+                
+                <!-- Baris 6: Angka 1-3 dan Equals -->
+                <button onclick="appendNumber('1')">1</button>
+                <button onclick="appendNumber('2')">2</button>
+                <button onclick="appendNumber('3')">3</button>
+                <button class="equals" onclick="calculate()" rowspan="2">=</button>
+                
+                <!-- Baris 7: Angka 0, Desimal, dan History -->
+                <button class="double" onclick="appendNumber('0')">0</button>
+                <button onclick="appendDecimal()">.</button>
+                <button class="function" onclick="toggleHistory()">Hist</button>
+            </div>
         </div>
-        <div class="buttons">
-            <!-- Baris 1: C, CE, +/-, Operator -->
-            <button class="clear" onclick="clearCalculator()">C</button>
-            <button class="clear" onclick="clearEntry()">CE</button>
-            <button class="clear" onclick="toggleSign()">+/-</button>
-            <button class="operator" onclick="appendOperator('/')">/</button>
-            
-            <!-- Baris 2: Angka 7-9 & Operator -->
-            <button onclick="appendNumber('7')">7</button>
-            <button onclick="appendNumber('8')">8</button>
-            <button onclick="appendNumber('9')">9</button>
-            <button class="operator" onclick="appendOperator('*')">×</button>
-            
-            <!-- Baris 3: Angka 4-6 & Operator -->
-            <button onclick="appendNumber('4')">4</button>
-            <button onclick="appendNumber('5')">5</button>
-            <button onclick="appendNumber('6')">6</button>
-            <button class="operator" onclick="appendOperator('-')">-</button>
-            
-            <!-- Baris 4: Angka 1-3 & Plus -->
-            <button onclick="appendNumber('1')">1</button>
-            <button onclick="appendNumber('2')">2</button>
-            <button onclick="appendNumber('3')">3</button>
-            <button class="plus" onclick="appendOperator('+')">+</button>
-            
-            <!-- Baris 5: Angka 0 & Desimal & Equals -->
-            <button class="double" onclick="appendNumber('0')">0</button>
-            <button onclick="appendDecimal()">.</button>
-            <button class="equals" onclick="calculate()">=</button>
+        
+        <div class="history-panel" id="historyPanel">
+            <h3>Riwayat Perhitungan</h3>
+            <div class="history-list" id="historyList">
+                <!-- Riwayat akan ditampilkan di sini -->
+            </div>
+            <button class="clear-history" onclick="clearHistory()">Hapus Riwayat</button>
         </div>
     </div>
 
@@ -271,6 +409,30 @@
                 "Tambah-tambahan yang menyenangkan!",
                 "Hasil penjumlahan yang cantik!",
                 "Wow, angka-angka ini cocok bertemu!"
+            ],
+            // Pesan khusus untuk pengurangan
+            subtraction: [
+                "➖ Pengurangan yang tepat!",
+                "Mengurangi dengan percaya diri!",
+                "Hasil pengurangan yang akurat!"
+            ],
+            // Pesan khusus untuk perkalian
+            multiplication: [
+                "✖️ Perkalian yang hebat!",
+                "Wow, angka-angka ini berkembang pesat!",
+                "Hasil perkalian yang mengesankan!"
+            ],
+            // Pesan khusus untuk pembagian
+            division: [
+                "➗ Pembagian yang sempurna!",
+                "Membagi dengan presisi!",
+                "Hasil pembagian yang tepat!"
+            ],
+            // Pesan untuk akar kuadrat
+            squareRoot: [
+                "√ Akar kuadrat yang elegan!",
+                "Mengambil akar dengan percaya diri!",
+                "Hasil akar kuadrat yang sempurna!"
             ]
         };
 
@@ -283,11 +445,18 @@
                 this.waitingForNewValue = false; // Flag untuk menunggu input angka kedua
                 this.errorMode = false;
                 this.clearMessage = false; // Flag untuk menghapus pesan lucu
+                this.memory = 0;
+                this.history = [];
                 
                 // Elemen DOM
                 this.displayElement = document.getElementById('display');
                 this.operationElement = document.getElementById('operation');
                 this.displayArea = document.querySelector('.display'); 
+                this.historyList = document.getElementById('historyList');
+                this.historyPanel = document.getElementById('historyPanel');
+                
+                // Load settings dari localStorage
+                this.loadSettings();
             }
 
             // --- DISPLAY & ANIMASI ---
@@ -317,6 +486,9 @@
 
             // Fungsi untuk memformat angka dengan koma sebagai pemisah ribuan
             formatNumber(inputNum) {
+                // Jika input adalah string kosong atau null
+                if (!inputNum && inputNum !== 0) return '0';
+                
                 const numString = String(inputNum); 
 
                 // Angka negatif
@@ -327,7 +499,12 @@
                 const [integerPart, decimalPart] = num.split('.');
 
                 // Format bagian integer dengan pemisah ribuan
-                const formattedInteger = parseFloat(integerPart).toLocaleString('id-ID', { maximumFractionDigits: 0 });
+                let formattedInteger;
+                try {
+                    formattedInteger = parseFloat(integerPart).toLocaleString('id-ID', { maximumFractionDigits: 0 });
+                } catch (e) {
+                    formattedInteger = integerPart;
+                }
 
                 // Gabungkan kembali
                 let result;
@@ -347,11 +524,16 @@
                 this.displayArea.classList.add('result-glow');
             }
             
+            animateError() {
+                this.displayArea.classList.remove('error-shake');
+                void this.displayArea.offsetWidth; 
+                this.displayArea.classList.add('error-shake');
+            }
+            
             // --- LOGIKA PESAN LUCU ---
 
             showFunMessage(result, isError = false, operator = '') {
                 let category;
-                const absResult = Math.abs(result);
                 
                 if (isError) {
                     category = 'error';
@@ -359,14 +541,25 @@
                     category = 'zero';
                 } else if (operator === '+') {
                     category = 'addition';
-                } else if (Number.isInteger(absResult) && String(absResult).length < 7) {
-                    category = 'integer';
-                } else if (absResult >= 100000) {
-                    category = 'large';
-                } else if (!Number.isInteger(result) && String(result).includes('.')) {
-                    category = 'decimal';
+                } else if (operator === '-') {
+                    category = 'subtraction';
+                } else if (operator === '*') {
+                    category = 'multiplication';
+                } else if (operator === '/') {
+                    category = 'division';
+                } else if (operator === '√') {
+                    category = 'squareRoot';
                 } else {
-                    return; 
+                    const absResult = Math.abs(result);
+                    if (Number.isInteger(absResult) && String(absResult).length < 7) {
+                        category = 'integer';
+                    } else if (absResult >= 100000) {
+                        category = 'large';
+                    } else if (!Number.isInteger(result) && String(result).includes('.')) {
+                        category = 'decimal';
+                    } else {
+                        return; 
+                    }
                 }
                 
                 const messages = funMessages[category];
@@ -394,8 +587,10 @@
                     this.waitingForNewValue = false;
                 } else {
                     // Batasi panjang angka untuk menghindari overflow display
-                    if (this.currentValue.length < 15) {
+                    if (this.currentValue.replace('-', '').replace('.', '').length < 15) {
                         this.currentValue = this.currentValue === '0' ? number : this.currentValue + number;
+                    } else {
+                        this.showMessage("🚫 Angka terlalu panjang!", true);
                     }
                 }
                 this.updateDisplay();
@@ -456,6 +651,46 @@
                     }
                 }
             }
+            
+            // Fungsi untuk menghapus karakter terakhir
+            backspace() {
+                if (this.errorMode || this.waitingForNewValue) return;
+                
+                if (this.currentValue.length === 1 || 
+                    (this.currentValue.length === 2 && this.currentValue.startsWith('-'))) {
+                    this.currentValue = '0';
+                } else {
+                    this.currentValue = this.currentValue.slice(0, -1);
+                }
+                this.updateDisplay();
+            }
+            
+            // Fungsi untuk menghitung persentase
+            calculatePercentage() {
+                if (this.errorMode) return;
+                const value = parseFloat(this.currentValue);
+                this.currentValue = String(value / 100);
+                this.updateDisplay();
+            }
+            
+            // Fungsi untuk menghitung akar kuadrat
+            calculateSquareRoot() {
+                if (this.errorMode) return;
+                const value = parseFloat(this.currentValue);
+                
+                if (value < 0) {
+                    this.showMessage("❌ Tidak bisa menghitung akar kuadrat dari angka negatif!", true);
+                    this.animateError();
+                    return;
+                }
+                
+                const result = Math.sqrt(value);
+                this.currentValue = String(result);
+                this.showFunMessage(result, false, '√');
+                this.animateResult();
+                this.addToHistory(`√${value} = ${result}`);
+                this.updateDisplay();
+            }
 
             performCalculation() {
                 const prev = parseFloat(this.previousValue);
@@ -493,6 +728,9 @@
                     this.currentValue = String(result);
                     this.showFunMessage(result, false, this.operator); // Kirim operator untuk pesan khusus
                     this.animateResult(); 
+                    
+                    // Tambahkan ke riwayat
+                    this.addToHistory(`${this.previousValue} ${this.operator} ${parseFloat(this.currentValue)} = ${result}`);
 
                     this.previousValue = '';
                     this.operator = '';
@@ -508,6 +746,112 @@
                 this.operator = '';
                 this.waitingForNewValue = true;
                 this.showFunMessage(null, true); 
+                this.animateError();
+                this.updateDisplay();
+            }
+            
+            // --- FUNGSI MEMORY ---
+            
+            memoryAdd() {
+                if (this.errorMode) return;
+                const value = parseFloat(this.currentValue);
+                if (!isNaN(value)) {
+                    this.memory += value;
+                    this.showMessage(`✓ Ditambahkan ke memory: ${this.formatNumber(value)}`, false);
+                    this.saveSettings();
+                }
+            }
+            
+            memorySubtract() {
+                if (this.errorMode) return;
+                const value = parseFloat(this.currentValue);
+                if (!isNaN(value)) {
+                    this.memory -= value;
+                    this.showMessage(`✓ Dikurangi dari memory: ${this.formatNumber(value)}`, false);
+                    this.saveSettings();
+                }
+            }
+            
+            memoryRecall() {
+                if (this.errorMode) return;
+                this.currentValue = String(this.memory);
+                this.updateDisplay();
+            }
+            
+            memoryClear() {
+                this.memory = 0;
+                this.showMessage("✓ Memory telah dihapus", false);
+                this.saveSettings();
+            }
+            
+            // --- FUNGSI RIWAYAT ---
+            
+            addToHistory(calculation) {
+                this.history.unshift(calculation);
+                // Batasi riwayat ke 10 item terakhir
+                if (this.history.length > 10) {
+                    this.history.pop();
+                }
+                this.updateHistoryDisplay();
+                this.saveSettings();
+            }
+            
+            updateHistoryDisplay() {
+                this.historyList.innerHTML = '';
+                this.history.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.textContent = item;
+                    this.historyList.appendChild(historyItem);
+                });
+            }
+            
+            clearHistory() {
+                this.history = [];
+                this.updateHistoryDisplay();
+                this.saveSettings();
+            }
+            
+            toggleHistory() {
+                this.historyPanel.style.display = this.historyPanel.style.display === 'none' ? 'block' : 'none';
+            }
+            
+            // --- FUNGSI SETTINGS & LOCAL STORAGE ---
+            
+            saveSettings() {
+                try {
+                    localStorage.setItem('calculatorMemory', this.memory);
+                    localStorage.setItem('calculatorHistory', JSON.stringify(this.history));
+                } catch (e) {
+                    console.log("Tidak bisa menyimpan settings: ", e);
+                }
+            }
+            
+            loadSettings() {
+                try {
+                    const savedMemory = localStorage.getItem('calculatorMemory');
+                    if (savedMemory) this.memory = parseFloat(savedMemory);
+                    
+                    const savedHistory = localStorage.getItem('calculatorHistory');
+                    if (savedHistory) this.history = JSON.parse(savedHistory);
+                    
+                    this.updateHistoryDisplay();
+                } catch (e) {
+                    console.log("Tidak bisa memuat settings: ", e);
+                }
+            }
+            
+            // --- FUNGSI UTILITAS ---
+            
+            showMessage(message, isError) {
+                this.operationElement.textContent = message;
+                this.operationElement.classList.add('fun-message');
+                this.clearMessage = true;
+                
+                if (isError) {
+                    this.animateError();
+                }
+                
                 this.updateDisplay();
             }
 
@@ -539,6 +883,15 @@
         function clearCalculator() { calculator.clearCalculator(); }
         function clearEntry() { calculator.clearEntry(); }
         function toggleSign() { calculator.toggleSign(); }
+        function backspace() { calculator.backspace(); }
+        function calculatePercentage() { calculator.calculatePercentage(); }
+        function calculateSquareRoot() { calculator.calculateSquareRoot(); }
+        function memoryAdd() { calculator.memoryAdd(); }
+        function memorySubtract() { calculator.memorySubtract(); }
+        function memoryRecall() { calculator.memoryRecall(); }
+        function memoryClear() { calculator.memoryClear(); }
+        function clearHistory() { calculator.clearHistory(); }
+        function toggleHistory() { calculator.toggleHistory(); }
 
         // 3. Dukungan Keyboard
         document.addEventListener('keydown', (event) => {
@@ -557,7 +910,9 @@
             } else if (key === 'Escape') {
                 clearCalculator();
             } else if (key === 'Backspace') {
-                clearEntry(); 
+                backspace(); 
+            } else if (key === '%') {
+                calculatePercentage();
             }
         });
         
@@ -566,6 +921,20 @@
                 event.preventDefault();
             }
         });
+        
+        // Sembunyikan panel riwayat di mobile secara default
+        window.addEventListener('resize', function() {
+            if (window.innerWidth < 768) {
+                calculator.historyPanel.style.display = 'none';
+            } else {
+                calculator.historyPanel.style.display = 'block';
+            }
+        });
+        
+        // Inisialisasi tampilan riwayat berdasarkan ukuran layar
+        if (window.innerWidth < 768) {
+            calculator.historyPanel.style.display = 'none';
+        }
     </script>
 </body>
 </html>
