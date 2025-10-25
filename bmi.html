@@ -2,29 +2,26 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- PERBAIKAN 1: VIEWPORT SAMA DENGAN PARENT -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kalkulator Indeks Massa Tubuh (BMI)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* Variabel Warna (Disesuaikan agar Konsisten dengan Proyek) */
         :root {
-            --primary-bg: #1f2a38; /* Body Background */
-            --secondary-bg: #2c3e50; /* Card Background */
-            --input-bg: #121c27; /* Input Background (Lebih gelap) */
+            --primary-bg: #1f2a38;
+            --secondary-bg: #2c3e50;
+            --input-bg: #121c27;
             --text-light: #ecf0f1;
-            --accent-purple: #9b59b6; /* Border/Focus Accent */
-            --logo-yellow: #f1c40f; /* Main Title Accent */
+            --accent-purple: #9b59b6;
+            --logo-yellow: #f1c40f;
             --error-red: #e74c3c;
-            --success-green: #38c172; /* Tombol Hitung & Ideal Status */
+            --success-green: #38c172;
             --warning-yellow: #ffc107;
             --info-blue: #3498db;
-            --original-orange: #ff9900; /* Tombol C/Reset */
+            --original-orange: #ff9900;
         }
 
-        /* Gaya Dasar */
         * {
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
@@ -32,52 +29,78 @@
             padding: 0;
         }
 
-        /* PERBAIKAN 2: BODY UNTUK IFRAME */
         body {
             background-color: var(--primary-bg);
-            /* PERBAIKAN: Hapus flex dan ganti dengan block */
             display: block;
             width: 100%;
             min-height: 100vh;
             padding: 20px 15px;
             margin: 0;
+            position: relative;
+        }
+
+        .particle-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(155, 89, 182, 0.3);
+            border-radius: 50%;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 0.5; }
+            50% { opacity: 0.2; }
+            100% { transform: translateY(-100vh); opacity: 0; }
         }
 
         .calculator-container {
             background-color: var(--secondary-bg);
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
             width: 100%;
             max-width: 100%;
             color: var(--text-light);
             overflow: hidden;
             border: 2px solid var(--accent-purple);
-            /* PERBAIKAN: Center container */
             margin: 0 auto;
+            animation: slideIn 0.8s ease-out;
+            will-change: opacity, transform;
         }
 
-        /* PERBAIKAN 3: MEDIA QUERY UNTUK LAYAR LEBIH BESAR */
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
         @media (min-width: 480px) {
             .calculator-container {
                 max-width: 400px;
             }
         }
 
-        /* PERBAIKAN: Menggunakan Flexbox untuk Judul */
         .header-title {
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-wrap: nowrap; /* Mencegah ikon pindah baris */
+            flex-wrap: nowrap;
             margin-bottom: 5px;
         }
 
         h1 {
             font-size: 1.5em;
-            margin: 0 10px; /* Jarak antara ikon dan teks */
+            margin: 0 10px;
             color: var(--logo-yellow);
             white-space: nowrap;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .subtitle {
@@ -88,10 +111,9 @@
             font-weight: 600;
         }
 
-
-        /* Input Styling */
         .input-area {
             margin-bottom: 15px;
+            position: relative;
         }
 
         label {
@@ -99,6 +121,7 @@
             margin-bottom: 5px;
             font-weight: 600;
             color: var(--info-blue);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         input[type="number"], 
@@ -107,20 +130,40 @@
             padding: 12px 10px;
             border: 2px solid var(--accent-purple);
             border-radius: 8px;
-            background-color: var(--input-bg); 
+            background-color: var(--input-bg);
             color: var(--text-light);
             font-size: 1em;
             appearance: none;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s ease;
+        }
+
+        input[type="number"]:hover, select:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(155, 89, 182, 0.5);
         }
 
         input[type="number"]:focus, select:focus {
             outline: none;
             border-color: var(--logo-yellow);
-            box-shadow: 0 0 10px rgba(155, 89, 182, 0.8);
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.8);
+            transform: scale(1.03);
         }
 
-        /* Tombol Styling */
+        .input-error {
+            border-color: var(--error-red) !important;
+        }
+
+        .input-valid::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--success-green);
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
         .button-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -132,25 +175,46 @@
             padding: 15px;
             font-size: 1.1em;
             font-weight: 700;
-            border: 2px solid transparent; /* Border default transparan */
+            border: 2px solid transparent;
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.3s; 
+            transition: all 0.3s ease;
             color: var(--text-light);
+            position: relative;
+            overflow: hidden;
+            will-change: transform, box-shadow;
+        }
+
+        .button-grid button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .button-grid button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .button-grid button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            border-color: var(--accent-purple); /* Tambahan bingkai ungu saat hover */
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            border-color: var(--accent-purple);
         }
+
         .button-grid button:active {
-             transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .btn-action {
-            /* Warna Oranye Asli */
-            background-color: var(--original-orange); 
+            background-color: var(--original-orange);
         }
 
         .btn-action:hover {
@@ -158,24 +222,23 @@
         }
 
         .btn-calculate {
-            /* Warna Hijau Asli */
-            background-color: var(--success-green); 
+            background-color: var(--success-green);
         }
 
         .btn-calculate:hover {
             background-color: #27ae60;
         }
 
-        /* Area Hasil */
         .result-area {
             text-align: center;
             margin-top: 25px;
             padding: 15px;
             background-color: var(--input-bg);
             border-radius: 8px;
-            opacity: 0; 
-            transform: translateY(20px); 
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out, box-shadow 0.3s ease; 
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out, box-shadow 0.3s ease;
+            will-change: opacity, transform, box-shadow;
         }
 
         .result-area.show {
@@ -183,46 +246,52 @@
             transform: translateY(0);
         }
 
-        /* --- KEYFRAMES UNTUK EFEK KEDIP HALUS --- */
         @keyframes pulsate-ideal {
-            0% { box-shadow: 0 0 15px var(--success-green), 0 0 20px rgba(56, 193, 114, 0.4); }
-            50% { box-shadow: 0 0 10px var(--success-green), 0 0 15px rgba(56, 193, 114, 0.1); }
-            100% { box-shadow: 0 0 15px var(--success-green), 0 0 20px rgba(56, 193, 114, 0.4); }
+            0% { box-shadow: 0 0 10px var(--success-green); }
+            50% { box-shadow: 0 0 5px var(--success-green); }
+            100% { box-shadow: 0 0 10px var(--success-green); }
         }
 
         @keyframes pulsate-kurang-ideal {
-            0% { box-shadow: 0 0 15px var(--error-red), 0 0 20px rgba(231, 76, 60, 0.7); }
-            50% { box-shadow: 0 0 10px var(--error-red), 0 0 15px rgba(231, 76, 60, 0.3); }
-            100% { box-shadow: 0 0 15px var(--error-red), 0 0 20px rgba(231, 76, 60, 0.7); }
+            0% { box-shadow: 0 0 10px var(--error-red); }
+            50% { box-shadow: 0 0 5px var(--error-red); }
+            100% { box-shadow: 0 0 10px var(--error-red); }
         }
 
         @keyframes pulsate-waspada {
-            0% { box-shadow: 0 0 15px var(--warning-yellow), 0 0 20px rgba(241, 196, 15, 0.7); }
-            50% { box-shadow: 0 0 10px var(--warning-yellow), 0 0 15px rgba(241, 196, 15, 0.3); }
-            100% { box-shadow: 0 0 15px var(--warning-yellow), 0 0 20px rgba(241, 196, 15, 0.7); }
+            0% { box-shadow: 0 0 10px var(--warning-yellow); }
+            50% { box-shadow: 0 0 5px var(--warning-yellow); }
+            100% { box-shadow: 0 0 10px var(--warning-yellow); }
         }
-        /* --- AKHIR KEYFRAMES --- */
 
-        /* PENGGUNAAN ANIMASI PADA STATUS */
+        @media (prefers-reduced-motion: reduce) {
+            .calculator-container, .result-area, .tips-area, .bmi-meter-indicator, .button-grid button {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
         .result-area.status-ideal {
             border: 1px solid var(--success-green);
             animation: pulsate-ideal 3s ease-in-out infinite;
         }
+
         .result-area.status-kurang-ideal {
             border: 1px solid var(--error-red);
             animation: pulsate-kurang-ideal 3s ease-in-out infinite;
         }
+
         .result-area.status-waspada {
             border: 1px solid var(--warning-yellow);
             animation: pulsate-waspada 3s ease-in-out infinite;
         }
-        /* AKHIR CSS SHADOW STATUS */
 
         #bmi-value {
             font-size: 2.5em;
             font-weight: 800;
-            color: var(--logo-yellow); 
+            color: var(--logo-yellow);
             margin: 5px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         #bb-difference {
@@ -231,16 +300,16 @@
             margin-top: 8px;
         }
 
-        /* Area Tips */
         .tips-area {
             margin-top: 20px;
             padding: 15px;
             border-radius: 8px;
             background-color: var(--input-bg);
-            border-left: 5px solid var(--info-blue); 
-            opacity: 0; 
-            transform: translateY(20px); 
-            transition: opacity 0.5s ease-out, transform 0.5s ease-out; 
+            border-left: 5px solid var(--info-blue);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            will-change: opacity, transform;
         }
 
         .tips-area.show {
@@ -250,13 +319,13 @@
         
         .tips-area h2 {
             font-size: 1.2em;
-            color: var(--info-blue); 
+            color: var(--info-blue);
             margin-bottom: 10px;
         }
         
         .tips-area p {
-             font-size: 0.9em;
-             line-height: 1.4;
+            font-size: 0.9em;
+            line-height: 1.4;
         }
         
         .error-message {
@@ -266,7 +335,155 @@
             min-height: 20px;
         }
         
-        /* PERBAIKAN 4: RESPONSIVE UNTUK IFRAME */
+        .bmi-meter-container {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: var(--input-bg);
+            border-radius: 8px;
+            border: 1px solid var(--accent-purple);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .bmi-meter-container:hover {
+            box-shadow: 0 0 20px rgba(155, 89, 182, 0.5);
+        }
+        
+        .bmi-meter-title {
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--logo-yellow);
+            font-size: 1.1em;
+        }
+        
+        .bmi-meter {
+            height: 30px;
+            background: linear-gradient(to right, 
+                #3498db 0%, #3498db 28%, 
+                #2ecc71 30%, #2ecc71 50%, 
+                #f1c40f 50%, #f1c40f 65%, 
+                #e74c3c 65%, #e74c3c 85%, 
+                #8e44ad 85%, #8e44ad 100%);
+            border-radius: 15px;
+            position: relative;
+            margin-bottom: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .bmi-meter-indicator {
+            position: absolute;
+            top: -5px;
+            width: 3px;
+            height: 40px;
+            background-color: white;
+            box-shadow: 0 0 5px rgba(255,255,255,0.8);
+            z-index: 10;
+            transition: left 1s ease-in-out;
+            animation: pulseIndicator 2s ease-in-out infinite;
+            will-change: left, box-shadow;
+        }
+
+        @keyframes pulseIndicator {
+            0% { box-shadow: 0 0 5px rgba(255,255,255,0.8); transform: scaleY(1); }
+            50% { box-shadow: 0 0 10px rgba(255,255,255,1); transform: scaleY(1.1); }
+            100% { box-shadow: 0 0 5px rgba(255,255,255,0.8); transform: scaleY(1); }
+        }
+        
+        .bmi-meter-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75em;
+            color: #bdc3c7;
+            margin-top: 5px;
+        }
+        
+        .bmi-meter-categories {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.7em;
+        }
+        
+        .bmi-category {
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            flex: 1;
+            margin: 0 2px;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .bmi-category:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(155, 89, 182, 0.5);
+        }
+        
+        .category-underweight {
+            background-color: rgba(52, 152, 219, 0.3);
+            color: #3498db;
+        }
+        
+        .category-normal {
+            background-color: rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+        
+        .category-overweight {
+            background-color: rgba(241, 196, 15, 0.3);
+            color: #f1c40f;
+        }
+        
+        .category-obese {
+            background-color: rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+        
+        .category-extreme-obese {
+            background-color: rgba(142, 68, 173, 0.3);
+            color: #8e44ad;
+        }
+        
+        .bmi-details {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            font-size: 0.85em;
+        }
+        
+        .bmi-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .bmi-detail-label {
+            color: #bdc3c7;
+        }
+        
+        .bmi-detail-value {
+            font-weight: 600;
+        }
+
+        .bmi-chart-container {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: var(--input-bg);
+            border-radius: 8px;
+            border: 1px solid var(--accent-purple);
+            display: none;
+        }
+
+        .bmi-chart-container.show {
+            display: block;
+        }
+
+        #bmi-chart {
+            max-height: 200px;
+        }
+        
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -292,9 +509,21 @@
             .subtitle {
                 font-size: 1em;
             }
+            
+            .bmi-meter-categories {
+                flex-wrap: wrap;
+            }
+            
+            .bmi-category {
+                flex: 0 0 48%;
+                margin-bottom: 5px;
+            }
+
+            #bmi-chart {
+                max-height: 150px;
+            }
         }
 
-        /* PERBAIKAN 5: SANGAT KECIL */
         @media (max-width: 360px) {
             .calculator-container {
                 padding: 15px;
@@ -308,15 +537,16 @@
                 font-size: 1.2em;
                 margin: 5px 0;
             }
+            
+            .bmi-category {
+                flex: 0 0 100%;
+            }
         }
-
     </style>
 </head>
-<!-- PERBAIKAN 6: HAPUS PADDING DARI BODY -->
 <body>
-
+    <div class="particle-background" id="particle-background"></div>
     <div class="calculator-container">
-        <!-- PERBAIKAN: Memisahkan Judul Utama dan Subjudul (BMI) -->
         <div class="header-title">
             <i class="fas fa-scale-unbalanced-flip" style="color: var(--logo-yellow); font-size: 1.5em;"></i> 
             <h1>Indeks Massa Tubuh</h1>
@@ -326,18 +556,17 @@
         
         <div class="input-area">
             <label for="tinggi">Tinggi Badan (cm):</label>
-            <!-- Menggunakan min/max untuk validasi dasar -->
-            <input type="number" id="tinggi" placeholder="Contoh: 170" required min="100" max="250" oninput="validateInput(this)">
+            <input type="number" id="tinggi" placeholder="Contoh: 170" required min="100" max="250">
         </div>
         
         <div class="input-area">
             <label for="berat">Berat Badan (kg):</label>
-            <input type="number" id="berat" placeholder="Contoh: 65" required min="20" max="300" oninput="validateInput(this)">
+            <input type="number" id="berat" placeholder="Contoh: 65" required min="20" max="300">
         </div>
 
         <div class="input-area">
             <label for="usia">Usia (Tahun):</label>
-            <input type="number" id="usia" placeholder="Contoh: 30" required min="1" max="120" oninput="validateInput(this)">
+            <input type="number" id="usia" placeholder="Contoh: 30" required min="1" max="120">
         </div>
 
         <div class="input-area">
@@ -349,11 +578,9 @@
             </select>
         </div>
         
-        <!-- Area Pesan Error Custom -->
         <p id="custom-error" class="error-message"></p>
 
         <div class="button-grid">
-            <!-- Warna Oranye Asli dan Efek Bingkai Ungu Saat Hover Tetap Ada -->
             <button class="btn-action" onclick="clearInputs()">RESET</button>
             <button class="btn-calculate" onclick="calculateBMI()">HITUNG BMI</button>
         </div>
@@ -365,181 +592,614 @@
             <p id="bb-difference"></p>
         </div>
 
-        <!-- Area Tips Kesehatan (Tetap dipertahankan) -->
+        <div class="bmi-meter-container" id="bmi-meter-container" style="display:none;">
+            <div class="bmi-meter-title">
+                <i class="fas fa-chart-line"></i> Skala BMI Anda
+            </div>
+            <div class="bmi-meter">
+                <div class="bmi-meter-indicator" id="bmi-indicator"></div>
+            </div>
+            <div class="bmi-meter-labels">
+                <span>Kurus</span>
+                <span>Normal</span>
+                <span>Gemuk</span>
+                <span>Obesitas</span>
+                <span>Obesitas Ekstrem</span>
+            </div>
+            <div class="bmi-meter-categories">
+                <div class="bmi-category category-underweight">Kurus<br>&lt; 18.5</div>
+                <div class="bmi-category category-normal">Normal<br>18.5 - 24.9</div>
+                <div class="bmi-category category-overweight">Gemuk<br>25 - 29.9</div>
+                <div class="bmi-category category-obese">Obesitas<br>30 - 39.9</div>
+                <div class="bmi-category category-extreme-obese">Obesitas Ekstrem<br>&gt; 40</div>
+            </div>
+            <div class="bmi-details" id="bmi-details">
+                <div class="bmi-detail-row">
+                    <span class="bmi-detail-label">Kategori BMI:</span>
+                    <span class="bmi-detail-value" id="detail-category">-</span>
+                </div>
+                <div class="bmi-detail-row">
+                    <span class="bmi-detail-label">Rentang Ideal:</span>
+                    <span class="bmi-detail-value" id="detail-ideal-range">-</span>
+                </div>
+                <div class="bmi-detail-row">
+                    <span class="bmi-detail-label">Risiko Kesehatan:</span>
+                    <span class="bmi-detail-value" id="detail-risk">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bmi-chart-container" id="bmi-chart-container">
+            <canvas id="bmi-chart"></canvas>
+        </div>
+
         <div class="tips-area" id="tips-area" style="display:none;">
             <h2><i class="fas fa-hand-holding-heart"></i> Tips Kesehatan:</h2>
             <p id="tips-content"></p>
         </div>
-
     </div>
     <script>
-        // Fungsi pengganti alert() untuk validasi
+        // Cache DOM elements
+        const cacheDOM = {
+            particleBackground: document.getElementById('particle-background'),
+            tinggi: document.getElementById('tinggi'),
+            berat: document.getElementById('berat'),
+            usia: document.getElementById('usia'),
+            jenis_kelamin: document.getElementById('jenis_kelamin'),
+            customError: document.getElementById('custom-error'),
+            bmiValue: document.getElementById('bmi-value'),
+            bmiStatus: document.getElementById('bmi-status'),
+            bbDifference: document.getElementById('bb-difference'),
+            resultArea: document.querySelector('.result-area'),
+            tipsArea: document.getElementById('tips-area'),
+            tipsContent: document.getElementById('tips-content'),
+            bmiMeterContainer: document.getElementById('bmi-meter-container'),
+            bmiIndicator: document.getElementById('bmi-indicator'),
+            detailCategory: document.getElementById('detail-category'),
+            detailIdealRange: document.getElementById('detail-ideal-range'),
+            detailRisk: document.getElementById('detail-risk'),
+            bmiChartContainer: document.getElementById('bmi-chart-container'),
+            bmiChartCanvas: document.getElementById('bmi-chart')
+        };
+
+        // Debounce function
+        function debounce(fn, delay) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn.apply(this, args), delay);
+            };
+        }
+
+        // Particle Animation
+        let animationFrame;
+        function createParticles() {
+            const { particleBackground } = cacheDOM;
+            const particleCount = window.innerWidth < 480 ? 10 : 15;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = `${Math.random() * 5 + 2}px`;
+                particle.style.height = particle.style.width;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 10}s`;
+                particleBackground.appendChild(particle);
+            }
+            if (!document.hidden) {
+                animateParticles();
+            }
+        }
+
+        function animateParticles() {
+            const particles = document.querySelectorAll('.particle');
+            function update() {
+                particles.forEach(particle => {
+                    let top = parseFloat(particle.style.top);
+                    if (top <= -10) {
+                        particle.remove();
+                        const newParticle = document.createElement('div');
+                        newParticle.className = 'particle';
+                        newParticle.style.width = `${Math.random() * 5 + 2}px`;
+                        newParticle.style.height = newParticle.style.width;
+                        newParticle.style.left = `${Math.random() * 100}%`;
+                        newParticle.style.top = '100%';
+                        newParticle.style.animationDelay = `${Math.random() * 10}s`;
+                        particleBackground.appendChild(newParticle);
+                    }
+                });
+                animationFrame = requestAnimationFrame(update);
+            }
+            update();
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                cancelAnimationFrame(animationFrame);
+            } else {
+                animateParticles();
+            }
+        });
+
+        window.onload = createParticles;
+
+        // Lazy Load Chart.js and Annotation Plugin with Fallback and Retry
+        let bmiChart = null;
+        let chartJSLoaded = false;
+        let annotationPluginLoaded = false;
+
+        function loadScript(src, fallbackSrc, onSuccess, onError, retries = 3, retryDelay = 1000) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            script.onload = () => {
+                console.log(`${src} loaded successfully.`);
+                onSuccess();
+            };
+            script.onerror = () => {
+                console.warn(`Failed to load ${src}. Retries left: ${retries}`);
+                if (retries > 0) {
+                    setTimeout(() => {
+                        loadScript(src, fallbackSrc, onSuccess, onError, retries - 1, retryDelay);
+                    }, retryDelay);
+                } else if (fallbackSrc) {
+                    console.log(`Attempting fallback: ${fallbackSrc}`);
+                    const fallbackScript = document.createElement('script');
+                    fallbackScript.src = fallbackSrc;
+                    fallbackScript.async = true;
+                    fallbackScript.onload = () => {
+                        console.log(`${fallbackSrc} loaded successfully.`);
+                        onSuccess();
+                    };
+                    fallbackScript.onerror = () => {
+                        console.error(`Failed to load fallback ${fallbackSrc}.`);
+                        onError();
+                    };
+                    document.head.appendChild(fallbackScript);
+                } else {
+                    onError();
+                }
+            };
+            document.head.appendChild(script);
+        }
+
+        function loadChartJS(callback) {
+            if (chartJSLoaded && annotationPluginLoaded) {
+                callback();
+                return;
+            }
+
+            const chartJSSrc = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+            const chartJSFallback = '/js/chart.min.js';
+            const annotationSrc = 'https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js';
+            const annotationFallback = '/js/chartjs-plugin-annotation.min.js';
+
+            loadScript(chartJSSrc, chartJSFallback, () => {
+                chartJSLoaded = true;
+                loadScript(annotationSrc, annotationFallback, () => {
+                    annotationPluginLoaded = true;
+                    callback();
+                }, () => {
+                    displayError('⚠️ Gagal memuat plugin grafik. Grafik BMI tidak dapat ditampilkan.');
+                    console.error('Failed to load Chart.js Annotation Plugin.');
+                });
+            }, () => {
+                displayError('⚠️ Gagal memuat pustaka grafik. Grafik BMI tidak dapat ditampilkan.');
+                console.error('Failed to load Chart.js.');
+            });
+        }
+
+        function updateBMIChart(bmi) {
+            const { bmiChartContainer, bmiChartCanvas } = cacheDOM;
+            loadChartJS(() => {
+                if (bmiChart) {
+                    bmiChart.destroy();
+                }
+                if (typeof Chart === 'undefined' || typeof Chart.register === 'undefined') {
+                    displayError('⚠️ Pustaka grafik tidak tersedia. Grafik BMI tidak dapat ditampilkan.');
+                    console.error('Chart.js not available.');
+                    return;
+                }
+                try {
+                    Chart.register({
+                        id: 'annotation',
+                        beforeInit: function(chart) {
+                            if (typeof ChartAnnotation !== 'undefined') {
+                                chart.options.plugins.annotation = chart.options.plugins.annotation || {};
+                            }
+                        }
+                    });
+                    bmiChart = new Chart(bmiChartCanvas.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: Array.from({length: 51}, (_, i) => i), // 0 to 50
+                            datasets: [{
+                                label: 'BMI Anda',
+                                data: [{x: bmi, y: 1}],
+                                backgroundColor: getBMIPointColor(bmi),
+                                borderColor: getBMIPointColor(bmi),
+                                pointRadius: 8,
+                                pointHoverRadius: 10,
+                                showLine: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    type: 'linear',
+                                    min: 0,
+                                    max: 50,
+                                    title: { display: true, text: 'Nilai BMI', color: '#bdc3c7', font: { size: 12 } },
+                                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                                    ticks: { color: '#bdc3c7', stepSize: 5 }
+                                },
+                                y: {
+                                    min: 0,
+                                    max: 2,
+                                    display: false
+                                }
+                            },
+                            plugins: {
+                                legend: { display: false },
+                                title: {
+                                    display: true,
+                                    text: 'Posisi BMI Anda dalam Rentang Kategori',
+                                    color: '#f1c40f',
+                                    font: { size: 14, weight: '600' }
+                                },
+                                annotation: {
+                                    annotations: {
+                                        line1: {
+                                            type: 'line',
+                                            xMin: 18.5,
+                                            xMax: 18.5,
+                                            borderColor: '#3498db',
+                                            borderWidth: 2,
+                                            label: {
+                                                content: 'Kurus (<18.5)',
+                                                position: 'top',
+                                                yAdjust: -10,
+                                                backgroundColor: 'rgba(52, 152, 219, 0.8)',
+                                                color: '#fff',
+                                                font: { size: 10 }
+                                            }
+                                        },
+                                        line2: {
+                                            type: 'line',
+                                            xMin: 25,
+                                            xMax: 25,
+                                            borderColor: '#2ecc71',
+                                            borderWidth: 2,
+                                            label: {
+                                                content: 'Normal (18.5-24.9)',
+                                                position: 'top',
+                                                yAdjust: -10,
+                                                backgroundColor: 'rgba(46, 204, 113, 0.8)',
+                                                color: '#fff',
+                                                font: { size: 10 }
+                                            }
+                                        },
+                                        line3: {
+                                            type: 'line',
+                                            xMin: 30,
+                                            xMax: 30,
+                                            borderColor: '#f1c40f',
+                                            borderWidth: 2,
+                                            label: {
+                                                content: 'Gemuk (25-29.9)',
+                                                position: 'top',
+                                                yAdjust: -10,
+                                                backgroundColor: 'rgba(241, 196, 15, 0.8)',
+                                                color: '#fff',
+                                                font: { size: 10 }
+                                            }
+                                        },
+                                        line4: {
+                                            type: 'line',
+                                            xMin: 40,
+                                            xMax: 40,
+                                            borderColor: '#e74c3c',
+                                            borderWidth: 2,
+                                            label: {
+                                                content: 'Obesitas (30-39.9)',
+                                                position: 'top',
+                                                yAdjust: -10,
+                                                backgroundColor: 'rgba(231, 76, 60, 0.8)',
+                                                color: '#fff',
+                                                font: { size: 10 }
+                                            }
+                                        },
+                                        line5: {
+                                            type: 'line',
+                                            xMin: 50,
+                                            xMax: 50,
+                                            borderColor: '#8e44ad',
+                                            borderWidth: 2,
+                                            label: {
+                                                content: 'Obesitas Ekstrem (>40)',
+                                                position: 'top',
+                                                yAdjust: -10,
+                                                backgroundColor: 'rgba(142, 68, 173, 0.8)',
+                                                color: '#fff',
+                                                font: { size: 10 }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    bmiChartContainer.classList.add('show');
+                } catch (e) {
+                    displayError('⚠️ Terjadi kesalahan saat membuat grafik BMI. Coba lagi nanti.');
+                    console.error('Error creating chart:', e);
+                }
+            });
+        }
+
+        function getBMIPointColor(bmi) {
+            if (bmi < 18.5) return '#3498db';
+            if (bmi < 25) return '#2ecc71';
+            if (bmi < 30) return '#f1c40f';
+            if (bmi < 40) return '#e74c3c';
+            return '#8e44ad';
+        }
+
         function displayError(message) {
-            const errorElement = document.getElementById('custom-error');
-            errorElement.textContent = message;
+            cacheDOM.customError.textContent = message;
         }
 
-        // Fungsi untuk validasi input (menghapus error saat diubah)
         function validateInput(input) {
+            const value = parseFloat(input.value);
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            
+            input.classList.remove('input-error', 'input-valid');
             displayError('');
+
+            if (input.value === '') return;
+            
+            if (isNaN(value) || value < min || value > max) {
+                input.classList.add('input-error');
+                displayError(`⚠️ ${input.previousElementSibling.textContent} harus antara ${min} dan ${max}.`);
+            } else {
+                input.classList.add('input-valid');
+            }
         }
 
-        // Fungsi untuk menghapus class status (agar shadow boxnya tidak menumpuk)
+        const debouncedValidateInput = debounce(validateInput, 300);
+
+        cacheDOM.tinggi.addEventListener('input', function() { debouncedValidateInput(this); });
+        cacheDOM.berat.addEventListener('input', function() { debouncedValidateInput(this); });
+        cacheDOM.usia.addEventListener('input', function() { debouncedValidateInput(this); });
+
         function clearStatusClasses(element) {
             element.classList.remove('status-ideal', 'status-kurang-ideal', 'status-waspada');
         }
 
-        // Fungsi utama untuk menghitung BMI
+        function updateBMIMeter(bmi) {
+            const { bmiMeterContainer, bmiIndicator, detailCategory, detailIdealRange, detailRisk } = cacheDOM;
+            
+            let indicatorPosition = 0;
+            let category = '';
+            let risk = '';
+            let idealRange = '18.5 - 24.9';
+            
+            const maxBMI = 50;
+            const bmiClamped = Math.min(bmi, maxBMI);
+            
+            if (bmi < 18.5) {
+                indicatorPosition = (bmi / 18.5) * 28;
+                if (bmi > 18) indicatorPosition = Math.min(indicatorPosition, 27.5);
+                category = 'Kurus (Underweight)';
+                risk = 'Risiko kekurangan gizi';
+            } else if (bmi < 25) {
+                indicatorPosition = 30 + ((bmi - 18.5) / (25 - 18.5)) * 20;
+                category = 'Normal (Ideal)';
+                risk = 'Risiko kesehatan rendah';
+            } else if (bmi < 30) {
+                indicatorPosition = 50 + ((bmi - 25) / (30 - 25)) * 15;
+                category = 'Gemuk (Overweight)';
+                risk = 'Risiko kesehatan meningkat';
+            } else if (bmi < 40) {
+                indicatorPosition = 65 + ((bmi - 30) / (40 - 30)) * 20;
+                category = 'Obesitas';
+                risk = 'Risiko kesehatan tinggi';
+            } else {
+                indicatorPosition = 85 + ((bmiClamped - 40) / (maxBMI - 40)) * 15;
+                category = 'Obesitas Ekstrem';
+                risk = 'Risiko kesehatan sangat tinggi';
+            }
+            
+            indicatorPosition = Math.max(0, Math.min(indicatorPosition, 100));
+            bmiIndicator.style.left = `${indicatorPosition}%`;
+            
+            detailCategory.textContent = category;
+            detailIdealRange.textContent = idealRange;
+            detailRisk.textContent = risk;
+            
+            bmiMeterContainer.style.display = 'block';
+        }
+
+        let typingInterval = null;
+        function typeText(text, element, speed = 50) {
+            if (typingInterval) {
+                clearInterval(typingInterval);
+            }
+            element.textContent = '';
+            let index = 0;
+            typingInterval = setInterval(() => {
+                if (index < text.length) {
+                    element.textContent += text[index];
+                    index++;
+                } else {
+                    clearInterval(typingInterval);
+                    typingInterval = null;
+                }
+            }, speed);
+        }
+
         function calculateBMI() {
-            const heightCm = document.getElementById('tinggi').value;
-            const weightKg = document.getElementById('berat').value;
-            const age = document.getElementById('usia').value;
-            const gender = document.getElementById('jenis_kelamin').value;
+            const { tinggi, berat, usia, jenis_kelamin, bmiValue, bmiStatus, bbDifference, resultArea, tipsArea, tipsContent, bmiChartContainer } = cacheDOM;
 
-            // Variabel untuk elemen hasil
-            const bmiValueElement = document.getElementById('bmi-value');
-            const bmiStatusElement = document.getElementById('bmi-status');
-            const bbDifferenceElement = document.getElementById('bb-difference');
-            const resultAreaElement = document.querySelector('.result-area');
-            const tipsAreaElement = document.getElementById('tips-area');
+            clearStatusClasses(resultArea);
+            resultArea.classList.remove('show');
+            tipsArea.classList.remove('show');
+            tipsArea.style.display = 'none';
+            bbDifference.textContent = '';
+            bmiChartContainer.classList.remove('show');
+            displayError('');
 
-            // Reset tampilan dan class status shadow box
-            clearStatusClasses(resultAreaElement);
-            resultAreaElement.classList.remove('show');
-            tipsAreaElement.classList.remove('show');
-            tipsAreaElement.style.display = 'none';
-            bbDifferenceElement.textContent = '';
-            displayError(''); // Hapus pesan error lama
-
-            // Konversi dan Validasi input
-            const height = parseFloat(heightCm);
-            const weight = parseFloat(weightKg);
-            const ageNum = parseInt(age);
+            const height = parseFloat(tinggi.value);
+            const weight = parseFloat(berat.value);
+            const ageNum = parseInt(usia.value);
+            const gender = jenis_kelamin.value;
 
             if (isNaN(height) || isNaN(weight) || isNaN(ageNum) || height <= 0 || weight <= 0 || ageNum <= 0 || !gender) {
-                // Tampilkan pesan error custom di UI
                 displayError("⚠️ Mohon masukkan semua data (Tinggi, Berat, Usia, dan Jenis Kelamin) yang valid.");
-                bmiValueElement.textContent = '--';
-                bmiStatusElement.textContent = 'Masukkan data Anda.';
+                bmiValue.textContent = '--';
+                bmiStatus.textContent = 'Masukkan data Anda.';
                 return;
             }
 
-            // Hitung BMI
             const heightM = height / 100;
             const bmi = (weight / (heightM * heightM)).toFixed(2);
 
-            bmiValueElement.textContent = bmi;
+            bmiValue.textContent = bmi;
 
             let status = '';
             let tips = '';
             let bbDifferenceText = '';
             let statusClass = '';
 
-            // Tentukan rentang BMI ideal standar WHO/Asia Pasifik
             let idealBMLower = 18.5;
             let idealBMUpper = 24.9;
 
-            // Penyesuaian batas BMI untuk Lansia (>= 65 tahun) - Digunakan kembali dari kode asli Anda
             if (ageNum >= 65) {
-                // Batas Ideal WHO untuk Lansia seringkali 23.0 - 29.9
                 idealBMLower = 23.0;
-                idealBMUpper = 29.9; 
+                idealBMUpper = 29.9;
             }
             
             const idealWeightLower = idealBMLower * heightM * heightM;
             const idealWeightUpper = idealBMUpper * heightM * heightM;
             
-            // --- LOGIKA PENENTUAN STATUS BMI ---
-            
             if (bmi < idealBMLower) {
-                // TERLALU KURUS (Underweight)
                 status = 'Terlalu Kurus 😥';
                 const deficit = (idealWeightLower - weight).toFixed(1);
                 bbDifferenceText = `Anda perlu <strong>menambah</strong> sekitar <strong>${deficit} kg</strong> untuk mencapai batas ideal (${idealBMLower.toFixed(1)} BMI).`;
-                statusClass = 'status-kurang-ideal'; 
+                statusClass = 'status-kurang-ideal';
                 
-                if (gender === 'pria') {
-                    tips = 'Pria: Fokus konsumsi protein tinggi (daging, telur, susu) dan latihan beban (angkat beban) untuk menambah massa otot. Tingkatkan asupan kalori secara bertahap.';
+                if (bmi < 17) {
+                    if (gender === 'pria') {
+                        tips = 'Pria (BMI < 17): Anda sangat kurus, yang dapat meningkatkan risiko kesehatan seperti kekurangan gizi atau lemahnya sistem imun. Konsumsi makanan tinggi kalori seperti kacang-kacangan (almond, kacang tanah), alpukat, smoothies dengan susu full-fat, dan protein (daging ayam, telur, ikan salmon). Makan 5-6 kali sehari dalam porsi kecil. Lakukan latihan beban (push-up, squat) 3-4 kali seminggu untuk membangun otot. Konsultasikan dengan dokter untuk memeriksa kemungkinan masalah kesehatan seperti gangguan tiroid.';
+                    } else {
+                        tips = 'Wanita (BMI < 17): Berat badan Anda sangat rendah, yang dapat memengaruhi kesehatan hormonal dan energi. Tambah asupan kalori dengan karbohidrat kompleks (nasi merah, kentang manis), protein (telur, tahu, tempe), dan lemak sehat (alpukat, minyak zaitun). Makan camilan sehat seperti yogurt atau kacang. Lakukan latihan kekuatan ringan (yoga, angkat beban ringan) 2-3 kali seminggu. Konsultasikan dengan ahli gizi untuk rencana penambahan berat badan yang aman.';
+                    }
                 } else {
-                    tips = 'Wanita: Pastikan asupan kalori cukup dari sumber karbohidrat kompleks, protein, dan lemak sehat. Pertimbangkan latihan kekuatan ringan.';
+                    if (gender === 'pria') {
+                        tips = 'Pria (BMI 17-18.5): Anda sedikit kurus dan perlu menambah berat untuk mencapai rentang ideal. Fokus pada makanan kaya protein seperti daging tanpa lemak, telur, dan susu, ditambah karbohidrat kompleks seperti oatmeal dan quinoa. Tambah 300-500 kcal/hari, misalnya dengan menambahkan smoothie protein atau kacang sebagai camilan. Lakukan latihan beban (bench press, deadlift) 3-4 kali seminggu untuk membangun massa otot. Pastikan tidur 7-8 jam per malam untuk mendukung pemulihan.';
+                    } else {
+                        tips = 'Wanita (BMI 17-18.5): Anda berada di bawah rentang ideal. Tingkatkan asupan kalori dengan makanan bergizi seperti roti gandum, alpukat, dan protein (ayam panggang, ikan). Tambah 250-400 kcal/hari, misalnya dengan menambahkan susu atau yogurt ke dalam diet. Lakukan latihan kekuatan ringan seperti pilates atau angkat beban ringan 2-3 kali seminggu. Jaga pola makan teratur dan hindari melewatkan sarapan.';
+                    }
                 }
-
             } else if (bmi >= idealBMLower && bmi <= idealBMUpper) {
-                // IDEAL
                 status = 'Ideal! 🎉';
                 bbDifferenceText = `Rentang Berat Badan Ideal Anda: ${idealWeightLower.toFixed(1)} kg - ${idealWeightUpper.toFixed(1)} kg.`;
-                statusClass = 'status-ideal'; 
+                statusClass = 'status-ideal';
                 
                 if (gender === 'pria') {
-                    tips = 'Pria: Pertahankan komposisi tubuh dengan latihan gabungan kardio dan kekuatan. Jaga pola makan seimbang dan tidur yang cukup.';
+                    tips = 'Pria: Selamat, berat badan Anda ideal! Pertahankan dengan pola makan seimbang: 50% karbohidrat (nasi merah, roti gandum), 30% protein (ayam, ikan, tahu), dan 20% lemak sehat (kacang, minyak zaitun). Lakukan latihan gabungan kardio (lari, bersepeda) dan kekuatan (push-up, plank) 3-5 kali seminggu. Pastikan hidrasi dengan minum 2-3 liter air per hari dan tidur cukup 7-8 jam untuk menjaga metabolisme.';
                 } else {
-                    tips = 'Wanita: Lanjutkan pola hidup sehat. Prioritaskan latihan fungsional dan fleksibilitas. Hindari diet yoyo.';
+                    tips = 'Wanita: Berat badan Anda sudah ideal, teruskan pola hidup sehat! Konsumsi makanan seimbang dengan sayuran, buah-buahan, protein tanpa lemak (telur, ikan), dan karbohidrat kompleks (kentang, quinoa). Lakukan latihan fungsional seperti yoga, pilates, atau kardio ringan (jalan cepat) 3-4 kali seminggu. Hindari diet ekstrem dan pastikan minum air 1.5-2 liter per hari untuk menjaga kulit dan energi.';
                 }
-
             } else if (bmi > idealBMUpper && bmi <= 29.9) {
-                // KELEBIHAN BERAT BADAN (Overweight)
                 status = 'Kelebihan Berat Badan ⚠️';
                 const excess = (weight - idealWeightUpper).toFixed(1);
                 bbDifferenceText = `Anda perlu <strong>mengurangi</strong> sekitar <strong>${excess} kg</strong> untuk mencapai batas ideal (${idealBMUpper.toFixed(1)} BMI).`;
-                statusClass = 'status-waspada'; 
+                statusClass = 'status-waspada';
                 
                 if (gender === 'pria') {
-                    tips = 'Pria: Kurangi lemak perut (visceral fat) dengan meningkatkan kardio intensitas tinggi dan membatasi makanan cepat saji.';
+                    tips = 'Pria: Anda kelebihan berat badan, yang dapat meningkatkan risiko penyakit jantung. Kurangi lemak perut dengan kardio intensitas tinggi (lari 20 menit, HIIT) 4-5 kali seminggu. Batasi makanan cepat saji dan gula (soda, kue). Fokus pada makanan berserat tinggi seperti brokoli, bayam, dan biji-bijian (oat, beras merah). Konsumsi protein tanpa lemak (dada ayam, ikan) untuk menjaga otot. Minum air 2-3 liter per hari dan kurangi porsi makan malam.';
                 } else {
-                    tips = 'Wanita: Fokus pada manajemen porsi makan dan pilih karbohidrat berserat tinggi. Coba HIIT atau joging untuk meningkatkan pembakaran kalori.';
+                    tips = 'Wanita: Berat badan Anda sedikit berlebih. Kelola porsi makan dengan karbohidrat berserat tinggi (oat, quinoa) dan sayuran (kubis, wortel). Tambah aktivitas seperti HIIT, joging, atau zumba 3-4 kali seminggu untuk membakar kalori. Hindari camilan tinggi gula seperti permen atau cokelat. Minum teh hijau untuk mendukung metabolisme dan pastikan tidur 7-8 jam untuk mengontrol hormon lapar.';
                 }
-
-            } else {
-                // OBESITAS (BMI > 29.9)
+            } else if (bmi <= 39.9) {
                 status = 'Terlalu Gemuk (Obesitas) 🚨';
-                const excess = (weight - idealWeightUpper).toFixed(1); 
+                const excess = (weight - idealWeightUpper).toFixed(1);
                 bbDifferenceText = `Anda <strong>kelebihan</strong> berat badan setidaknya <strong>${excess} kg</strong> dari batas ideal (${idealBMUpper.toFixed(1)} BMI). Konsultasi kesehatan sangat dianjurkan.`;
-                statusClass = 'status-kurang-ideal'; 
+                statusClass = 'status-kurang-ideal';
                 
-                tips = 'Segera konsultasikan dengan ahli gizi dan dokter untuk program penurunan berat badan yang terstruktur dan aman, dengan fokus pada perubahan gaya hidup permanen.';
+                if (gender === 'pria') {
+                    tips = 'Pria: Anda berada di kategori obesitas, yang meningkatkan risiko diabetes dan tekanan darah tinggi. Konsultasikan dengan dokter atau ahli gizi untuk rencana penurunan berat badan. Mulai dengan mengurangi 500-700 kcal/hari: ganti nasi putih dengan beras merah, hindari gorengan, dan pilih protein tanpa lemak (ikan, dada ayam). Lakukan aktivitas fisik ringan seperti jalan cepat 30 menit/hari, 5 kali seminggu. Minum air 2-3 liter per hari dan hindari minuman manis.';
+                } else {
+                    tips = 'Wanita: Anda berada di kategori obesitas, yang dapat memengaruhi kesehatan jantung dan hormonal. Segera konsultasikan dengan ahli gizi untuk diet terstruktur. Kurangi asupan kalori dengan menghindari makanan olahan (kue, keripik) dan tambah sayuran hijau (bayam, brokoli). Mulai dengan aktivitas ringan seperti jalan kaki atau yoga 30 menit/hari, 4-5 kali seminggu. Pastikan tidur cukup dan minum air 1.5-2 liter per hari untuk mendukung penurunan berat.';
+                }
+            } else {
+                status = 'Obesitas Ekstrem 🚨';
+                const excess = (weight - idealWeightUpper).toFixed(1);
+                bbDifferenceText = `Anda <strong>kelebihan</strong> berat badan setidaknya <strong>${excess} kg</strong> dari batas ideal (${idealBMUpper.toFixed(1)} BMI). Segera konsultasikan dengan dokter.`;
+                statusClass = 'status-kurang-ideal';
+                
+                if (gender === 'pria') {
+                    tips = 'Pria: Anda berada di kategori obesitas ekstrem, yang sangat meningkatkan risiko penyakit serius seperti diabetes tipe 2 dan apnea tidur. Segera konsultasikan dengan dokter dan ahli gizi untuk rencana penurunan berat badan yang aman. Mulai dengan mengurangi 700-1000 kcal/hari: ganti karbohidrat sederhana dengan sayuran berserat (kubis, wortel) dan protein rendah lemak (putih telur, ikan). Lakukan aktivitas ringan seperti jalan kaki 20-30 menit/hari, 5 kali seminggu. Minum air 3 liter/hari dan hindari semua minuman manis.';
+                } else {
+                    tips = 'Wanita: Anda berada di kategori obesitas ekstrem, yang berisiko tinggi untuk kesehatan jantung dan sendi. Segera temui dokter untuk evaluasi kesehatan menyeluruh. Kurangi kalori dengan menghindari makanan olahan (soda, kue) dan fokus pada sayuran, buah rendah gula (apel, beri), dan protein tanpa lemak (tofu, ikan). Mulai dengan aktivitas ringan seperti jalan kaki atau berenang 20 menit/hari, 4-5 kali seminggu. Minum air 2-3 liter/hari dan jaga tidur 7-8 jam untuk mengurangi stres.';
+                }
             }
 
-
-            // Tampilkan Hasil
             const statusColor = statusClass === 'status-ideal' ? 'var(--success-green)' : (statusClass === 'status-kurang-ideal' ? 'var(--error-red)' : 'var(--warning-yellow)');
-            bmiStatusElement.innerHTML = `Kategori: <strong style="color: ${statusColor};">${status}</strong> (Usia ${ageNum} Tahun, ${gender === 'pria' ? 'Pria' : 'Wanita'})`;
-            bbDifferenceElement.innerHTML = bbDifferenceText;
-            document.getElementById('tips-content').textContent = tips.trim();
+            bmiStatus.innerHTML = `Kategori: <strong style="color: ${statusColor}">${status}</strong> (Usia ${ageNum} Tahun, ${gender === 'pria' ? 'Pria' : 'Wanita'})`;
+            bbDifference.innerHTML = bbDifferenceText;
+            typeText(tips.trim(), tipsContent, 50);
 
-            // AKTIFKAN CLASS SHADOW BOX dan Animasi
-            resultAreaElement.classList.add(statusClass);
-
-            // Aktifkan animasi
-            resultAreaElement.classList.add('show');
-            tipsAreaElement.style.display = 'block';
+            resultArea.classList.add(statusClass);
+            updateBMIMeter(parseFloat(bmi));
+            updateBMIChart(parseFloat(bmi));
+            resultArea.classList.add('show');
+            tipsArea.style.display = 'block';
             setTimeout(() => {
-                tipsAreaElement.classList.add('show');
+                tipsArea.classList.add('show');
             }, 200);
         }
 
-        // Fungsi untuk menghapus input
         function clearInputs() {
-            document.getElementById('tinggi').value = '';
-            document.getElementById('berat').value = '';
-            document.getElementById('usia').value = '';
-            document.getElementById('jenis_kelamin').value = '';
-            document.getElementById('bmi-value').textContent = '--';
-            document.getElementById('bmi-status').innerHTML = 'Masukkan data Anda.';
-            document.getElementById('bb-difference').textContent = '';
-            displayError(''); // Clear error message
+            const { tinggi, berat, usia, jenis_kelamin, bmiValue, bmiStatus, bbDifference, customError, resultArea, tipsArea, bmiMeterContainer, bmiChartContainer, tipsContent } = cacheDOM;
 
-            const resultAreaElement = document.querySelector('.result-area');
-            clearStatusClasses(resultAreaElement);
+            tinggi.value = '';
+            berat.value = '';
+            usia.value = '';
+            jenis_kelamin.value = '';
+            bmiValue.textContent = '--';
+            bmiStatus.textContent = 'Masukkan data Anda.';
+            bbDifference.textContent = '';
+            customError.textContent = '';
 
-            resultAreaElement.classList.remove('show');
-            document.getElementById('tips-area').classList.remove('show');
+            if (typingInterval) {
+                clearInterval(typingInterval);
+                typingInterval = null;
+            }
+            tipsContent.textContent = '';
+
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => input.classList.remove('input-error', 'input-valid'));
+
+            clearStatusClasses(resultArea);
+            resultArea.classList.remove('show');
+            tipsArea.classList.remove('show');
+            bmiMeterContainer.style.display = 'none';
+            bmiChartContainer.classList.remove('show');
             
-            // Sembunyikan tips setelah animasi selesai
+            if (bmiChart) {
+                bmiChart.destroy();
+                bmiChart = null;
+            }
+            
             setTimeout(() => {
-                document.getElementById('tips-area').style.display = 'none';
+                tipsArea.style.display = 'none';
             }, 500);
         }
     </script>
-
 </body>
 </html>
