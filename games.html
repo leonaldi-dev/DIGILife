@@ -1,0 +1,3285 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Games - DIGILife</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      /* CSS Anda tetap sama, tidak ada perubahan */
+      :root {
+        --primary-dark: #1f2a38;
+        --secondary-dark: #2c3e50;
+        --accent-purple: #cd08f9;
+        --accent-purple-dark: #8e44ad;
+        --highlight-green: #2ecc71;
+        --highlight-red: #e74c3c;
+        --text-light: #ecf0f1;
+        --logo-yellow: #f1c40f;
+        --game-blue: #3498db;
+        --game-pink: #e84393;
+        --game-orange: #f39c12;
+        --game-teal: #1abc9c;
+        --todo-green: #27ae60;
+        --budget-blue: #2980b9;
+        --bmi-orange: #d35400;
+        --zakat-teal: #16a085;
+        --knowledge-purple: #9b59b6;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: var(--primary-dark);
+        color: var(--text-light);
+        min-height: 100vh;
+        padding: 20px 10px;
+        background-image: radial-gradient(
+            circle at 10% 20%,
+            rgba(155, 89, 182, 0.1) 0%,
+            transparent 20%
+          ),
+          radial-gradient(
+            circle at 90% 80%,
+            rgba(241, 196, 15, 0.1) 0%,
+            transparent 20%
+          );
+      }
+
+      .games-container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 0 15px;
+      }
+
+      .logo {
+        font-family: "Fredoka One", cursive;
+        font-size: clamp(1.8rem, 8vw, 2.5rem);
+        color: var(--logo-yellow);
+        text-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
+        margin-bottom: 10px;
+        line-height: 1.2;
+        word-wrap: break-word;
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+        line-height: 1.3;
+      }
+
+      /* GAMES GRID */
+      .games-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .game-card {
+        background: var(--secondary-dark);
+        border-radius: 20px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+        border: 3px solid transparent;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .game-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .game-card:hover::before {
+        left: 100%;
+      }
+
+      .game-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        border-color: var(--accent-purple);
+      }
+
+      .game-icon {
+        font-size: 3.5rem;
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .game-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--logo-yellow);
+      }
+
+      .game-desc {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        line-height: 1.4;
+      }
+
+      .game-features {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .game-tag {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        color: var(--text-light);
+      }
+
+      .play-btn {
+        background: linear-gradient(
+          45deg,
+          var(--accent-purple),
+          var(--accent-purple-dark)
+        );
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+      }
+
+      .play-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(155, 89, 182, 0.4);
+      }
+
+      /* LEVEL SELECTION */
+      .level-selection {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .level-btn {
+        background: var(--primary-dark);
+        border: 2px solid var(--game-blue);
+        border-radius: 10px;
+        padding: 15px 5px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-light);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .level-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+      }
+
+      .level-btn.unlocked {
+        background: var(--game-blue);
+        border-color: var(--game-blue);
+      }
+
+      .level-btn.current {
+        background: var(--logo-yellow);
+        border-color: var(--logo-yellow);
+        color: var(--primary-dark);
+      }
+
+      .level-btn.completed {
+        background: var(--highlight-green);
+        border-color: var(--highlight-green);
+      }
+
+      .level-btn.locked {
+        background: var(--secondary-dark);
+        border-color: var(--highlight-red);
+        color: rgba(255, 255, 255, 0.5);
+        cursor: not-allowed;
+      }
+
+      .level-btn.locked:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .level-stars {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        font-size: 0.8rem;
+      }
+
+      /* LEVEL PROGRESS */
+      .level-progress {
+        text-align: center;
+        margin: 15px 0;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+      }
+
+      .level-progress-bar {
+        width: 100%;
+        height: 10px;
+        background: var(--primary-dark);
+        border-radius: 5px;
+        margin: 10px 0;
+        overflow: hidden;
+      }
+
+      .level-progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--highlight-green),
+          var(--game-teal)
+        );
+        border-radius: 5px;
+        transition: width 0.5s ease;
+      }
+
+      /* MATH GAME MODAL */
+      .game-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        padding: 20px;
+      }
+
+      .game-modal.active {
+        display: flex;
+      }
+
+      .game-content {
+        background: var(--secondary-dark);
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        border: 3px solid var(--accent-purple);
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--highlight-red);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .close-btn:hover {
+        transform: rotate(90deg) scale(1.1);
+      }
+
+      /* MATH GAME STYLES */
+      .math-problem-container {
+        text-align: center;
+        margin: 20px 0;
+        padding: 20px;
+        background: var(--primary-dark);
+        border-radius: 15px;
+        border: 2px solid var(--logo-yellow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .math-problem {
+        font-size: 3rem;
+        color: var(--logo-yellow);
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+      }
+
+      .math-expression {
+        font-size: 2.5rem;
+        color: var(--text-light);
+        margin: 20px 0;
+        font-weight: bold;
+      }
+
+      .word-problem {
+        font-size: 1.4rem;
+        color: var(--text-light);
+        margin: 20px 0;
+        line-height: 1.5;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid var(--game-teal);
+      }
+
+      /* KNOWLEDGE GAME STYLES */
+      .knowledge-question {
+        font-size: 1.6rem;
+        color: var(--text-light);
+        margin: 25px 0;
+        line-height: 1.6;
+        text-align: center;
+        padding: 20px;
+        background: rgba(155, 89, 182, 0.1);
+        border-radius: 15px;
+        border: 2px solid var(--knowledge-purple);
+      }
+
+      .knowledge-category {
+        display: inline-block;
+        background: var(--knowledge-purple);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      .knowledge-options {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin: 25px 0;
+      }
+
+      .knowledge-option {
+        background: var(--primary-dark);
+        border: 2px solid var(--knowledge-purple);
+        border-radius: 12px;
+        padding: 18px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: var(--text-light);
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .knowledge-option::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(155, 89, 182, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .knowledge-option:hover::before {
+        left: 100%;
+      }
+
+      .knowledge-option:hover {
+        background: rgba(155, 89, 182, 0.2);
+        transform: translateX(10px);
+      }
+
+      /* CHALLENGE - Multiple Choice dengan Timer */
+      .challenge-timer {
+        font-size: 4rem;
+        color: var(--highlight-red);
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+        margin: 20px 0;
+      }
+
+      .challenge-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      .challenge-option {
+        background: var(--primary-dark);
+        border: 2px solid var(--game-pink);
+        border-radius: 10px;
+        padding: 15px;
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: var(--text-light);
+      }
+
+      .challenge-option:hover {
+        background: var(--game-pink);
+        transform: scale(1.05);
+      }
+
+      /* POWER UPS */
+      .power-ups-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .power-up {
+        background: rgba(241, 196, 15, 0.2);
+        border: 2px solid var(--logo-yellow);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .power-up:hover {
+        transform: scale(1.2);
+        box-shadow: 0 0 20px rgba(241, 196, 15, 0.5);
+      }
+
+      .power-up.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .power-up-count {
+        position: absolute;
+        bottom: -5px;
+        right: -5px;
+        background: var(--highlight-red);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      /* MISSIONS */
+      .missions-container {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 15px;
+        margin: 20px 0;
+        border: 2px solid var(--game-teal);
+      }
+
+      .mission-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        margin: 5px 0;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+      }
+
+      .mission-completed {
+        background: rgba(46, 204, 113, 0.2);
+        border-left: 4px solid var(--highlight-green);
+      }
+
+      .mission-progress {
+        font-size: 0.8rem;
+        color: var(--logo-yellow);
+      }
+
+      /* GAME STATS */
+      .game-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: var(--primary-dark);
+        border-radius: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .stat {
+        text-align: center;
+        flex: 1;
+      }
+
+      .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--logo-yellow);
+        text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 5px;
+      }
+
+      /* PROGRESS BAR */
+      .progress-container {
+        width: 100%;
+        height: 10px;
+        background: var(--primary-dark);
+        border-radius: 5px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--highlight-green),
+          var(--game-teal)
+        );
+        border-radius: 5px;
+        transition: width 0.3s ease;
+        width: 0%;
+      }
+
+      /* FUN MESSAGES */
+      .fun-message {
+        text-align: center;
+        margin: 15px 0;
+        padding: 15px;
+        background: linear-gradient(
+          135deg,
+          rgba(155, 89, 182, 0.3),
+          rgba(31, 42, 56, 0.8)
+        );
+        border-radius: 15px;
+        font-style: italic;
+        color: var(--logo-yellow);
+        border: 2px solid var(--accent-purple);
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .fun-message::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(241, 196, 15, 0.1),
+          transparent
+        );
+        transition: left 0.6s ease;
+      }
+
+      .fun-message:hover::before {
+        left: 100%;
+      }
+
+      .fun-message.level-info {
+        background: linear-gradient(135deg, rgba(31, 42, 56, 0.8), rgba(44, 62, 80, 0.9));
+        border-color: var(--game-blue);
+        color: var(--text-light);
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+      }
+
+      .fun-message.correct {
+        background: linear-gradient(
+          135deg,
+          rgba(46, 204, 113, 0.3),
+          rgba(31, 42, 56, 0.8)
+        );
+        border-color: var(--highlight-green);
+        color: var(--highlight-green);
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+      }
+
+      .fun-message.incorrect {
+        background: linear-gradient(
+          135deg,
+          rgba(231, 76, 60, 0.3),
+          rgba(31, 42, 56, 0.8)
+        );
+        border-color: var(--highlight-red);
+        color: var(--highlight-red);
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+      }
+
+      .fun-message.info {
+        background: linear-gradient(
+          135deg,
+          rgba(52, 152, 219, 0.3),
+          rgba(31, 42, 56, 0.8)
+        );
+        border-color: var(--game-blue);
+        color: var(--game-blue);
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+      }
+
+      .fun-message.warning {
+        background: linear-gradient(
+          135deg,
+          rgba(241, 196, 15, 0.3),
+          rgba(31, 42, 56, 0.8)
+        );
+        border-color: var(--logo-yellow);
+        color: var(--logo-yellow);
+        box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+      }
+
+      .fun-message.success {
+        background: linear-gradient(
+          135deg,
+          rgba(39, 174, 96, 0.3),
+          rgba(31, 42, 56, 0.8)
+        );
+        border-color: var(--todo-green);
+        color: var(--todo-green);
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+      }
+
+      /* ACHIEVEMENTS */
+      .achievements {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .achievement {
+        background: rgba(241, 196, 15, 0.2);
+        border: 2px solid var(--logo-yellow);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+      }
+
+      .achievement:hover {
+        transform: scale(1.2) rotate(10deg);
+      }
+
+      .achievement.unlocked {
+        background: rgba(46, 204, 113, 0.3);
+        border-color: var(--highlight-green);
+        box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+      }
+
+      /* LEADERBOARD */
+      .leaderboard {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        border: 2px solid var(--game-orange);
+      }
+
+      .leaderboard-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        margin: 5px 0;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+      }
+
+      .leaderboard-item.current {
+        background: rgba(241, 196, 15, 0.2);
+        border-left: 4px solid var(--logo-yellow);
+      }
+
+      /* ANIMATIONS */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes celebrate {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes confetti {
+        0% {
+          transform: translateY(0) rotate(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes glow {
+        0%,
+        100% {
+          box-shadow: 0 0 5px var(--logo-yellow);
+        }
+        50% {
+          box-shadow: 0 0 30px var(--logo-yellow), 0 0 50px var(--accent-purple);
+        }
+      }
+
+      .game-card {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+      }
+
+      .game-card:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .game-card:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .math-option.correct,
+      .challenge-option.correct,
+      .knowledge-option.correct {
+        background: var(--highlight-green);
+        border-color: var(--highlight-green);
+        animation: celebrate 0.6s ease;
+      }
+
+      .math-option.incorrect,
+      .challenge-option.incorrect,
+      .knowledge-option.incorrect {
+        background: var(--highlight-red);
+        border-color: var(--highlight-red);
+        animation: shake 0.5s ease;
+      }
+
+      .level-up-glow {
+        animation: glow 1.5s ease-in-out;
+      }
+
+      .confetti {
+        position: absolute;
+        font-size: 1.5rem;
+        animation: confetti 2s ease-out forwards;
+        z-index: 100;
+      }
+
+      /* MATH CHARACTERS */
+      .math-character {
+        position: absolute;
+        font-size: 2rem;
+        animation: float 3s infinite ease-in-out;
+      }
+
+      .character-1 {
+        top: 10%;
+        left: 5%;
+        animation-delay: 0s;
+      }
+      .character-2 {
+        top: 20%;
+        right: 10%;
+        animation-delay: 1s;
+      }
+      .character-3 {
+        bottom: 15%;
+        left: 15%;
+        animation-delay: 2s;
+      }
+      .character-4 {
+        bottom: 25%;
+        right: 5%;
+        animation-delay: 1.5s;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 768px) {
+        .games-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .challenge-options {
+          grid-template-columns: 1fr;
+        }
+
+        .game-content {
+          padding: 20px;
+        }
+
+        .math-problem {
+          font-size: 2.5rem;
+        }
+
+        .math-expression {
+          font-size: 2rem;
+        }
+
+        .word-problem {
+          font-size: 1.2rem;
+        }
+
+        .knowledge-question {
+          font-size: 1.4rem;
+        }
+
+        .power-ups-container {
+          gap: 10px;
+        }
+
+        .power-up {
+          width: 50px;
+          height: 50px;
+          font-size: 1.2rem;
+        }
+
+        .game-stats {
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .stat {
+          flex: 1 0 45%;
+        }
+
+        .level-selection {
+          grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+          gap: 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .challenge-options {
+          gap: 8px;
+        }
+
+        .challenge-option {
+          padding: 15px 10px;
+          font-size: 1.2rem;
+        }
+
+        .knowledge-option {
+          padding: 15px;
+          font-size: 1rem;
+        }
+
+        .power-up {
+          width: 45px;
+          height: 45px;
+          font-size: 1rem;
+        }
+
+        .stat-value {
+          font-size: 1.5rem;
+        }
+
+        .level-selection {
+          grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+          gap: 8px;
+        }
+
+        .level-btn {
+          padding: 12px 3px;
+          font-size: 1rem;
+        }
+      }
+
+      /* Tambahan untuk progress bar lebih smooth */
+      .progress-bar {
+        transition: width 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="games-container">
+      <header class="header">
+        <h1 class="logo">🎮 GAMES 🎮</h1>
+        <p class="subtitle">
+          Dua cara seru belajar matematika dan pengetahuan dengan tantangan
+          berbeda! 🧠✨
+        </p>
+      </header>
+
+      <div class="games-grid">
+        <!-- Mode 2: CHALLENGE -->
+        <div class="game-card" onclick="openMathGame('challenge')">
+          <span class="game-icon">🎯</span>
+          <h3 class="game-title">Math Challenge</h3>
+          <p class="game-desc">
+            <strong>TANTANGAN BERWAKTU</strong> - Setiap soal matematika punya
+            timer sendiri! Jawab sebelum waktu habis!
+          </p>
+          <div class="game-features">
+            <span
+              class="game-tag"
+              style="
+                background: rgba(232, 67, 147, 0.2);
+                border: 1px solid var(--game-pink);
+              "
+              >⏱️ Timer</span
+            >
+            <span
+              class="game-tag"
+              style="
+                background: rgba(243, 156, 18, 0.2);
+                border: 1px solid var(--game-orange);
+              "
+              >📈 Level Up</span
+            >
+            <span
+              class="game-tag"
+              style="
+                background: rgba(39, 174, 96, 0.2);
+                border: 1px solid var(--todo-green);
+              "
+              >🏆 Tantangan</span
+            >
+          </div>
+          <button class="play-btn">Mulai Tantangan</button>
+        </div>
+
+        <!-- Mode 3: KNOWLEDGE QUIZ -->
+        <div class="game-card" onclick="openMathGame('knowledge')">
+          <span class="game-icon">🧠</span>
+          <h3 class="game-title">Knowledge Quiz</h3>
+          <p class="game-desc">
+            <strong>PENGETAHUAN UMUM</strong> - Uji pengetahuanmu dengan
+            soal-soal dari berbagai bidang ilmu!
+          </p>
+          <div class="game-features">
+            <span
+              class="game-tag"
+              style="
+                background: rgba(155, 89, 182, 0.2);
+                border: 1px solid var(--knowledge-purple);
+              "
+              >🌍 Sains</span
+            >
+            <span
+              class="game-tag"
+              style="
+                background: rgba(26, 188, 156, 0.2);
+                border: 1px solid var(--game-teal);
+              "
+              >📖 Sejarah</span
+            >
+            <span
+              class="game-tag"
+              style="
+                background: rgba(52, 152, 219, 0.2);
+                border: 1px solid var(--game-blue);
+              "
+              >🔬 Pengetahuan</span
+            >
+          </div>
+          <button class="play-btn">Uji Pengetahuan</button>
+        </div>
+      </div>
+
+      <!-- Daily Missions -->
+      <div class="missions-container" id="dailyMissions">
+        <h3
+          style="
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--logo-yellow);
+          "
+        >
+          🎯 Misi Harian
+        </h3>
+        <div id="missionsList">
+          <!-- Missions will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Achievements Section -->
+      <div class="fun-message">
+        🏆 <strong>Koleksi Achievement-mu:</strong> Selesaikan semua mode untuk
+        dapatkan semua bintang! ⭐
+      </div>
+      <div class="achievements" id="achievementsList">
+        <div class="achievement" id="ach1">📚</div>
+        <div class="achievement" id="ach2">🎯</div>
+        <div class="achievement" id="ach3">🧠</div>
+        <div class="achievement" id="ach4">🏆</div>
+        <div class="achievement" id="ach5">👑</div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="leaderboard" id="leaderboardSection">
+        <h3
+          style="
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--logo-yellow);
+          "
+        >
+          🏆 Leaderboard
+        </h3>
+        <div id="leaderboardList">
+          <!-- Leaderboard will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Math Game Modal -->
+    <div id="gameModal" class="game-modal">
+      <div class="game-content" id="gameContent">
+        <!-- Math game content will be loaded here -->
+      </div>
+    </div>
+
+    <script>
+      // Enhanced Game State
+      let currentGame = null;
+      let score = 0;
+      let timeLeft = 60;
+      let gameInterval;
+      let currentLevel = 1;
+      let correctStreak = 0;
+      let totalQuestions = 0;
+      let correctAnswers = 0;
+      let challengeTimer = 10;
+      let scoreMultiplier = 1;
+      let hasShield = false;
+      let usedQuestions = new Set(); // Track used questions to prevent repetition
+      let currentQuestionHistory = []; // Track recent questions
+
+      // New Level System
+      let levelProgress = {
+        challenge: {},
+        knowledge: {}
+      };
+
+      // Load level progress from localStorage
+      function loadLevelProgress() {
+        const savedProgress = localStorage.getItem('levelProgress');
+        if (savedProgress) {
+          levelProgress = JSON.parse(savedProgress);
+        }
+      }
+
+      // Save level progress to localStorage
+      function saveLevelProgress() {
+        localStorage.setItem('levelProgress', JSON.stringify(levelProgress));
+      }
+
+      // Initialize level progress for a game mode
+      function initLevelProgress(gameMode) {
+        if (!levelProgress[gameMode]) {
+          levelProgress[gameMode] = {};
+        }
+        
+        // Ensure level 1 is always unlocked
+        if (!levelProgress[gameMode][1]) {
+          levelProgress[gameMode][1] = {
+            unlocked: true,
+            completed: false,
+            stars: 0,
+            currentQuestion: 1,
+            totalQuestions: 5
+          };
+        }
+        
+        saveLevelProgress();
+      }
+
+      // Get current level progress
+      function getCurrentLevelProgress() {
+        if (currentGame && levelProgress[currentGame] && levelProgress[currentGame][currentLevel]) {
+          return levelProgress[currentGame][currentLevel];
+        }
+        return {
+          unlocked: currentLevel === 1,
+          completed: false,
+          stars: 0,
+          currentQuestion: 1,
+          totalQuestions: 5
+        };
+      }
+
+      // Update level progress - PERBAIKAN
+      function updateLevelProgress(level, data) {
+        if (!levelProgress[currentGame]) {
+          levelProgress[currentGame] = {};
+        }
+        
+        // Pastikan data yang ada tidak ter-overwrite seluruhnya
+        const currentData = levelProgress[currentGame][level] || {
+          unlocked: level === 1,
+          completed: false,
+          stars: 0,
+          currentQuestion: 1,
+          totalQuestions: 5
+        };
+        
+        levelProgress[currentGame][level] = {
+          ...currentData,
+          ...data
+        };
+        
+        // Unlock next level jika level saat ini completed
+        if (data.completed && level < 10) {
+          if (!levelProgress[currentGame][level + 1]) {
+            levelProgress[currentGame][level + 1] = {
+              unlocked: true,
+              completed: false,
+              stars: 0,
+              currentQuestion: 1,
+              totalQuestions: 5
+            };
+          } else {
+            levelProgress[currentGame][level + 1].unlocked = true;
+          }
+        }
+        
+        saveLevelProgress();
+      }
+
+      const powerUps = {
+        "time-plus": {
+          count: 2,
+          name: "⏱️ +10s",
+          effect: () => {
+            timeLeft += 10;
+            updateTimerDisplay();
+          },
+        },
+        "double-points": {
+          count: 1,
+          name: "💰 2x",
+          effect: () => {
+            scoreMultiplier = 2;
+            showGameMessage("💰 DOUBLE POINTS AKTIF!", "success");
+            setTimeout(() => {
+              scoreMultiplier = 1;
+              showGameMessage("Double Points habis!", "info");
+            }, 10000);
+          },
+        },
+        "skip-question": {
+          count: 3,
+          name: "🚀 Skip",
+          effect: () => generateMathProblem(),
+        },
+      };
+
+      // Enhanced Level System with more variety
+      const levelSystem = {
+        1: {
+          maxNumber: 20,
+          operations: ["+", "-"],
+          types: ["basic"],
+          timeBonus: 5,
+          difficulty: "easy",
+          questions: 5
+        },
+        2: {
+          maxNumber: 30,
+          operations: ["+", "-"],
+          types: ["basic", "word"],
+          timeBonus: 4,
+          difficulty: "easy",
+          questions: 5
+        },
+        3: {
+          maxNumber: 15,
+          operations: ["+", "-", "×"],
+          types: ["basic"],
+          timeBonus: 3,
+          difficulty: "medium",
+          questions: 5
+        },
+        4: {
+          maxNumber: 20,
+          operations: ["+", "-", "×"],
+          types: ["basic", "word"],
+          timeBonus: 3,
+          difficulty: "medium",
+          questions: 5
+        },
+        5: {
+          maxNumber: 12,
+          operations: ["+", "-", "×", "÷"],
+          types: ["basic", "division"],
+          timeBonus: 2,
+          difficulty: "medium",
+          questions: 5
+        },
+        6: {
+          maxNumber: 15,
+          operations: ["+", "-", "×", "÷"],
+          types: ["basic", "division", "word"],
+          timeBonus: 2,
+          difficulty: "hard",
+          questions: 5
+        },
+        7: {
+          maxNumber: 25,
+          operations: ["+", "-", "×", "÷"],
+          types: ["basic", "division", "word"],
+          timeBonus: 1,
+          difficulty: "hard",
+          questions: 5
+        },
+        8: {
+          maxNumber: 35,
+          operations: ["+", "-", "×", "÷"],
+          types: ["basic", "division", "word", "comparison"],
+          timeBonus: 1,
+          difficulty: "expert",
+          questions: 5
+        },
+        9: {
+          maxNumber: 50,
+          operations: ["+", "-", "×", "÷"],
+          types: ["basic", "division", "word", "comparison", "algebra"],
+          timeBonus: 1,
+          difficulty: "expert",
+          questions: 5
+        },
+        10: {
+          maxNumber: 100,
+          operations: ["+", "-", "×", "÷"],
+          types: ["all"],
+          timeBonus: 0,
+          difficulty: "master",
+          questions: 5
+        },
+      };
+
+      // Enhanced Knowledge Questions Database (SD, SMP, SMA - Semua Mapel)
+      // Diurutkan dari termudah ke tersulit untuk level 1
+      const knowledgeQuestions = [
+        // ========== SOAL MUDAH (SD) ==========
+        {
+          category: "🌍 IPU SD",
+          question: "Hewan apa yang dikenal sebagai 'raja hutan'?",
+          options: ["Harimau", "Singa", "Gajah", "Jerapah"],
+          answer: "Singa",
+          difficulty: "easy",
+        },
+        {
+          category: "🌍 IPU SD",
+          question: "Planet terdekat dengan Matahari adalah?",
+          options: ["Venus", "Bumi", "Mars", "Merkurius"],
+          answer: "Merkurius",
+          difficulty: "easy",
+        },
+        {
+          category: "🌍 IPU SD",
+          question: "Ibukota negara Indonesia adalah?",
+          options: ["Jakarta", "Surabaya", "Bandung", "Medan"],
+          answer: "Jakarta",
+          difficulty: "easy",
+        },
+        {
+          category: "⚖️ PPKN SMP",
+          question: "Lambang negara Indonesia adalah...",
+          options: ["Garuda Pancasila", "Burung Merak", "Harimau", "Macan"],
+          answer: "Garuda Pancasila",
+          difficulty: "easy",
+        },
+        {
+          category: "⚖️ PPKN SMP",
+          question: "Sila pertama Pancasila adalah...",
+          options: [
+            "Ketuhanan Yang Maha Esa",
+            "Kemanusiaan yang adil dan beradab",
+            "Persatuan Indonesia",
+            "Keadilan sosial",
+          ],
+          answer: "Ketuhanan Yang Maha Esa",
+          difficulty: "easy",
+        },
+        {
+          category: "🔬 IPA SMP",
+          question: "Planet manakah yang dikenal sebagai 'Planet Merah'?",
+          options: ["Venus", "Mars", "Jupiter", "Saturnus"],
+          answer: "Mars",
+          difficulty: "easy",
+        },
+        {
+          category: "🔬 IPA SMP",
+          question: "Organ tubuh manusia yang berfungsi memompa darah adalah...",
+          options: ["Paru-paru", "Hati", "Jantung", "Ginjal"],
+          answer: "Jantung",
+          difficulty: "easy",
+        },
+        {
+          category: "⚽ Penjaskes SMA",
+          question: "Jumlah pemain dalam satu tim sepak bola adalah...",
+          options: ["9", "10", "11", "12"],
+          answer: "11",
+          difficulty: "easy",
+        },
+        {
+          category: "⚽ Penjaskes SMA",
+          question: "Olahraga yang menggunakan raket dan shuttlecock adalah...",
+          options: ["Tenis", "Bulu tangkis", "Squash", "Tenis meja"],
+          answer: "Bulu tangkis",
+          difficulty: "easy",
+        },
+        {
+          category: "🕌 Pendidikan Agama",
+          question: "Kitab suci umat Islam adalah...",
+          options: ["Al-Quran", "Alkitab", "Wedha", "Tripitaka"],
+          answer: "Al-Quran",
+          difficulty: "easy",
+        },
+        {
+          category: "🕌 Pendidikan Agama",
+          question: "Rukun Islam yang pertama adalah...",
+          options: ["Shalat", "Zakat", "Syahadat", "Puasa"],
+          answer: "Syahadat",
+          difficulty: "easy",
+        },
+        {
+          category: "🌍 IPU SD",
+          question: "Bunga nasional Indonesia adalah?",
+          options: ["Mawar", "Melati", "Anggrek", "Tulip"],
+          answer: "Melati",
+          difficulty: "easy",
+        },
+        {
+          category: "🌍 IPU SD",
+          question: "Warna bendera Indonesia adalah?",
+          options: ["Merah-Putih", "Merah-Kuning", "Biru-Putih", "Hijau-Putih"],
+          answer: "Merah-Putih",
+          difficulty: "easy",
+        },
+        {
+          category: "🔬 IPA SMP",
+          question: "Hewan yang mengalami metamorfosis sempurna adalah?",
+          options: ["Kupu-kupu", "Kecoak", "Belalang", "Jangkrik"],
+          answer: "Kupu-kupu",
+          difficulty: "easy",
+        },
+        {
+          category: "🔬 IPA SMP",
+          question: "Bagian tumbuhan yang menyerap air dan mineral adalah?",
+          options: ["Akar", "Batang", "Daun", "Bunga"],
+          answer: "Akar",
+          difficulty: "easy",
+        },
+
+        // ========== SOAL SEDANG (SMP) ==========
+        {
+          category: "🔬 IPA SMP",
+          question: "Proses fotosintesis pada tumbuhan menghasilkan...",
+          options: ["Oksigen", "Karbon dioksida", "Nitrogen", "Hidrogen"],
+          answer: "Oksigen",
+          difficulty: "medium",
+        },
+        {
+          category: "🔬 IPA SMP",
+          question: "Zat hijau daun pada tumbuhan disebut...",
+          options: ["Klorofil", "Kloroplas", "Stomata", "Xilem"],
+          answer: "Klorofil",
+          difficulty: "medium",
+        },
+        {
+          category: "📚 Bahasa Indonesia SMP",
+          question: "Apa yang dimaksud dengan 'sinonim'?",
+          options: [
+            "Kata yang berlawanan arti",
+            "Kata yang sama arti",
+            "Kata yang mirip bunyi",
+            "Kata asing",
+          ],
+          answer: "Kata yang sama arti",
+          difficulty: "medium",
+        },
+        {
+          category: "📚 Bahasa Indonesia SMP",
+          question: "Penggunaan huruf kapital yang benar terdapat pada kalimat...",
+          options: [
+            "saya pergi ke sekolah",
+            "Ibu pergi ke pasar",
+            "dia sedang membaca buku",
+            "mereka bermain bola",
+          ],
+          answer: "Ibu pergi ke pasar",
+          difficulty: "medium",
+        },
+        {
+          category: "🏛️ IPS SMP",
+          question: "Siapakah proklamator kemerdekaan Indonesia?",
+          options: [
+            "Soekarno-Hatta",
+            "Soeharto-BJ Habibie",
+            "Gus Dur-Megawati",
+            "Jokowi-JK",
+          ],
+          answer: "Soekarno-Hatta",
+          difficulty: "medium",
+        },
+        {
+          category: "🏛️ IPS SMP",
+          question: "Ibukota provinsi Jawa Barat adalah...",
+          options: ["Bandung", "Jakarta", "Surabaya", "Semarang"],
+          answer: "Bandung",
+          difficulty: "medium",
+        },
+        {
+          category: "🏛️ IPS SMP",
+          question: "Peninggalan sejarah berupa candi Buddha terbesar di dunia adalah...",
+          options: ["Borobudur", "Prambanan", "Angkor Wat", "Candi Mendut"],
+          answer: "Borobudur",
+          difficulty: "medium",
+        },
+        {
+          category: "🗺️ Geografi SMA",
+          question: "Gunung tertinggi di dunia adalah?",
+          options: [
+            "Gunung Kilimanjaro",
+            "Gunung Everest",
+            "Gunung Fuji",
+            "Gunung Rinjani",
+          ],
+          answer: "Gunung Everest",
+          difficulty: "medium",
+        },
+        {
+          category: "🗺️ Geografi SMA",
+          question: "Ibukota negara Jepang adalah...",
+          options: ["Seoul", "Beijing", "Tokyo", "Bangkok"],
+          answer: "Tokyo",
+          difficulty: "medium",
+        },
+        {
+          category: "🗺️ Geografi SMA",
+          question: "Sungai terpanjang di dunia adalah...",
+          options: [
+            "Sungai Amazon",
+            "Sungai Nil",
+            "Sungai Mississippi",
+            "Sungai Yangtze",
+          ],
+          answer: "Sungai Nil",
+          difficulty: "medium",
+        },
+        {
+          category: "🔬 IPA SMP",
+          question: "Enzim pencernaan yang bekerja di mulut adalah?",
+          options: ["Amilase", "Pepsin", "Lipase", "Tripsin"],
+          answer: "Amilase",
+          difficulty: "medium",
+        },
+        {
+          category: "🔬 IPA SMP",
+          question: "Planet terbesar di tata surya kita adalah?",
+          options: ["Jupiter", "Saturnus", "Neptunus", "Uranus"],
+          answer: "Jupiter",
+          difficulty: "medium",
+        },
+        {
+          category: "📚 Bahasa Indonesia SMP",
+          question: "Cerita pendek yang terdiri dari kurang dari 10.000 kata disebut?",
+          options: ["Novel", "Cerpen", "Drama", "Puisi"],
+          answer: "Cerpen",
+          difficulty: "medium",
+        },
+        {
+          category: "🏛️ IPS SMP",
+          question: "Perang Dunia I terjadi pada tahun?",
+          options: ["1914-1918", "1939-1945", "1945-1950", "1899-1902"],
+          answer: "1914-1918",
+          difficulty: "medium",
+        },
+
+        // ========== SOAL SULIT (SMA) ==========
+        {
+          category: "⚛️ Fisika SMA",
+          question: "Hukum Newton I juga dikenal sebagai hukum...",
+          options: ["Aksi-Reaksi", "Gerak", "Kelembaman", "Gravitasi"],
+          answer: "Kelembaman",
+          difficulty: "hard",
+        },
+        {
+          category: "⚛️ Fisika SMA",
+          question: "Besaran yang memiliki satuan Joule adalah...",
+          options: ["Gaya", "Daya", "Usaha", "Momentum"],
+          answer: "Usaha",
+          difficulty: "hard",
+        },
+        {
+          category: "⚛️ Fisika SMA",
+          question: "Jika benda bergerak dengan kecepatan konstan, maka percepatannya...",
+          options: ["Positif", "Negatif", "Nol", "Tak terhingga"],
+          answer: "Nol",
+          difficulty: "hard",
+        },
+        {
+          category: "⚛️ Fisika SMA",
+          question: "Alat untuk mengukur suhu adalah...",
+          options: ["Termometer", "Barometer", "Hygrometer", "Speedometer"],
+          answer: "Termometer",
+          difficulty: "hard",
+        },
+        {
+          category: "⚛️ Fisika SMA",
+          question: "Hukum kekekalan energi menyatakan bahwa energi...",
+          options: [
+            "Dapat diciptakan",
+            "Dapat dimusnahkan",
+            "Tidak dapat diciptakan atau dimusnahkan",
+            "Hanya ada di Bumi",
+          ],
+          answer: "Tidak dapat diciptakan atau dimusnahkan",
+          difficulty: "hard",
+        },
+        {
+          category: "🧪 Kimia SMA",
+          question: "Unsur dengan nomor atom 1 adalah...",
+          options: ["Hidrogen", "Helium", "Litium", "Berilium"],
+          answer: "Hidrogen",
+          difficulty: "hard",
+        },
+        {
+          category: "🧪 Kimia SMA",
+          question: "Rumus kimia untuk garam dapur adalah...",
+          options: ["NaCl", "HCl", "H₂O", "CO₂"],
+          answer: "NaCl",
+          difficulty: "hard",
+        },
+        {
+          category: "🧪 Kimia SMA",
+          question: "pH larutan asam memiliki nilai...",
+          options: [
+            "Lebih dari 7",
+            "Kurang dari 7",
+            "Sama dengan 7",
+            "Sama dengan 14",
+          ],
+          answer: "Kurang dari 7",
+          difficulty: "hard",
+        },
+        {
+          category: "🧪 Kimia SMA",
+          question: "Unsur yang paling banyak terdapat di alam semesta adalah...",
+          options: ["Hidrogen", "Oksigen", "Karbon", "Nitrogen"],
+          answer: "Hidrogen",
+          difficulty: "hard",
+        },
+        {
+          category: "🧪 Kimia SMA",
+          question: "Reaksi kimia yang melepaskan panas disebut...",
+          options: ["Eksoterm", "Endoterm", "Isoterm", "Adiabatik"],
+          answer: "Eksoterm",
+          difficulty: "hard",
+        },
+        {
+          category: "🧬 Biologi SMA",
+          question: "Organel sel yang berfungsi sebagai tempat respirasi adalah...",
+          options: ["Mitokondria", "Ribosom", "Lisosom", "Nukleus"],
+          answer: "Mitokondria",
+          difficulty: "hard",
+        },
+        {
+          category: "🧬 Biologi SMA",
+          question: "Pembelahan sel yang menghasilkan sel anak dengan jumlah kromosom setengah dari sel induk disebut...",
+          options: ["Mitosis", "Meiosis", "Amitosis", "Budding"],
+          answer: "Meiosis",
+          difficulty: "hard",
+        },
+        {
+          category: "🧬 Biologi SMA",
+          question: "Jaringan yang berfungsi untuk mengangkut air dan mineral pada tumbuhan adalah...",
+          options: ["Xilem", "Floem", "Epidermis", "Kambium"],
+          answer: "Xilem",
+          difficulty: "hard",
+        },
+        {
+          category: "🧬 Biologi SMA",
+          question: "Enzim yang berfungsi mencerna protein adalah...",
+          options: ["Pepsin", "Amilase", "Lipase", "Sukrase"],
+          answer: "Pepsin",
+          difficulty: "hard",
+        },
+        {
+          category: "📜 Sejarah SMA",
+          question: "Perang Dunia II berlangsung pada tahun...",
+          options: ["1914-1918", "1939-1945", "1945-1950", "1950-1955"],
+          answer: "1939-1945",
+          difficulty: "hard",
+        },
+        {
+          category: "📜 Sejarah SMA",
+          question: "Kerajaan Hindu pertama di Indonesia adalah...",
+          options: ["Kutai", "Sriwijaya", "Majapahit", "Singasari"],
+          answer: "Kutai",
+          difficulty: "hard",
+        },
+        {
+          category: "📜 Sejarah SMA",
+          question: "Tokoh yang dikenal sebagai 'Bapak Pendidikan Nasional' adalah...",
+          options: [
+            "Ki Hajar Dewantara",
+            "R.A. Kartini",
+            "Dewi Sartika",
+            "Soekarno",
+          ],
+          answer: "Ki Hajar Dewantara",
+          difficulty: "hard",
+        },
+        {
+          category: "💰 Ekonomi SMA",
+          question: "Ilmu yang mempelajari tentang produksi, distribusi, dan konsumsi barang dan jasa disebut...",
+          options: ["Ekonomi", "Akuntansi", "Manajemen", "Marketing"],
+          answer: "Ekonomi",
+          difficulty: "hard",
+        },
+        {
+          category: "💰 Ekonomi SMA",
+          question: "Inflasi adalah kondisi ketika...",
+          options: [
+            "Harga barang naik terus menerus",
+            "Harga barang turun terus menerus",
+            "Nilai tukar mata uang stabil",
+            "Ekonomi mengalami resesi",
+          ],
+          answer: "Harga barang naik terus menerus",
+          difficulty: "hard",
+        },
+        {
+          category: "👥 Sosiologi SMA",
+          question: "Ilmu yang mempelajari tentang masyarakat dan hubungan sosial disebut...",
+          options: ["Sosiologi", "Antropologi", "Psikologi", "Filsafat"],
+          answer: "Sosiologi",
+          difficulty: "hard",
+        },
+        {
+          category: "👥 Sosiologi SMA",
+          question: "Norma yang memiliki sanksi paling kuat dalam masyarakat adalah...",
+          options: ["Hukum", "Adat istiadat", "Kebiasaan", "Tata krama"],
+          answer: "Hukum",
+          difficulty: "hard",
+        },
+        {
+          category: "🔤 Bahasa Inggris SMA",
+          question: "What is the past tense of 'go'?",
+          options: ["goed", "went", "gone", "going"],
+          answer: "went",
+          difficulty: "hard",
+        },
+        {
+          category: "🔤 Bahasa Inggris SMA",
+          question: "Synonym of 'beautiful' is...",
+          options: ["ugly", "pretty", "bad", "small"],
+          answer: "pretty",
+          difficulty: "hard",
+        },
+        {
+          category: "🎨 Seni Budaya SMA",
+          question: "Alat musik tradisional Jawa yang berupa gamelan disebut...",
+          options: ["Gong", "Gendang", "Saron", "Seluruh jawaban benar"],
+          answer: "Seluruh jawaban benar",
+          difficulty: "hard",
+        },
+        {
+          category: "🎨 Seni Budaya SMA",
+          question: "Warna primer dalam seni rupa adalah...",
+          options: [
+            "Merah, kuning, biru",
+            "Hijau, oranye, ungu",
+            "Putih, hitam, abu-abu",
+            "Coklat, pink, biru",
+          ],
+          answer: "Merah, kuning, biru",
+          difficulty: "hard",
+        },
+        {
+          category: "💻 TIK SMA",
+          question: "CPU adalah singkatan dari...",
+          options: [
+            "Central Processing Unit",
+            "Computer Personal Unit",
+            "Central Program Unit",
+            "Computer Processing Unit",
+          ],
+          answer: "Central Processing Unit",
+          difficulty: "hard",
+        },
+        {
+          category: "💻 TIK SMA",
+          question: "Bahasa pemrograman yang digunakan untuk membuat halaman web adalah...",
+          options: ["HTML", "Python", "Java", "C++"],
+          answer: "HTML",
+          difficulty: "hard",
+        },
+        {
+          category: "📝 Bahasa Indonesia SMA",
+          question: "Karya sastra yang berbentuk sajak dan memiliki rima disebut...",
+          options: ["Prosa", "Puisi", "Drama", "Cerpen"],
+          answer: "Puisi",
+          difficulty: "hard",
+        },
+        {
+          category: "📝 Bahasa Indonesia SMA",
+          question: "Majas yang menyamakan satu benda dengan benda lain disebut...",
+          options: ["Metafora", "Personifikasi", "Hiperbola", "Litotes"],
+          answer: "Metafora",
+          difficulty: "hard",
+        },
+        {
+          category: "⚛️ Fisika SMA",
+          question: "Rumus untuk menghitung gaya adalah...",
+          options: ["F = m × a", "F = m × g", "F = p × a", "F = v × t"],
+          answer: "F = m × a",
+          difficulty: "hard",
+        },
+        {
+          category: "🧪 Kimia SMA",
+          question: "Unsur yang paling elektronegatif adalah...",
+          options: ["Fluor", "Klor", "Oksigen", "Nitrogen"],
+          answer: "Fluor",
+          difficulty: "hard",
+        },
+        {
+          category: "🧬 Biologi SMA",
+          question: "Penyakit yang disebabkan oleh virus HIV adalah...",
+          options: ["AIDS", "Malaria", "TBC", "Demam Berdarah"],
+          answer: "AIDS",
+          difficulty: "hard",
+        },
+        {
+          category: "📜 Sejarah SMA",
+          question: "Peristiwa Rengasdengklok terjadi pada tanggal...",
+          options: ["16 Agustus 1945", "17 Agustus 1945", "18 Agustus 1945", "19 Agustus 1945"],
+          answer: "16 Agustus 1945",
+          difficulty: "hard",
+        },
+        {
+          category: "🗺️ Geografi SMA",
+          question: "Laut terluas di dunia adalah...",
+          options: ["Laut Cina Selatan", "Laut Mediterania", "Laut Karibia", "Laut Filipina"],
+          answer: "Laut Cina Selatan",
+          difficulty: "hard",
+        },
+        {
+          category: "💰 Ekonomi SMA",
+          question: "Indeks yang mengukur tingkat harga konsumen adalah...",
+          options: ["IHK", "IPM", "PDRB", "NERACA"],
+          answer: "IHK",
+          difficulty: "hard",
+        },
+      ];
+
+      // Enhanced Word Problems Database (Untuk Math Challenge)
+      const wordProblems = [
+        {
+          problem: "Andi mempunyai 5 apel. Dia membeli 3 apel lagi. Berapa total apel Andi?",
+          expression: "5 + 3",
+          answer: 8,
+          difficulty: "easy",
+        },
+        {
+          problem: "Sebuah pizza dipotong 8 bagian. Rudi makan 3 potong. Berapa potong yang tersisa?",
+          expression: "8 - 3",
+          answer: 5,
+          difficulty: "easy",
+        },
+        {
+          problem: "Ada 4 kotak. Setiap kotak berisi 6 permen. Berapa total permen?",
+          expression: "4 × 6",
+          answer: 24,
+          difficulty: "medium",
+        },
+        {
+          problem: "Seorang pedagang membeli 12 kg gula dengan harga Rp 6.000 per kg. Berapa total harga yang harus dibayar?",
+          expression: "12 × 6000",
+          answer: 72000,
+          difficulty: "medium",
+        },
+        {
+          problem: "Sebuah mobil menempuh jarak 240 km dalam waktu 4 jam. Berapa kecepatan rata-rata mobil tersebut?",
+          expression: "240 ÷ 4",
+          answer: 60,
+          difficulty: "medium",
+        },
+        {
+          problem: "Jika 3x + 7 = 22, berapakah nilai x?",
+          expression: "3x + 7 = 22",
+          answer: 5,
+          difficulty: "hard",
+        },
+        {
+          problem: "Luas persegi panjang adalah 48 cm². Jika panjangnya 8 cm, berapa lebarnya?",
+          expression: "48 ÷ 8",
+          answer: 6,
+          difficulty: "medium",
+        },
+        {
+          problem: "Jumlah sudut dalam segitiga adalah...",
+          expression: "180°",
+          answer: 180,
+          difficulty: "easy",
+        },
+        {
+          problem: "Sebuah lingkaran memiliki jari-jari 7 cm. Berapa keliling lingkaran tersebut? (π = 22/7)",
+          expression: "2 × π × 7",
+          answer: 44,
+          difficulty: "medium",
+        },
+        {
+          problem: "Hasil dari 15² - 12² adalah...",
+          expression: "15² - 12²",
+          answer: 81,
+          difficulty: "hard",
+        },
+        {
+          problem: "Ibu membeli 2 lusin pensil. Berapa jumlah total pensil yang dibeli?",
+          expression: "2 × 12",
+          answer: 24,
+          difficulty: "easy",
+        },
+        {
+          problem: "Sebuah segitiga memiliki alas 10 cm dan tinggi 8 cm. Berapa luas segitiga tersebut?",
+          expression: "½ × 10 × 8",
+          answer: 40,
+          difficulty: "medium",
+        },
+        {
+          problem: "Pak Budi memiliki 45 ekor ayam. Dia menjual 18 ekor. Berapa sisa ayam Pak Budi?",
+          expression: "45 - 18",
+          answer: 27,
+          difficulty: "easy",
+        },
+        {
+          problem: "Sebuah kubus memiliki volume 125 cm³. Berapa panjang rusuk kubus tersebut?",
+          expression: "∛125",
+          answer: 5,
+          difficulty: "hard",
+        },
+        {
+          problem: "Rasio siswa laki-laki dan perempuan adalah 3:2. Jika total siswa 50, berapa jumlah siswa perempuan?",
+          expression: "2/5 × 50",
+          answer: 20,
+          difficulty: "hard",
+        },
+      ];
+
+      // Enhanced Comparison Problems
+      const comparisonProblems = [
+        {
+          problem: "5 _ 3",
+          options: ["<", ">", "="],
+          answer: ">",
+          difficulty: "easy",
+        },
+        {
+          problem: "8 _ 8",
+          options: ["<", ">", "="],
+          answer: "=",
+          difficulty: "easy",
+        },
+        {
+          problem: "12 _ 15",
+          options: ["<", ">", "="],
+          answer: "<",
+          difficulty: "easy",
+        },
+        {
+          problem: "3² _ 2³",
+          options: ["<", ">", "="],
+          answer: ">",
+          difficulty: "medium",
+        },
+        {
+          problem: "√16 _ 4",
+          options: ["<", ">", "="],
+          answer: "=",
+          difficulty: "medium",
+        },
+        {
+          problem: "1/2 _ 0.5",
+          options: ["<", ">", "="],
+          answer: "=",
+          difficulty: "easy",
+        },
+        {
+          problem: "3/4 _ 2/3",
+          options: ["<", ">", "="],
+          answer: ">",
+          difficulty: "medium",
+        },
+        {
+          problem: "0.75 _ 3/4",
+          options: ["<", ">", "="],
+          answer: "=",
+          difficulty: "medium",
+        },
+        {
+          problem: "5/6 _ 0.8",
+          options: ["<", ">", "="],
+          answer: ">",
+          difficulty: "hard",
+        },
+      ];
+
+      // Algebra Problems
+      const algebraProblems = [
+        {
+          problem: "Jika 2x = 10, maka x = ?",
+          expression: "2x = 10",
+          answer: 5,
+          difficulty: "easy",
+        },
+        {
+          problem: "Selesaikan: x - 4 = 8",
+          expression: "x - 4 = 8",
+          answer: 12,
+          difficulty: "easy",
+        },
+        {
+          problem: "Jika 3y + 2 = 14, maka y = ?",
+          expression: "3y + 2 = 14",
+          answer: 4,
+          difficulty: "medium",
+        },
+        {
+          problem: "Nilai dari 2x² ketika x = 3 adalah...",
+          expression: "2x², x=3",
+          answer: 18,
+          difficulty: "medium",
+        },
+        {
+          problem: "Selesaikan: 2(x + 3) = 16",
+          expression: "2(x + 3) = 16",
+          answer: 5,
+          difficulty: "medium",
+        },
+        {
+          problem: "Jika a + b = 10 dan a - b = 4, maka a = ?",
+          expression: "a + b = 10, a - b = 4",
+          answer: 7,
+          difficulty: "hard",
+        },
+        {
+          problem: "Selesaikan: 4x - 7 = 3x + 5",
+          expression: "4x - 7 = 3x + 5",
+          answer: 12,
+          difficulty: "hard",
+        },
+        {
+          problem: "Jika 2(x - 3) = x + 4, maka x = ?",
+          expression: "2(x - 3) = x + 4",
+          answer: 10,
+          difficulty: "hard",
+        },
+      ];
+
+      // Daily Missions
+      let dailyMissions = [
+        {
+          id: 1,
+          description: "Jawab 10 soal benar",
+          target: 10,
+          current: 0,
+          reward: 50,
+          type: "correct_answers",
+          completed: false,
+        },
+        {
+          id: 2,
+          description: "Capai streak 5",
+          target: 5,
+          current: 0,
+          reward: 30,
+          type: "streak",
+          completed: false,
+        },
+        {
+          id: 3,
+          description: "Selesaikan level 5",
+          target: 5,
+          current: 0,
+          reward: 100,
+          type: "level",
+          completed: false,
+        },
+      ];
+
+      // Achievements
+      let achievements = [
+        {
+          id: "ach1",
+          name: "Pemula",
+          description: "Selesaikan 10 soal",
+          target: 10,
+          current: 0,
+          unlocked: false,
+        },
+        {
+          id: "ach2",
+          name: "Challenge Master",
+          description: "Selesaikan level 5 di Challenge",
+          target: 5,
+          current: 0,
+          unlocked: false,
+        },
+        {
+          id: "ach3",
+          name: "Knowledge Seeker",
+          description: "Jawab 15 soal pengetahuan",
+          target: 15,
+          current: 0,
+          unlocked: false,
+        },
+        {
+          id: "ach4",
+          name: "Power User",
+          description: "Gunakan 5 power-up",
+          target: 5,
+          current: 0,
+          unlocked: false,
+        },
+        {
+          id: "ach5",
+          name: "Legend",
+          description: "Buka semua achievement",
+          target: 4,
+          current: 0,
+          unlocked: false,
+        },
+      ];
+
+      // Initialize game
+      function initializeGame() {
+        loadLevelProgress();
+        loadMissions();
+        loadAchievements();
+        loadLeaderboard();
+      }
+
+      // Load missions
+      function loadMissions() {
+        const missionsList = document.getElementById("missionsList");
+        if (!missionsList) return;
+        
+        let html = "";
+        dailyMissions.forEach(mission => {
+          html += `
+            <div class="mission-item ${mission.completed ? 'mission-completed' : ''}">
+              <span>${mission.description}</span>
+              <span class="mission-progress">${mission.current}/${mission.target}</span>
+            </div>
+          `;
+        });
+        missionsList.innerHTML = html;
+      }
+
+      // Load achievements
+      function loadAchievements() {
+        const achievementsList = document.getElementById("achievementsList");
+        if (!achievementsList) return;
+        
+        achievements.forEach(achievement => {
+          const element = document.getElementById(achievement.id);
+          if (element) {
+            if (achievement.unlocked) {
+              element.classList.add("unlocked");
+            }
+          }
+        });
+      }
+
+      // Load leaderboard
+      function loadLeaderboard() {
+        const leaderboardList = document.getElementById("leaderboardList");
+        if (!leaderboardList) return;
+        
+        // Sample leaderboard data
+        const leaderboardData = [
+          { name: "Player1", score: 1500 },
+          { name: "Player2", score: 1200 },
+          { name: "Player3", score: 1000 },
+          { name: "Anda", score: 800 },
+          { name: "Player5", score: 600 },
+        ];
+        
+        let html = "";
+        leaderboardData.forEach((player, index) => {
+          html += `
+            <div class="leaderboard-item ${player.name === "Anda" ? 'current' : ''}">
+              <span>${index + 1}. ${player.name}</span>
+              <span>${player.score} pts</span>
+            </div>
+          `;
+        });
+        leaderboardList.innerHTML = html;
+      }
+
+      // Open math game
+      function openMathGame(gameType) {
+        currentGame = gameType;
+        initLevelProgress(gameType);
+        
+        document.getElementById("gameModal").classList.add("active");
+
+        // Reset game state
+        score = 0;
+        timeLeft = 60;
+        currentLevel = 1;
+        correctStreak = 0;
+        totalQuestions = 0;
+        correctAnswers = 0;
+        challengeTimer = 10;
+        scoreMultiplier = 1;
+        hasShield = false;
+        usedQuestions.clear();
+        currentQuestionHistory = [];
+
+        loadLevelSelection();
+      }
+
+      // Load level selection screen
+      function loadLevelSelection() {
+        let html = `
+          <button class="close-btn" onclick="closeGame()">×</button>
+          <h2>${getGameTitle()}</h2>
+          <p>${getGameDescription()}</p>
+          
+          <div class="level-progress">
+            <h3>📊 Progress Game</h3>
+            <p>Pilih level yang ingin dimainkan:</p>
+          </div>
+          
+          <div class="level-selection" id="levelSelection">
+            ${generateLevelButtons()}
+          </div>
+          
+          <div class="fun-message level-info">
+            Setiap level memiliki 5 soal. Selesaikan level untuk membuka level berikutnya!
+          </div>
+          
+          <button class="play-btn" onclick="closeGame()" style="margin-top: 20px;">
+            Kembali ke Menu Utama
+          </button>
+        `;
+        
+        document.getElementById("gameContent").innerHTML = html;
+      }
+
+      // Generate level buttons based on progress
+      function generateLevelButtons() {
+        let buttons = '';
+        const maxLevel = 10;
+        
+        for (let i = 1; i <= maxLevel; i++) {
+          const levelData = levelProgress[currentGame] && levelProgress[currentGame][i] 
+            ? levelProgress[currentGame][i] 
+            : { unlocked: i === 1, completed: false, stars: 0 };
+          
+          let buttonClass = 'level-btn';
+          let buttonText = i;
+          
+          if (levelData.unlocked) {
+            if (levelData.completed) {
+              buttonClass += ' completed';
+              buttonText += `<span class="level-stars">${'⭐'.repeat(levelData.stars)}</span>`;
+            } else if (i === currentLevel) {
+              buttonClass += ' current';
+            } else {
+              buttonClass += ' unlocked';
+            }
+          } else {
+            buttonClass += ' locked';
+            buttonText = '🔒';
+          }
+          
+          buttons += `
+            <button class="${buttonClass}" 
+                    ${levelData.unlocked ? `onclick="startLevel(${i})"` : 'disabled'}>
+              ${buttonText}
+            </button>
+          `;
+        }
+        
+        return buttons;
+      }
+
+      // Start a specific level - PERBAIKAN
+      function startLevel(level) {
+        currentLevel = level;
+        
+        // Reset state untuk level baru
+        score = 0;
+        correctStreak = 0;
+        totalQuestions = 0;
+        correctAnswers = 0;
+        scoreMultiplier = 1;
+        usedQuestions.clear();
+        currentQuestionHistory = [];
+        
+        // Pastikan progress level direset dengan benar
+        const levelProgressData = getCurrentLevelProgress();
+        updateLevelProgress(currentLevel, {
+          currentQuestion: 1,
+          completed: false
+        });
+        
+        loadMathGame();
+      }
+
+      // Close game modal
+      function closeGame() {
+        document.getElementById("gameModal").classList.remove("active");
+        clearInterval(gameInterval);
+        saveGameProgress();
+      }
+
+      // Load Math Game based on type - PERBAIKAN
+      function loadMathGame() {
+        const levelProgressData = getCurrentLevelProgress();
+        
+        let html = `
+          <button class="close-btn" onclick="closeGame()">×</button>
+          <h2>${getGameTitle()} - Level ${currentLevel}</h2>
+          <p>${getGameDescription()}</p>
+          
+          <div class="level-progress">
+            <h4 id="progressText">Soal ${levelProgressData.currentQuestion} dari ${levelProgressData.totalQuestions}</h4>
+            <div class="level-progress-bar">
+              <div class="level-progress-fill" id="levelProgressFill"
+                   style="width: ${((levelProgressData.currentQuestion - 1) / levelProgressData.totalQuestions) * 100}%">
+              </div>
+            </div>
+          </div>
+          
+          <div class="game-stats">
+            <div class="stat">
+              <div class="stat-value" id="score">0</div>
+              <div class="stat-label">Score</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="timeLeft">${
+                currentGame === "challenge" ? challengeTimer : timeLeft
+              }</div>
+              <div class="stat-label">${
+                currentGame === "challenge" ? "Soal Timer" : "Waktu"
+              }</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="level">${currentLevel}</div>
+              <div class="stat-label">Level</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="streak">0</div>
+              <div class="stat-label">Streak</div>
+            </div>
+          </div>
+
+          <div class="power-ups-container" id="powerUpsContainer">
+            ${Object.keys(powerUps).map((powerUp) => `
+              <div class="power-up ${powerUps[powerUp].count === 0 ? "disabled" : ""}" 
+                   onclick="usePowerUp('${powerUp}')" 
+                   title="${powerUps[powerUp].name}">
+                ${powerUps[powerUp].name.split(" ")[0]}
+                ${powerUps[powerUp].count > 0 ? `<span class="power-up-count">${powerUps[powerUp].count}</span>` : ""}
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="math-problem-container">
+            <div class="math-character character-1">🔢</div>
+            <div class="math-character character-2">➕</div>
+            <div class="math-character character-3">➖</div>
+            <div class="math-character character-4">✖️</div>
+            <div class="math-problem" id="mathProblem">${getReadyMessage()}</div>
+            <div class="math-expression" id="mathExpression"></div>
+            <div class="word-problem" id="wordProblem" style="display: none;"></div>
+            <div class="knowledge-question" id="knowledgeQuestion" style="display: none;"></div>
+            ${currentGame === "challenge" ? '<div class="challenge-timer" id="challengeTimer">10</div>' : ""}
+          </div>
+
+          <div id="gameInterface">
+            <!-- Game interface will be loaded here based on mode -->
+          </div>
+
+          <div class="fun-message" id="gameMessage">${getGameInstructions()}</div>
+        `;
+
+        document.getElementById("gameContent").innerHTML = html;
+
+        // Update progress display setelah DOM di-render
+        setTimeout(() => {
+          updateProgressDisplay();
+          generateMathProblem();
+          if (currentGame === "challenge") {
+            startChallengeTimer();
+          } else if (currentGame !== "knowledge") {
+            startGameTimer();
+          }
+        }, 100);
+      }
+
+      // Fungsi baru untuk update progress display - PERBAIKAN
+      function updateProgressDisplay() {
+        const levelProgressData = getCurrentLevelProgress();
+        const progressFill = document.getElementById("levelProgressFill");
+        const progressText = document.getElementById("progressText");
+        
+        if (progressFill) {
+          const progressPercent = ((levelProgressData.currentQuestion - 1) / levelProgressData.totalQuestions) * 100;
+          progressFill.style.width = `${progressPercent}%`;
+        }
+        
+        if (progressText) {
+          progressText.textContent = `Soal ${levelProgressData.currentQuestion} dari ${levelProgressData.totalQuestions}`;
+        }
+      }
+
+      // Get game title based on mode
+      function getGameTitle() {
+        switch (currentGame) {
+          case "challenge":
+            return "🎯 Math Challenge - Tantangan Berwaktu";
+          case "knowledge":
+            return "🧠 Knowledge Quiz - Pengetahuan Umum";
+          default:
+            return "🎮 EduGames";
+        }
+      }
+
+      // Get game description
+      function getGameDescription() {
+        switch (currentGame) {
+          case "challenge":
+            return "Setiap soal matematika punya timer 10 detik! Jawab sebelum waktu habis!";
+          case "knowledge":
+            return "Uji pengetahuanmu dengan soal-soal dari berbagai bidang ilmu!";
+          default:
+            return "Tantang kemampuan matematika dan pengetahuanmu!";
+        }
+      }
+
+      // Get ready message
+      function getReadyMessage() {
+        switch (currentGame) {
+          case "challenge":
+            return "Jawab sebelum waktu habis!";
+          case "knowledge":
+            return "Uji Pengetahuanmu!";
+          default:
+            return "Siap?";
+        }
+      }
+
+      // Get game instructions
+      function getGameInstructions() {
+        switch (currentGame) {
+          case "challenge":
+            return "⏰ Jawab sebelum timer habis! Setiap soal 10 detik!";
+          case "knowledge":
+            return "🧠 Pilih jawaban yang paling tepat!";
+          default:
+            return "Selamat bermain!";
+        }
+      }
+
+      // Generate unique math problem based on current level - PERBAIKAN
+      function generateMathProblem() {
+        const levelProgressData = getCurrentLevelProgress();
+        
+        if (currentGame === "knowledge") {
+          generateKnowledgeQuestion();
+          return;
+        }
+
+        const levelConfig = levelSystem[Math.min(currentLevel, 10)];
+        let problemType;
+        let attempts = 0;
+        const maxAttempts = 10;
+
+        // Try to find a unique problem type
+        do {
+          problemType =
+            levelConfig.types[
+              Math.floor(Math.random() * levelConfig.types.length)
+            ];
+          attempts++;
+        } while (
+          currentQuestionHistory.includes(problemType) &&
+          attempts < maxAttempts
+        );
+
+        // Update question history (keep last 3 types)
+        currentQuestionHistory.push(problemType);
+        if (currentQuestionHistory.length > 3) {
+          currentQuestionHistory.shift();
+        }
+
+        let num1, num2, operation, answer, expression, problemText;
+        const operations = levelConfig.operations;
+        let operationSymbol =
+          operations[Math.floor(Math.random() * operations.length)];
+
+        // Adjust difficulty based on level
+        const maxNumber = levelConfig.maxNumber;
+        const difficultyMultiplier = Math.max(1, Math.floor(currentLevel / 3));
+
+        switch (problemType) {
+          case "basic":
+            switch (operationSymbol) {
+              case "+":
+                num1 =
+                  Math.floor(Math.random() * maxNumber * difficultyMultiplier) +
+                  1;
+                num2 =
+                  Math.floor(Math.random() * maxNumber * difficultyMultiplier) +
+                  1;
+                answer = num1 + num2;
+                break;
+              case "-":
+                num1 =
+                  Math.floor(Math.random() * maxNumber * difficultyMultiplier) +
+                  10;
+                num2 = Math.floor(Math.random() * num1) + 1;
+                answer = num1 - num2;
+                break;
+              case "×":
+                num1 =
+                  Math.floor(
+                    Math.random() * Math.min(12, 2 + currentLevel * 2)
+                  ) + 1;
+                num2 =
+                  Math.floor(
+                    Math.random() * Math.min(12, 2 + currentLevel * 2)
+                  ) + 1;
+                answer = num1 * num2;
+                break;
+              case "÷":
+                num2 =
+                  Math.floor(Math.random() * Math.min(10, currentLevel)) + 1;
+                answer =
+                  Math.floor(Math.random() * Math.min(10, currentLevel)) + 1;
+                num1 = num2 * answer;
+                operationSymbol = "÷";
+                break;
+            }
+            expression = `${num1} ${operationSymbol} ${num2} = ?`;
+            problemText = null;
+            break;
+
+          case "word":
+            const availableWordProblems = wordProblems.filter(
+              (p) =>
+                p.difficulty === levelConfig.difficulty ||
+                (levelConfig.difficulty === "easy" &&
+                  ["easy", "medium"].includes(p.difficulty)) ||
+                (levelConfig.difficulty === "medium" &&
+                  ["medium", "hard"].includes(p.difficulty)) ||
+                (levelConfig.difficulty === "hard" &&
+                  ["hard"].includes(p.difficulty))
+            );
+            const wordProblem =
+              availableWordProblems[
+                Math.floor(Math.random() * availableWordProblems.length)
+              ];
+            problemText = wordProblem.problem;
+            expression = wordProblem.expression;
+            answer = wordProblem.answer;
+            break;
+
+          case "comparison":
+            const availableComparisons = comparisonProblems.filter(
+              (p) => p.difficulty === levelConfig.difficulty
+            );
+            const compProblem =
+              availableComparisons[
+                Math.floor(Math.random() * availableComparisons.length)
+              ];
+            problemText = compProblem.problem;
+            expression = null;
+            answer = compProblem.answer;
+            break;
+
+          case "division":
+            num2 =
+              Math.floor(Math.random() * Math.min(12, currentLevel * 2)) + 1;
+            answer =
+              Math.floor(Math.random() * Math.min(12, currentLevel * 2)) + 1;
+            num1 = num2 * answer;
+            expression = `${num1} ÷ ${num2} = ?`;
+            problemText = null;
+            break;
+
+          case "algebra":
+            const availableAlgebra = algebraProblems.filter(
+              (p) => p.difficulty === levelConfig.difficulty
+            );
+            const algebraProblem =
+              availableAlgebra[
+                Math.floor(Math.random() * availableAlgebra.length)
+              ];
+            problemText = algebraProblem.problem;
+            expression = algebraProblem.expression;
+            answer = algebraProblem.answer;
+            break;
+        }
+
+        // Update UI
+        const problemElement = document.getElementById("mathProblem");
+        const expressionElement = document.getElementById("mathExpression");
+        const wordElement = document.getElementById("wordProblem");
+        const knowledgeElement = document.getElementById("knowledgeQuestion");
+        const interfaceElement = document.getElementById("gameInterface");
+
+        if (problemElement) {
+          problemElement.textContent = `Level ${currentLevel} - Soal ${levelProgressData.currentQuestion}`;
+          problemElement.classList.add("level-up-glow");
+          setTimeout(
+            () => problemElement.classList.remove("level-up-glow"),
+            1500
+          );
+        }
+
+        if (expressionElement) {
+          expressionElement.textContent = expression || "";
+          expressionElement.style.display = expression ? "block" : "none";
+          expressionElement.dataset.answer = answer;
+        }
+
+        if (wordElement) {
+          wordElement.textContent = problemText || "";
+          wordElement.style.display = problemText ? "block" : "none";
+        }
+
+        if (knowledgeElement) {
+          knowledgeElement.style.display = "none";
+        }
+
+        // Load different interface based on game mode
+        if (interfaceElement) {
+          switch (currentGame) {
+            case "challenge":
+              loadChallengeInterface(answer, problemType);
+              break;
+          }
+        }
+
+        totalQuestions++;
+        updateProgressDisplay(); // PERBAIKAN: Panggil updateProgressDisplay
+
+        // Random chance for power-up drop
+        if (Math.random() < 0.15) {
+          dropPowerUp();
+        }
+      }
+
+      // Generate unique knowledge question - PERBAIKAN
+      function generateKnowledgeQuestion() {
+        const levelProgressData = getCurrentLevelProgress();
+        const levelConfig = levelSystem[Math.min(currentLevel, 10)];
+
+        // Filter questions by difficulty - LEVEL 1 HANYA SOAL MUDAH
+        let availableQuestions = knowledgeQuestions.filter((q) => {
+          if (currentLevel === 1) {
+            return q.difficulty === "easy"; // Level 1 hanya soal mudah
+          } else if (levelConfig.difficulty === "easy") {
+            return ["easy", "medium"].includes(q.difficulty);
+          } else if (levelConfig.difficulty === "medium") {
+            return ["medium", "hard"].includes(q.difficulty);
+          } else if (levelConfig.difficulty === "hard") {
+            return ["hard"].includes(q.difficulty);
+          }
+          return true;
+        });
+
+        // Remove recently used questions
+        availableQuestions = availableQuestions.filter(
+          (q) => !usedQuestions.has(q.question)
+        );
+
+        // If no unique questions left, reset used questions
+        if (availableQuestions.length === 0) {
+          usedQuestions.clear();
+          availableQuestions = knowledgeQuestions.filter((q) => {
+            if (currentLevel === 1) {
+              return q.difficulty === "easy"; // Level 1 hanya soal mudah
+            } else if (levelConfig.difficulty === "easy") {
+              return ["easy", "medium"].includes(q.difficulty);
+            } else if (levelConfig.difficulty === "medium") {
+              return ["medium", "hard"].includes(q.difficulty);
+            } else if (levelConfig.difficulty === "hard") {
+              return ["hard"].includes(q.difficulty);
+            }
+            return true;
+          });
+        }
+
+        const randomQuestion =
+          availableQuestions[
+            Math.floor(Math.random() * availableQuestions.length)
+          ];
+        usedQuestions.add(randomQuestion.question);
+
+        // Update UI
+        const problemElement = document.getElementById("mathProblem");
+        const expressionElement = document.getElementById("mathExpression");
+        const wordElement = document.getElementById("wordProblem");
+        const knowledgeElement = document.getElementById("knowledgeQuestion");
+        const interfaceElement = document.getElementById("gameInterface");
+
+        if (problemElement) {
+          problemElement.textContent = `Level ${currentLevel} - Soal ${levelProgressData.currentQuestion}`;
+          problemElement.classList.add("level-up-glow");
+          setTimeout(
+            () => problemElement.classList.remove("level-up-glow"),
+            1500
+          );
+        }
+
+        if (expressionElement) {
+          expressionElement.style.display = "none";
+        }
+
+        if (wordElement) {
+          wordElement.style.display = "none";
+        }
+
+        if (knowledgeElement) {
+          knowledgeElement.innerHTML = `
+            <div class="knowledge-category">${randomQuestion.category}</div>
+            ${randomQuestion.question}
+          `;
+          knowledgeElement.style.display = "block";
+          knowledgeElement.dataset.answer = randomQuestion.answer;
+        }
+
+        // Load knowledge interface
+        if (interfaceElement) {
+          loadKnowledgeInterface(randomQuestion.options, randomQuestion.answer);
+        }
+
+        totalQuestions++;
+        updateProgressDisplay(); // PERBAIKAN: Panggil updateProgressDisplay
+
+        // Random chance for power-up drop
+        if (Math.random() < 0.15) {
+          dropPowerUp();
+        }
+      }
+
+      // KNOWLEDGE: Load knowledge interface
+      function loadKnowledgeInterface(options, answer) {
+        // Shuffle options
+        const shuffledOptions = [...options].sort(() => Math.random() - 0.5);
+
+        let html = `
+          <div class="knowledge-options" id="knowledgeOptions">
+        `;
+
+        shuffledOptions.forEach((option) => {
+          html += `
+            <button class="knowledge-option" onclick="checkKnowledgeAnswer('${option}', '${answer}')">
+              ${option}
+            </button>
+          `;
+        });
+
+        html += `</div>`;
+        document.getElementById("gameInterface").innerHTML = html;
+      }
+
+      // CHALLENGE: Load challenge interface with per-question timer
+      function loadChallengeInterface(answer, problemType) {
+        let options = [];
+
+        if (problemType === "comparison") {
+          options = ["<", ">", "="];
+        } else {
+          // Generate wrong answers for numerical problems
+          const wrongAnswers = [];
+          while (wrongAnswers.length < 3) {
+            let wrongAnswer;
+            const variation = Math.floor(Math.random() * 5) + 1;
+
+            if (Math.random() > 0.5) {
+              wrongAnswer = parseInt(answer) + variation;
+            } else {
+              wrongAnswer = Math.max(1, parseInt(answer) - variation);
+            }
+
+            if (wrongAnswer != answer && !wrongAnswers.includes(wrongAnswer)) {
+              wrongAnswers.push(wrongAnswer);
+            }
+          }
+          options = [answer, ...wrongAnswers];
+        }
+
+        // Shuffle options
+        options = options.sort(() => Math.random() - 0.5);
+
+        let html = `
+          <div class="challenge-options" id="challengeOptions">
+        `;
+
+        options.forEach((option) => {
+          html += `
+            <button class="challenge-option" onclick="checkChallengeAnswer('${option}', '${answer}')">
+              ${option}
+            </button>
+          `;
+        });
+
+        html += `</div>`;
+        document.getElementById("gameInterface").innerHTML = html;
+
+        // Reset challenge timer
+        challengeTimer = 10;
+        updateChallengeTimerDisplay();
+      }
+
+      // Check answers for different modes
+      function checkKnowledgeAnswer(selected, correct) {
+        const options = document.querySelectorAll(".knowledge-option");
+
+        if (selected == correct) {
+          handleCorrectAnswer();
+          // Track knowledge questions for achievement
+          achievements[2].current++;
+          options.forEach((opt) => {
+            if (opt.textContent.trim() == selected) {
+              opt.classList.add("correct");
+              createConfetti(opt);
+            }
+          });
+        } else {
+          if (!hasShield) {
+            handleIncorrectAnswer();
+          }
+          options.forEach((opt) => {
+            if (opt.textContent.trim() == selected) {
+              opt.classList.add("incorrect");
+            }
+            if (opt.textContent.trim() == correct) {
+              opt.classList.add("correct");
+            }
+          });
+        }
+
+        setTimeout(() => {
+          checkLevelCompletion();
+        }, 1500);
+      }
+
+      function checkChallengeAnswer(selected, correct) {
+        const options = document.querySelectorAll(".challenge-option");
+
+        if (selected == correct) {
+          handleCorrectAnswer();
+          options.forEach((opt) => {
+            if (opt.textContent.trim() == selected) {
+              opt.classList.add("correct");
+              createConfetti(opt);
+            }
+          });
+        } else {
+          if (!hasShield) {
+            handleIncorrectAnswer();
+          }
+          options.forEach((opt) => {
+            if (opt.textContent.trim() == selected) {
+              opt.classList.add("incorrect");
+            }
+            if (opt.textContent.trim() == correct) {
+              opt.classList.add("correct");
+            }
+          });
+        }
+
+        clearInterval(gameInterval);
+        setTimeout(() => {
+          checkLevelCompletion();
+        }, 1500);
+      }
+
+      // Handle correct answer
+      function handleCorrectAnswer() {
+        correctAnswers++;
+        correctStreak++;
+        
+        // Calculate base points
+        let points = 10;
+        
+        // Add streak bonus
+        if (correctStreak >= 3) {
+          points += correctStreak * 2;
+        }
+        
+        // Add level bonus
+        points += currentLevel * 2;
+        
+        // Apply multiplier
+        points *= scoreMultiplier;
+        
+        score += Math.round(points);
+        
+        // Update UI
+        updateScoreDisplay();
+        updateStreakDisplay();
+        
+        showGameMessage(`🎉 Benar! +${Math.round(points)} points`, "correct");
+        
+        // Update missions
+        updateMissions("correct_answers");
+        if (correctStreak >= 5) {
+          updateMissions("streak");
+        }
+      }
+
+      // Handle incorrect answer
+      function handleIncorrectAnswer() {
+        correctStreak = 0;
+        updateStreakDisplay();
+        showGameMessage("❌ Salah! Coba lagi", "incorrect");
+      }
+
+      // Update score display
+      function updateScoreDisplay() {
+        const scoreElement = document.getElementById("score");
+        if (scoreElement) {
+          scoreElement.textContent = score;
+        }
+      }
+
+      // Update streak display
+      function updateStreakDisplay() {
+        const streakElement = document.getElementById("streak");
+        if (streakElement) {
+          streakElement.textContent = correctStreak;
+          if (correctStreak >= 3) {
+            streakElement.style.color = "var(--highlight-green)";
+          } else {
+            streakElement.style.color = "var(--logo-yellow)";
+          }
+        }
+      }
+
+      // Update timer display
+      function updateTimerDisplay() {
+        const timerElement = document.getElementById("timeLeft");
+        if (timerElement) {
+          timerElement.textContent = timeLeft;
+        }
+      }
+
+      // Start game timer
+      function startGameTimer() {
+        clearInterval(gameInterval);
+        gameInterval = setInterval(() => {
+          timeLeft--;
+          updateTimerDisplay();
+
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      // Start challenge timer
+      function startChallengeTimer() {
+        clearInterval(gameInterval);
+        challengeTimer = 10;
+        updateChallengeTimerDisplay();
+
+        gameInterval = setInterval(() => {
+          challengeTimer--;
+          updateChallengeTimerDisplay();
+
+          if (challengeTimer <= 0) {
+            // Time's up for this question
+            if (!hasShield) {
+              showGameMessage("⏰ Waktu habis! Soal berikutnya...", "warning");
+            }
+            clearInterval(gameInterval);
+            setTimeout(() => {
+              checkLevelCompletion();
+            }, 1500);
+          }
+        }, 1000);
+      }
+
+      // Update challenge timer display
+      function updateChallengeTimerDisplay() {
+        const timerElement = document.getElementById("timeLeft");
+        const challengeTimerElement = document.getElementById("challengeTimer");
+
+        if (timerElement) timerElement.textContent = challengeTimer;
+        if (challengeTimerElement)
+          challengeTimerElement.textContent = challengeTimer;
+
+        // Change color when time is running out
+        if (challengeTimer <= 3) {
+          if (timerElement) timerElement.style.color = "var(--highlight-red)";
+          if (challengeTimerElement) {
+            challengeTimerElement.style.color = "var(--highlight-red)";
+            challengeTimerElement.style.animation = "pulse 0.5s infinite";
+          }
+        } else if (challengeTimer <= 7) {
+          if (timerElement) timerElement.style.color = "var(--logo-yellow)";
+          if (challengeTimerElement) {
+            challengeTimerElement.style.color = "var(--logo-yellow)";
+            challengeTimerElement.style.animation = "none";
+          }
+        } else {
+          if (timerElement) timerElement.style.color = "var(--highlight-green)";
+          if (challengeTimerElement) {
+            challengeTimerElement.style.color = "var(--highlight-green)";
+            challengeTimerElement.style.animation = "none";
+          }
+        }
+      }
+
+      // Check level completion
+      function checkLevelCompletion() {
+        const levelProgressData = getCurrentLevelProgress();
+        
+        // Update current question - TAMBAHKAN +1 untuk soal berikutnya
+        const newCurrentQuestion = levelProgressData.currentQuestion + 1;
+        updateLevelProgress(currentLevel, {
+          currentQuestion: newCurrentQuestion
+        });
+        
+        // Check if level is completed
+        if (newCurrentQuestion > levelProgressData.totalQuestions) {
+          completeLevel();
+        } else {
+          // Update progress display SEBELUM melanjutkan ke soal berikutnya
+          updateProgressDisplay();
+          
+          // Continue to next question
+          setTimeout(() => {
+            if (currentGame === "challenge") {
+              generateMathProblem();
+              startChallengeTimer();
+            } else {
+              generateMathProblem();
+            }
+          }, 1500);
+        }
+      }
+
+      // Complete level
+      function completeLevel() {
+        const levelProgressData = getCurrentLevelProgress();
+        
+        // Update progress display untuk menunjukkan 100% (soal 5 dari 5)
+        updateProgressDisplay();
+        
+        // Calculate stars based on performance
+        const accuracy = totalQuestions > 0 ? (correctAnswers / totalQuestions) : 0;
+        let stars = 1;
+        
+        if (accuracy >= 0.8) stars = 3;
+        else if (accuracy >= 0.6) stars = 2;
+        
+        // Update level progress
+        updateLevelProgress(currentLevel, {
+          completed: true,
+          stars: stars,
+          score: score
+        });
+        
+        // Show level completion message
+        showGameMessage(
+          `🎉 LEVEL ${currentLevel} SELESAI! 🎉\nKamu mendapatkan ${stars} bintang!\nScore: ${score} points`,
+          "success"
+        );
+        
+        // Create celebration effect
+        createConfetti(document.getElementById("mathProblem"));
+        
+        // Add continue button
+        setTimeout(() => {
+          const continueBtn = document.createElement("button");
+          continueBtn.className = "play-btn";
+          continueBtn.textContent = "Lanjutkan ke Level Selection";
+          continueBtn.onclick = () => {
+            closeGame();
+            setTimeout(() => {
+              openMathGame(currentGame);
+            }, 300);
+          };
+          continueBtn.style.marginTop = "20px";
+          
+          document.getElementById("gameContent").appendChild(continueBtn);
+        }, 2000);
+      }
+
+      // Use power-up
+      function usePowerUp(powerUpId) {
+        const powerUp = powerUps[powerUpId];
+        if (powerUp && powerUp.count > 0) {
+          powerUp.count--;
+          powerUp.effect();
+          updatePowerUpDisplay();
+          
+          // Update achievement
+          achievements[3].current++;
+        }
+      }
+
+      // Update power-up display
+      function updatePowerUpDisplay() {
+        const powerUpContainer = document.getElementById("powerUpsContainer");
+        if (powerUpContainer) {
+          powerUpContainer.innerHTML = Object.keys(powerUps).map((powerUp) => `
+            <div class="power-up ${powerUps[powerUp].count === 0 ? "disabled" : ""}" 
+                 onclick="usePowerUp('${powerUp}')" 
+                 title="${powerUps[powerUp].name}">
+              ${powerUps[powerUp].name.split(" ")[0]}
+              ${powerUps[powerUp].count > 0 ? `<span class="power-up-count">${powerUps[powerUp].count}</span>` : ""}
+            </div>
+          `).join("");
+        }
+      }
+
+      // Drop random power-up
+      function dropPowerUp() {
+        const availablePowerUps = Object.keys(powerUps).filter(p => powerUps[p].count < 5);
+        if (availablePowerUps.length > 0) {
+          const randomPowerUp = availablePowerUps[Math.floor(Math.random() * availablePowerUps.length)];
+          powerUps[randomPowerUp].count++;
+          updatePowerUpDisplay();
+          showGameMessage(`🎁 Power-up ${powerUps[randomPowerUp].name} didapatkan!`, "info");
+        }
+      }
+
+      // Update missions
+      function updateMissions(type) {
+        dailyMissions.forEach(mission => {
+          if (mission.type === type && !mission.completed) {
+            mission.current++;
+            if (mission.current >= mission.target) {
+              mission.completed = true;
+              score += mission.reward;
+              updateScoreDisplay();
+              showGameMessage(`🎯 Misi "${mission.description}" selesai! +${mission.reward} points`, "success");
+            }
+          }
+        });
+        loadMissions();
+      }
+
+      // Show game message dengan variasi warna
+      function showGameMessage(message, type = "info") {
+        const messageElement = document.getElementById("gameMessage");
+        if (messageElement) {
+          messageElement.textContent = message;
+          messageElement.className = "fun-message"; // Reset class
+          messageElement.classList.add(type); // Tambah class type
+
+          messageElement.style.animation = "none";
+          setTimeout(() => {
+            messageElement.style.animation = "fadeIn 0.5s ease-out";
+          }, 10);
+        }
+      }
+
+      // Create confetti effect
+      function createConfetti(element) {
+        const confettiItems = ["🎉", "✨", "⭐", "🎊", "🌟", "💫"];
+        for (let i = 0; i < 8; i++) {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+          confetti.textContent =
+            confettiItems[Math.floor(Math.random() * confettiItems.length)];
+          confetti.style.left = `${Math.random() * 100}%`;
+          confetti.style.top = `${Math.random() * 100}%`;
+          confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+
+          if (element) {
+            element.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 2000);
+          }
+        }
+      }
+
+      // Save game progress
+      function saveGameProgress() {
+        localStorage.setItem('gameProgress', JSON.stringify({
+          score: score,
+          currentLevel: currentLevel,
+          achievements: achievements
+        }));
+      }
+
+      // End game
+      function endGame() {
+        clearInterval(gameInterval);
+        const accuracy =
+          totalQuestions > 0
+            ? Math.round((correctAnswers / totalQuestions) * 100)
+            : 0;
+
+        let endMessage = `🎮 Game Over! Final Score: ${score} points!\n`;
+        endMessage += `Akurasi: ${accuracy}%\n`;
+        endMessage += `Level Tertinggi: ${currentLevel}\n`;
+        endMessage += `Soal Dijawab: ${totalQuestions}`;
+
+        showGameMessage(endMessage, "info");
+
+        // Disable game interactions
+        const gameContent = document.getElementById("gameContent");
+        const interactiveElements =
+          gameContent.querySelectorAll("button, input");
+        interactiveElements.forEach((el) => {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.6";
+        });
+
+        // Add restart button
+        const restartBtn = document.createElement("button");
+        restartBtn.className = "play-btn";
+        restartBtn.textContent = "Kembali ke Level Selection";
+        restartBtn.onclick = () => {
+          closeGame();
+          setTimeout(() => openMathGame(currentGame), 300);
+        };
+        restartBtn.style.marginTop = "20px";
+
+        document.getElementById("gameContent").appendChild(restartBtn);
+
+        // Save progress
+        saveGameProgress();
+      }
+
+      // Event listener for closing modal with ESC key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeGame();
+        }
+      });
+
+      // Initialize game when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeGame();
+
+        // Animate game cards on load
+        const gameCards = document.querySelectorAll(".game-card");
+        gameCards.forEach((card, index) => {
+          card.style.animationDelay = `${index * 0.1}s`;
+        });
+      });
+    </script>
+  </body>
+</html>
