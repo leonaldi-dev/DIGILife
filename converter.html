@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Unit Converter - DIGILife</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <style>
+      /* Custom CSS & Variables (Modern Aesthetic Theme) */
+      :root {
+        --primary-dark: #1a202c;
+        --secondary-dark: #2d3748;
+        --accent-purple: #9f7aea;
+        --accent-blue: #4299e1;
+        --accent-pink: #ed64a6;
+        --accent-orange: #ed8936;
+        --accent-cyan: #38b2ac;
+        --accent-green: #48bb78;
+        --accent-red: #f56565;
+        --accent-yellow: #ecc94b;
+        --text-light: #f7fafc;
+        --background-gradient: linear-gradient(
+          135deg,
+          #2a2e4c 0%,
+          #4a4063 100%
+        ); /* Gradasi gelap elegan */
+      }
+
+      * {
+        font-family: "Poppins", sans-serif;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--background-gradient);
+        min-height: 100vh;
+        width: 100%;
+        display: block;
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+      }
+
+      .main-app {
+        width: 100%;
+        max-width: 100%;
+        background-color: var(--secondary-dark);
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        color: var(--text-light);
+        animation: fadeIn 0.8s ease-out;
+        margin: 0;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .main-app::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--accent-purple),
+          var(--accent-blue),
+          var(--accent-pink)
+        );
+        z-index: 10;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes neonPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 10px rgba(159, 122, 234, 0.6),
+            0 0 20px rgba(159, 122, 234, 0.4);
+        }
+        50% {
+          box-shadow: 0 0 15px rgba(159, 122, 234, 0.8),
+            0 0 30px rgba(159, 122, 234, 0.6);
+        }
+      }
+
+      .neon-effect {
+        animation: neonPulse 2s ease-in-out infinite;
+      }
+
+      .input-style {
+        background: linear-gradient(135deg, #2d3748, #3c4a6a);
+        border: 2px solid var(--accent-purple);
+        color: var(--text-light);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .input-style:focus {
+        border-color: var(--accent-green);
+        box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.4),
+          0 4px 20px rgba(0, 0, 0, 0.3);
+        outline: none;
+        transform: translateY(-2px);
+      }
+
+      .btn-style {
+        transition: all 0.3s ease;
+        font-weight: 700;
+        box-sizing: border-box;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-style::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.05),
+          transparent
+        ); /* Gradasi transparan lebih halus */
+        transition: left 0.5s;
+      }
+
+      .btn-style:hover::before {
+        left: 100%;
+      }
+
+      .btn-style:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      }
+
+      .convert-btn-gradient {
+        background: linear-gradient(135deg, var(--accent-green), #2f855a);
+        color: white;
+        box-shadow: 0 6px 20px rgba(72, 187, 120, 0.5);
+        border: none;
+      }
+
+      .convert-btn-gradient:hover {
+        background: linear-gradient(135deg, #2f855a, var(--accent-green));
+        box-shadow: 0 10px 30px rgba(72, 187, 120, 0.7);
+      }
+
+      .swap-btn-gradient {
+        background: linear-gradient(135deg, var(--accent-purple), #6b46c1);
+        color: white;
+        box-shadow: 0 4px 15px rgba(159, 122, 234, 0.5);
+      }
+
+      /* Category Card Styles dengan Bingkai Berwarna */
+      .category-card {
+        background: linear-gradient(135deg, #2d3748, #3c4a6a);
+        border: 3px solid;
+        border-radius: 12px;
+        transition: all 0.4s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .category-card[data-category="length"] {
+        border-color: var(--accent-blue);
+      }
+
+      .category-card[data-category="weight"] {
+        border-color: var(--accent-green);
+      }
+
+      .category-card[data-category="temperature"] {
+        border-color: var(--accent-red);
+      }
+
+      .category-card[data-category="volume"] {
+        border-color: var(--accent-purple);
+      }
+
+      .category-card[data-category="time"] {
+        border-color: var(--accent-yellow);
+      }
+
+      .category-card[data-category="area"] {
+        border-color: var(--accent-cyan);
+      }
+
+      .category-card[data-category="speed"] {
+        border-color: var(--accent-orange);
+      }
+
+      .category-card[data-category="digital"] {
+        border-color: var(--accent-pink);
+      }
+
+      .category-card:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      }
+
+      .category-card[data-category="length"]:hover {
+        background: linear-gradient(135deg, var(--accent-blue), #3182ce);
+      }
+
+      .category-card[data-category="weight"]:hover {
+        background: linear-gradient(135deg, var(--accent-green), #2f855a);
+      }
+
+      .category-card[data-category="temperature"]:hover {
+        background: linear-gradient(135deg, var(--accent-red), #c53030);
+      }
+
+      .category-card[data-category="volume"]:hover {
+        background: linear-gradient(135deg, var(--accent-purple), #6b46c1);
+      }
+
+      .category-card[data-category="time"]:hover {
+        background: linear-gradient(135deg, var(--accent-yellow), #d69e2e);
+      }
+
+      .category-card[data-category="area"]:hover {
+        background: linear-gradient(135deg, var(--accent-cyan), #2d6b64);
+      }
+
+      .category-card[data-category="speed"]:hover {
+        background: linear-gradient(135deg, var(--accent-orange), #c05621);
+      }
+
+      .category-card[data-category="digital"]:hover {
+        background: linear-gradient(135deg, var(--accent-pink), #9b2c2c);
+      }
+
+      .category-card.active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      }
+
+      .category-card[data-category="length"].active {
+        background: linear-gradient(135deg, var(--accent-blue), #3182ce);
+      }
+
+      .category-card[data-category="weight"].active {
+        background: linear-gradient(135deg, var(--accent-green), #2f855a);
+      }
+
+      .category-card[data-category="temperature"].active {
+        background: linear-gradient(135deg, var(--accent-red), #c53030);
+      }
+
+      .category-card[data-category="volume"].active {
+        background: linear-gradient(135deg, var(--accent-purple), #6b46c1);
+      }
+
+      .category-card[data-category="time"].active {
+        background: linear-gradient(135deg, var(--accent-yellow), #d69e2e);
+      }
+
+      .category-card[data-category="area"].active {
+        background: linear-gradient(135deg, var(--accent-cyan), #2d6b64);
+      }
+
+      .category-card[data-category="speed"].active {
+        background: linear-gradient(135deg, var(--accent-orange), #c05621);
+      }
+
+      .category-card[data-category="digital"].active {
+        background: linear-gradient(135deg, var(--accent-pink), #9b2c2c);
+      }
+
+      /* Result Box Styles */
+      .result-box {
+        background: linear-gradient(135deg, #2d3748, #3c4a6a);
+        border: 2px solid var(--accent-purple);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .result-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          45deg,
+          transparent 30%,
+          rgba(72, 187, 120, 0.05) 50%,
+          transparent 70%
+        ); /* Gradasi lebih gelap */
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .result-box.neon-effect::before {
+        opacity: 1;
+      }
+
+      /* History Item Styles */
+      .history-item {
+        background: linear-gradient(135deg, #2d3748, #3c4a6a);
+        border-left: 4px solid var(--accent-purple);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .history-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(159, 122, 234, 0.1),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .history-item:hover::before {
+        left: 100%;
+      }
+
+      .history-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Message Box */
+      #message-box {
+        background: linear-gradient(135deg, #6b46c1, #9f7aea);
+        box-shadow: 0 10px 30px rgba(159, 122, 234, 0.6);
+        border: 1px solid var(--accent-purple);
+        z-index: 50;
+      }
+
+      /* Styling untuk dropdown/select */
+      .unit-select {
+        background: linear-gradient(135deg, #2d3748, #3c4a6a);
+        border: 2px solid var(--accent-purple);
+        color: var(--text-light);
+        transition: all 0.3s ease;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239f7aea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+      }
+
+      .unit-select:focus {
+        border-color: var(--accent-green);
+        box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.4);
+        outline: none;
+      }
+
+      .unit-select option {
+        background: #2d3748;
+        color: var(--text-light);
+        padding: 12px;
+        font-size: 16px;
+      }
+
+      .unit-select option:hover {
+        background: var(--accent-purple);
+      }
+
+      .unit-select option:checked {
+        background: var(--accent-green);
+        color: white;
+      }
+
+      .floating-label {
+        position: relative;
+        margin-bottom: 1.5rem;
+      }
+
+      .floating-label input {
+        z-index: 1;
+      }
+
+      .floating-label label {
+        position: absolute;
+        top: -10px;
+        left: 12px;
+        background: var(--secondary-dark);
+        padding: 0 8px;
+        font-size: 0.8rem;
+        color: var(--accent-purple);
+        font-weight: 600;
+        z-index: 2;
+      }
+
+      /* Animasi loading */
+      @keyframes spin-slow {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .animate-spin-slow {
+        animation: spin-slow 3s linear infinite;
+      }
+
+      /* Responsive untuk mobile */
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        .main-app {
+          margin: 0;
+          border-radius: 15px;
+        }
+
+        .p-6 {
+          padding: 15px;
+        }
+
+        .category-card {
+          padding: 12px 8px;
+          font-size: 0.8rem;
+        }
+
+        .grid-cols-4 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .text-3xl {
+          font-size: 1.5rem;
+        }
+
+        .text-4xl {
+          font-size: 1.75rem;
+        }
+
+        .text-2xl {
+          font-size: 1.25rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .grid-cols-4 {
+          grid-template-columns: 1fr;
+        }
+
+        .text-3xl {
+          font-size: 1.25rem;
+        }
+
+        .text-4xl {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="p-0">
+    <div class="main-app">
+      <header
+        class="p-6 bg-gradient-to-r from-gray-800 to-gray-900 rounded-t-lg shadow-2xl"
+      >
+        <div class="flex items-center justify-between">
+          <h1
+            class="text-3xl font-extrabold text-white flex items-center gap-3"
+          >
+            <i
+              class="fas fa-exchange-alt text-yellow-400 animate-spin-slow"
+            ></i>
+            <span
+              class="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"
+            >
+              Unit Converter
+            </span>
+          </h1>
+          <span id="loading-indicator" class="hidden text-sm text-yellow-400">
+            <i class="fas fa-spinner fa-spin"></i> Memuat...
+          </span>
+        </div>
+        <div class="text-sm mt-2 text-gray-300">
+          Konversi satuan dengan presisi dan gaya ✨
+        </div>
+      </header>
+
+      <!-- Kategori Konversi -->
+      <section class="p-6 border-b border-gray-600">
+        <h2
+          class="text-xl font-bold mb-4 text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text"
+        >
+          Pilih Kategori
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <!-- Panjang -->
+          <div
+            class="category-card active p-4 rounded-xl text-center"
+            data-category="length"
+          >
+            <i class="fas fa-ruler-combined text-3xl mb-3 text-blue-400"></i>
+            <p class="text-sm font-semibold">Panjang</p>
+          </div>
+
+          <!-- Berat -->
+          <div
+            class="category-card p-4 rounded-xl text-center"
+            data-category="weight"
+          >
+            <i class="fas fa-weight-scale text-3xl mb-3 text-green-400"></i>
+            <p class="text-sm font-semibold">Berat</p>
+          </div>
+
+          <!-- Suhu -->
+          <div
+            class="category-card p-4 rounded-xl text-center"
+            data-category="temperature"
+          >
+            <i class="fas fa-temperature-high text-3xl mb-3 text-red-400"></i>
+            <p class="text-sm font-semibold">Suhu</p>
+          </div>
+
+          <!-- Volume -->
+          <div
+            class="category-card p-4 rounded-xl text-center"
+            data-category="volume"
+          >
+            <i class="fas fa-flask text-3xl mb-3 text-purple-400"></i>
+            <p class="text-sm font-semibold">Volume</p>
+          </div>
+
+          <!-- Waktu -->
+          <div
+            class="category-card p-4 rounded-xl text-center"
+            data-category="time"
+          >
+            <i class="fas fa-clock text-3xl mb-3 text-yellow-400"></i>
+            <p class="text-sm font-semibold">Waktu</p>
+          </div>
+
+          <!-- Luas -->
+          <div
+            class="category-card p-4 rounded-xl text-center"
+            data-category="area"
+          >
+            <i class="fas fa-vector-square text-3xl mb-3 text-cyan-400"></i>
+            <p class="text-sm font-semibold">Luas</p>
+          </div>
+
+          <!-- Kecepatan -->
+          <div
+            class="category-card p-4 rounded-xl text-center"
+            data-category="speed"
+          >
+            <i class="fas fa-tachometer-alt text-3xl mb-3 text-orange-400"></i>
+            <p class="text-sm font-semibold">Kecepatan</p>
+          </div>
+
+          <!-- Digital -->
+          <div
+            class="category-card p-4 rounded-xl text-center"
+            data-category="digital"
+          >
+            <i class="fas fa-memory text-3xl mb-3 text-pink-400"></i>
+            <p class="text-sm font-semibold">Digital</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Form Konversi -->
+      <section class="p-6 border-b border-gray-600">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+          <!-- Input Value -->
+          <div class="md:col-span-2 floating-label">
+            <label for="input-value">Nilai Input</label>
+            <input
+              type="number"
+              id="input-value"
+              placeholder="0"
+              class="w-full p-4 rounded-xl input-style text-right text-2xl font-bold"
+              value="1"
+            />
+          </div>
+
+          <!-- From Unit -->
+          <div class="md:col-span-2 floating-label">
+            <label for="from-unit">Satuan Awal</label>
+            <select
+              id="from-unit"
+              class="w-full p-4 rounded-xl unit-select text-lg"
+            >
+              <!-- Options akan diisi oleh JavaScript -->
+            </select>
+          </div>
+
+          <!-- Swap Button -->
+          <div class="flex justify-center">
+            <button
+              id="swap-btn"
+              class="p-4 rounded-xl btn-style swap-btn-gradient text-white hover:shadow-lg transform hover:scale-110"
+            >
+              <i class="fas fa-right-left text-xl"></i>
+            </button>
+          </div>
+
+          <!-- To Unit -->
+          <div class="md:col-span-2 floating-label">
+            <label for="to-unit">Satuan Target</label>
+            <select
+              id="to-unit"
+              class="w-full p-4 rounded-xl unit-select text-lg"
+            >
+              <!-- Options akan diisi oleh JavaScript -->
+            </select>
+          </div>
+
+          <!-- Convert Button -->
+          <div class="md:col-span-3">
+            <button
+              id="convert-btn"
+              class="w-full p-4 rounded-xl btn-style convert-btn-gradient text-xl font-bold transform hover:scale-105"
+            >
+              <i class="fas fa-bolt mr-3"></i> Konversi Sekarang
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hasil Konversi -->
+      <section class="p-6 border-b border-gray-600">
+        <div
+          id="result-container"
+          class="result-box p-8 rounded-2xl text-center transition-all duration-500"
+        >
+          <p class="text-sm text-gray-300 mb-3 font-semibold">Hasil Konversi</p>
+          <p
+            id="conversion-result"
+            class="text-4xl font-bold text-green-400 mb-4"
+          >
+            0
+          </p>
+          <p
+            id="conversion-formula"
+            class="text-lg text-gray-300 font-mono bg-gray-800 p-3 rounded-lg"
+          ></p>
+          <div class="mt-4 flex justify-center space-x-2">
+            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+            <div
+              class="w-3 h-3 bg-green-400 rounded-full animate-pulse"
+              style="animation-delay: 0.2s"
+            ></div>
+            <div
+              class="w-3 h-3 bg-green-400 rounded-full animate-pulse"
+              style="animation-delay: 0.4s"
+            ></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Riwayat Konversi -->
+      <section class="p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2
+            class="text-xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text"
+          >
+            Riwayat Konversi
+          </h2>
+          <button
+            id="clear-history"
+            class="btn-style px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 text-white hover:shadow-lg"
+          >
+            <i class="fas fa-trash mr-2"></i> Hapus Semua
+          </button>
+        </div>
+        <div id="history-list" class="space-y-3 max-h-80 overflow-y-auto pr-2">
+          <p id="empty-history" class="text-center text-gray-400 py-8 text-lg">
+            <i class="fas fa-history text-3xl mb-3 block"></i>
+            Belum ada riwayat konversi
+          </p>
+        </div>
+      </section>
+
+      <!-- Message Box -->
+      <div
+        id="message-box"
+        class="fixed bottom-5 right-5 p-4 rounded-xl shadow-2xl text-white hidden z-50 transition-all duration-300 transform"
+      ></div>
+    </div>
+
+    <script>
+      // Data konversi yang diperluas
+      const conversionData = {
+        length: {
+          name: "Panjang",
+          units: {
+            meter: { name: "Meter", factor: 1 },
+            centimeter: { name: "Centimeter", factor: 0.01 },
+            kilometer: { name: "Kilometer", factor: 1000 },
+            foot: { name: "Kaki", factor: 0.3048 },
+            inch: { name: "Inci", factor: 0.0254 },
+            mile: { name: "Mil", factor: 1609.34 },
+          },
+        },
+        weight: {
+          name: "Berat",
+          units: {
+            kilogram: { name: "Kilogram", factor: 1 },
+            gram: { name: "Gram", factor: 0.001 },
+            pound: { name: "Pound", factor: 0.453592 },
+            ounce: { name: "Ons", factor: 0.0283495 },
+          },
+        },
+        temperature: {
+          name: "Suhu",
+          units: {
+            celsius: { name: "Celsius", factor: 1, offset: 0 },
+            fahrenheit: { name: "Fahrenheit", factor: 5 / 9, offset: -32 },
+            kelvin: { name: "Kelvin", factor: 1, offset: -273.15 },
+          },
+        },
+        volume: {
+          name: "Volume",
+          units: {
+            liter: { name: "Liter", factor: 1 },
+            milliliter: { name: "Mililiter", factor: 0.001 },
+            gallon: { name: "Gallon", factor: 3.78541 },
+            cup: { name: "Cangkir", factor: 0.236588 },
+          },
+        },
+        time: {
+          name: "Waktu",
+          units: {
+            second: { name: "Detik", factor: 1 },
+            minute: { name: "Menit", factor: 60 },
+            hour: { name: "Jam", factor: 3600 },
+            day: { name: "Hari", factor: 86400 },
+          },
+        },
+        area: {
+          name: "Luas",
+          units: {
+            square_meter: { name: "Meter Persegi", factor: 1 },
+            square_centimeter: { name: "Cm Persegi", factor: 0.0001 },
+            square_kilometer: { name: "Km Persegi", factor: 1000000 },
+            hectare: { name: "Hektar", factor: 10000 },
+            acre: { name: "Acre", factor: 4046.86 },
+          },
+        },
+        speed: {
+          name: "Kecepatan",
+          units: {
+            meter_per_second: { name: "Meter/detik", factor: 1 },
+            kilometer_per_hour: { name: "Km/jam", factor: 0.277778 },
+            mile_per_hour: { name: "Mil/jam", factor: 0.44704 },
+            knot: { name: "Knot", factor: 0.514444 },
+          },
+        },
+        digital: {
+          name: "Digital",
+          units: {
+            bit: { name: "Bit", factor: 1 },
+            byte: { name: "Byte", factor: 8 },
+            kilobyte: { name: "Kilobyte", factor: 8192 },
+            megabyte: { name: "Megabyte", factor: 8388608 },
+            gigabyte: { name: "Gigabyte", factor: 8589934592 },
+          },
+        },
+      };
+
+      // Elemen DOM
+      const loadingIndicator = document.getElementById("loading-indicator");
+      const categoryCards = document.querySelectorAll(".category-card");
+      const fromUnitSelect = document.getElementById("from-unit");
+      const toUnitSelect = document.getElementById("to-unit");
+      const inputValue = document.getElementById("input-value");
+      const convertBtn = document.getElementById("convert-btn");
+      const swapBtn = document.getElementById("swap-btn");
+      const conversionResult = document.getElementById("conversion-result");
+      const conversionFormula = document.getElementById("conversion-formula");
+      const historyList = document.getElementById("history-list");
+      const emptyHistory = document.getElementById("empty-history");
+      const clearHistoryBtn = document.getElementById("clear-history");
+      const messageBox = document.getElementById("message-box");
+      const resultContainer = document.getElementById("result-container");
+
+      let currentCategory = "length";
+      let conversionHistory = [];
+
+      // Fungsi tampilkan pesan
+      function showMessage(message, type = "info") {
+        messageBox.textContent = message;
+        messageBox.classList.remove(
+          "hidden",
+          "bg-red-500",
+          "bg-green-500",
+          "bg-blue-500",
+          "from-red-500",
+          "to-pink-500",
+          "from-green-500",
+          "to-blue-500"
+        );
+
+        if (type === "success") {
+          messageBox.classList.add(
+            "bg-gradient-to-r",
+            "from-green-500",
+            "to-blue-500"
+          );
+        } else if (type === "error") {
+          messageBox.classList.add(
+            "bg-gradient-to-r",
+            "from-red-500",
+            "to-pink-500"
+          );
+        } else {
+          messageBox.classList.add(
+            "bg-gradient-to-r",
+            "from-purple-500",
+            "to-pink-500"
+          );
+        }
+
+        messageBox.style.opacity = "1";
+        messageBox.style.transform = "translateY(0) scale(1)";
+
+        setTimeout(() => {
+          messageBox.style.opacity = "0";
+          messageBox.style.transform = "translateY(20px) scale(0.95)";
+          setTimeout(() => messageBox.classList.add("hidden"), 300);
+        }, 3000);
+      }
+
+      // Fungsi neon effect pada hasil
+      function triggerNeonEffect() {
+        resultContainer.classList.add("neon-effect");
+        setTimeout(() => {
+          resultContainer.classList.remove("neon-effect");
+        }, 2000);
+      }
+
+      // Fungsi muat units berdasarkan kategori
+      function loadUnitsForCategory(category) {
+        const units = conversionData[category].units;
+        fromUnitSelect.innerHTML = "";
+        toUnitSelect.innerHTML = "";
+
+        Object.keys(units).forEach((unitKey) => {
+          const unit = units[unitKey];
+          const option1 = new Option(unit.name, unitKey);
+          const option2 = new Option(unit.name, unitKey);
+
+          fromUnitSelect.add(option1);
+          toUnitSelect.add(option2);
+        });
+
+        // Set default units yang berbeda
+        const unitKeys = Object.keys(units);
+        if (unitKeys.length >= 2) {
+          fromUnitSelect.value = unitKeys[0];
+          toUnitSelect.value = unitKeys[1];
+        }
+      }
+
+      // Fungsi konversi
+      function convertUnits() {
+        const value = parseFloat(inputValue.value);
+        if (isNaN(value)) {
+          showMessage("Masukkan nilai yang valid", "error");
+          return;
+        }
+
+        const fromUnit = fromUnitSelect.value;
+        const toUnit = toUnitSelect.value;
+        const category = conversionData[currentCategory];
+
+        if (fromUnit === toUnit) {
+          conversionResult.textContent = value;
+          conversionFormula.textContent = `${value} ${category.units[fromUnit].name} = ${value} ${category.units[toUnit].name}`;
+          showMessage("Satuan sama, tidak perlu konversi", "info");
+          return;
+        }
+
+        let result;
+        let formula;
+
+        // Konversi khusus untuk suhu
+        if (currentCategory === "temperature") {
+          result = convertTemperature(value, fromUnit, toUnit);
+          formula = `${value}°${fromUnit
+            .charAt(0)
+            .toUpperCase()} = ${result.toFixed(4)}°${toUnit
+            .charAt(0)
+            .toUpperCase()}`;
+        } else {
+          // Konversi normal untuk kategori lain
+          const fromFactor = category.units[fromUnit].factor;
+          const toFactor = category.units[toUnit].factor;
+          result = (value * fromFactor) / toFactor;
+          formula = `${value} ${
+            category.units[fromUnit].name
+          } = ${result.toFixed(6)} ${category.units[toUnit].name}`;
+        }
+
+        conversionResult.textContent = result.toFixed(6);
+        conversionFormula.textContent = formula;
+
+        // Trigger neon effect
+        triggerNeonEffect();
+
+        // Simpan ke riwayat
+        addToHistory(value, fromUnit, toUnit, result, formula);
+        showMessage("✨ Konversi berhasil!", "success");
+      }
+
+      // Fungsi konversi suhu khusus
+      function convertTemperature(value, fromUnit, toUnit) {
+        // Konversi ke Celsius dulu
+        let celsius;
+        switch (fromUnit) {
+          case "celsius":
+            celsius = value;
+            break;
+          case "fahrenheit":
+            celsius = ((value - 32) * 5) / 9;
+            break;
+          case "kelvin":
+            celsius = value - 273.15;
+            break;
+        }
+
+        // Konversi dari Celsius ke target
+        switch (toUnit) {
+          case "celsius":
+            return celsius;
+          case "fahrenheit":
+            return (celsius * 9) / 5 + 32;
+          case "kelvin":
+            return celsius + 273.15;
+        }
+      }
+
+      // Fungsi tambah ke riwayat
+      function addToHistory(value, fromUnit, toUnit, result, formula) {
+        const historyItem = {
+          id: Date.now(),
+          value,
+          fromUnit,
+          toUnit,
+          result,
+          formula,
+          category: currentCategory,
+          timestamp: new Date().toLocaleString("id-ID"),
+        };
+
+        conversionHistory.unshift(historyItem);
+        if (conversionHistory.length > 10) {
+          conversionHistory.pop();
+        }
+
+        saveHistory();
+        renderHistory();
+      }
+
+      // Fungsi render riwayat
+      function renderHistory() {
+        historyList.innerHTML = "";
+
+        if (conversionHistory.length === 0) {
+          emptyHistory.classList.remove("hidden");
+          historyList.appendChild(emptyHistory);
+          return;
+        }
+
+        emptyHistory.classList.add("hidden");
+
+        conversionHistory.forEach((item) => {
+          const historyElement = document.createElement("div");
+          historyElement.className = "history-item p-4 rounded-xl";
+          historyElement.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <p class="font-semibold text-sm mb-1">${item.formula}</p>
+                            <p class="text-xs text-gray-400 flex items-center">
+                                <i class="fas fa-clock mr-1"></i> ${item.timestamp}
+                            </p>
+                        </div>
+                        <button onclick="deleteHistoryItem(${item.id})" class="text-gray-400 hover:text-red-400 ml-3 transition-colors duration-200">
+                          <i class="fas fa-times text-lg"></i>
+                        </button>
+                    </div>
+                `;
+          historyList.appendChild(historyElement);
+        });
+      }
+
+      // Fungsi hapus item riwayat
+      function deleteHistoryItem(id) {
+        conversionHistory = conversionHistory.filter((item) => item.id !== id);
+        saveHistory();
+        renderHistory();
+        showMessage("Riwayat dihapus", "success");
+      }
+
+      // Fungsi hapus semua riwayat
+      function clearHistory() {
+        conversionHistory = [];
+        saveHistory();
+        renderHistory();
+        showMessage("Semua riwayat dihapus", "success");
+      }
+
+      // Local Storage functions
+      function saveHistory() {
+        localStorage.setItem(
+          "unitConverterHistory",
+          JSON.stringify(conversionHistory)
+        );
+      }
+
+      function loadHistory() {
+        const saved = localStorage.getItem("unitConverterHistory");
+        if (saved) {
+          conversionHistory = JSON.parse(saved);
+        }
+      }
+
+      // Event Listeners
+      categoryCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          categoryCards.forEach((c) => c.classList.remove("active"));
+          card.classList.add("active");
+          currentCategory = card.dataset.category;
+          loadUnitsForCategory(currentCategory);
+          showMessage(
+            `🎯 Mode ${conversionData[currentCategory].name} diaktifkan`,
+            "info"
+          );
+          convertUnits();
+        });
+      });
+
+      convertBtn.addEventListener("click", convertUnits);
+
+      swapBtn.addEventListener("click", () => {
+        const temp = fromUnitSelect.value;
+        fromUnitSelect.value = toUnitSelect.value;
+        toUnitSelect.value = temp;
+        convertUnits();
+      });
+
+      clearHistoryBtn.addEventListener("click", clearHistory);
+
+      // Auto-convert saat input berubah
+      inputValue.addEventListener("input", convertUnits);
+      fromUnitSelect.addEventListener("change", convertUnits);
+      toUnitSelect.addEventListener("change", convertUnits);
+
+      // Inisialisasi
+      function initApp() {
+        loadingIndicator.classList.remove("hidden");
+        loadHistory();
+        loadUnitsForCategory(currentCategory);
+        renderHistory();
+        convertUnits(); // Konversi otomatis pertama kali
+        loadingIndicator.classList.add("hidden");
+      }
+
+      // Ekspor fungsi untuk event handler
+      window.deleteHistoryItem = deleteHistoryItem;
+
+      // Start app
+      window.onload = initApp;
+    </script>
+  </body>
+</html>
