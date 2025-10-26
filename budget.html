@@ -672,7 +672,7 @@
         padding: 20px;
         margin-bottom: 20px;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Perbaikan: nilai box-shadow yang valid */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         transform: translateZ(0);
         position: relative;
         overflow: hidden;
@@ -1782,9 +1782,33 @@
         other: "Lain-lain",
       };
 
+      const incomeCategories = [
+        "Gaji",
+        "Bonus",
+        "Tunjangan",
+        "Uang Saku",
+        "Pendapatan",
+        "Investasi",
+        "Dividen",
+        "Bunga",
+        "Hibah",
+        "Hadiah",
+      ];
+      const expenseCategories = [
+        "Makanan & Minuman",
+        "Transportasi",
+        "Belanja",
+        "Hiburan",
+        "Tagihan",
+        "Kesehatan",
+        "Pendidikan",
+        "Utilitas",
+        "Lain-lain",
+      ];
+
       function setupAutoCategory() {
         descriptionInput.addEventListener("input", function () {
-          const description = this.value.toLowerCase();
+          const description = this.value.toLowerCase().trim();
           const detectedCategories = detectCategories(description);
           updateCategorySuggestions(detectedCategories);
         });
@@ -1793,57 +1817,31 @@
             categoryInput.value = this.value.trim();
             document
               .querySelectorAll(".auto-category-badge")
-              .forEach((badge) => {
-                badge.classList.remove("selected");
-              });
+              .forEach((badge) => badge.classList.remove("selected"));
           }
         });
         autoCategorySuggestions.addEventListener("click", function (e) {
           if (e.target.classList.contains("auto-category-badge")) {
             customCategoryInput.value = "";
+            categoryInput.value = e.target.textContent;
+            document
+              .querySelectorAll(".auto-category-badge")
+              .forEach((badge) => badge.classList.remove("selected"));
+            e.target.classList.add("selected");
           }
         });
       }
 
       function detectCategories(description) {
         const detected = new Set();
-        if (currentTransactionType === "income") {
+        if (description) {
           Object.entries(autoCategoryMap).forEach(([keyword, category]) => {
             if (
               description.includes(keyword) &&
-              [
-                "Gaji",
-                "Bonus",
-                "Tunjangan",
-                "Uang Saku",
-                "Pendapatan",
-                "Investasi",
-                "Dividen",
-                "Bunga",
-                "Hibah",
-                "Hadiah",
-              ].includes(category)
-            ) {
-              detected.add(category);
-            }
-          });
-        }
-        if (currentTransactionType === "expense") {
-          Object.entries(autoCategoryMap).forEach(([keyword, category]) => {
-            if (
-              description.includes(keyword) &&
-              ![
-                "Gaji",
-                "Bonus",
-                "Tunjangan",
-                "Uang Saku",
-                "Pendapatan",
-                "Investasi",
-                "Dividen",
-                "Bunga",
-                "Hibah",
-                "Hadiah",
-              ].includes(category)
+              ((currentTransactionType === "income" &&
+                incomeCategories.includes(category)) ||
+                (currentTransactionType === "expense" &&
+                  expenseCategories.includes(category)))
             ) {
               detected.add(category);
             }
@@ -1866,9 +1864,9 @@
           badge.addEventListener("click", function () {
             categoryInput.value = category;
             customCategoryInput.value = "";
-            document.querySelectorAll(".auto-category-badge").forEach((b) => {
-              b.classList.remove("selected");
-            });
+            document
+              .querySelectorAll(".auto-category-badge")
+              .forEach((b) => b.classList.remove("selected"));
             this.classList.add("selected");
           });
           autoCategorySuggestions.appendChild(badge);
@@ -1891,12 +1889,12 @@
             typeButtons.forEach((btn) => btn.classList.remove("active"));
             this.classList.add("active");
             currentTransactionType = this.dataset.type;
-            if (descriptionInput.value) {
-              const detectedCategories = detectCategories(
-                descriptionInput.value.toLowerCase()
-              );
-              updateCategorySuggestions(detectedCategories);
-            }
+            categoryInput.value = "";
+            customCategoryInput.value = "";
+            const detectedCategories = detectCategories(
+              descriptionInput.value.toLowerCase().trim()
+            );
+            updateCategorySuggestions(detectedCategories);
           });
         });
       }
@@ -2110,7 +2108,8 @@
             : 0;
         const monthlyData = getMonthlyData();
         const avgMonthlySpend =
-          monthlyData.expense.reduce((sum, val) => sum + val, 0) / 6;
+          monthlyData.expense.reduce((sum, val) => sum + val, 0) /
+          (monthlyData.expense.length || 1);
         const categoryAnalytics = getSpendingAnalytics();
         let mostSpentCategory = "-";
         let mostSpentAmount = 0;
@@ -2122,485 +2121,423 @@
             }
           }
         );
-        let highestTransaction = 0;
-        let highestTransactionDesc = "-";
-        transactions.forEach((t) => {
-          if (t.amount > highestTransaction) {
-            highestTransaction = t.amount;
-            highestTransactionDesc = t.description;
-          }
-        });
-        let financialScore = 0;
-        if (totalIncome > 0) {
-          const expenseRatio = totalExpense / totalIncome;
-          const savingRatio = (totalIncome - totalExpense) / totalIncome;
-          financialScore += Math.min(savingRatio * 60, 60);
-          if (savingRatio > 0.2) financialScore += 20;
-          if (expenseRatio < 0.7) financialScore += 10;
-          if (totalTransactions > 5) financialScore += 10;
-          financialScore = Math.round(Math.min(financialScore, 100));
+      let highestTransaction = 0;
+      let highestTransactionDesc = "-";
+      transactions.forEach((t) => {
+        if (t.amount > highestTransaction) {
+          highestTransaction = t.amount;
+          highestTransactionDesc = t.description;
         }
-        return {
-          savingRate: Math.max(0, savingRate),
-          savingTrend: savingRate > 20 ? 1 : -1,
-          avgMonthlySpend: Math.round(avgMonthlySpend),
-          spendTrend: avgMonthlySpend < totalExpense / 6 ? -1 : 1,
-          mostSpentCategory: mostSpentCategory,
-          mostSpentAmount: mostSpentAmount,
-          financialScore: financialScore,
-          totalIncome: totalIncome,
-          totalExpense: totalExpense,
-          highestTransaction: highestTransaction,
-          highestTransactionDesc: highestTransactionDesc,
-          totalTransactions: totalTransactions,
-        };
+      });
+
+      const netBalance = totalIncome - totalExpense;
+      const financialScore = calculateFinancialScore(
+        savingRate,
+        netBalance,
+        totalExpense
+      );
+
+      document.getElementById("saving-rate").textContent = `${savingRate}%`;
+      document.getElementById("avg-monthly-spend").textContent = formatNumber(
+        avgMonthlySpend
+      );
+      document.getElementById("most-spent-category").textContent =
+        mostSpentCategory;
+      document.getElementById("most-spent-amount").textContent =
+        formatNumber(mostSpentAmount);
+      document.getElementById("financial-score").textContent = financialScore;
+      document.getElementById("total-income-stats").textContent =
+        formatNumber(totalIncome);
+      document.getElementById("total-expense-stats").textContent =
+        formatNumber(totalExpense);
+      document.getElementById("highest-transaction").textContent =
+        formatNumber(highestTransaction);
+      document.getElementById(
+        "highest-transaction-desc"
+      ).textContent = highestTransactionDesc;
+      document.getElementById("total-transactions").textContent =
+        totalTransactions;
+
+      const lastMonthIncome =
+        monthlyData.income[monthlyData.income.length - 2] || 0;
+      const currentMonthIncome =
+        monthlyData.income[monthlyData.income.length - 1] || 0;
+      const lastMonthExpense =
+        monthlyData.expense[monthlyData.expense.length - 2] || 0;
+      const currentMonthExpense =
+        monthlyData.expense[monthlyData.expense.length - 1] || 0;
+
+      const savingTrend = currentMonthIncome - currentMonthExpense;
+      const lastSavingTrend = lastMonthIncome - lastMonthExpense;
+      const spendTrend = currentMonthExpense - lastMonthExpense;
+
+      document.getElementById("saving-trend").innerHTML =
+        savingTrend > lastSavingTrend
+          ? '<i class="fas fa-arrow-up stat-trend-up"></i>'
+          : '<i class="fas fa-arrow-down stat-trend-down"></i>';
+      document.getElementById("spend-trend").innerHTML =
+        spendTrend > 0
+          ? '<i class="fas fa-arrow-up stat-trend-down"></i>'
+          : '<i class="fas fa-arrow-down stat-trend-up"></i>';
+
+      updateDashboard(totalIncome, totalExpense, netBalance);
+    }
+
+    function calculateFinancialScore(savingRate, netBalance, totalExpense) {
+      let score = 50;
+      if (savingRate > 20) score += 20;
+      else if (savingRate < 0) score -= 20;
+      if (netBalance > 0) score += 20;
+      else if (netBalance < 0) score -= 20;
+      if (totalExpense > 0) {
+        const expenseToIncome = totalExpense / (totalIncome || 1);
+        if (expenseToIncome < 0.5) score += 10;
+        else if (expenseToIncome > 1) score -= 10;
       }
+      return Math.max(0, Math.min(100, score));
+    }
 
-      function updateAdvancedStatistics() {
-        const stats = calculateAdvancedStatistics();
-        document.getElementById(
-          "saving-rate"
-        ).textContent = `${stats.savingRate}%`;
-        document.getElementById("avg-monthly-spend").textContent = formatNumber(
-          stats.avgMonthlySpend
-        );
-        document.getElementById("most-spent-category").textContent =
-          stats.mostSpentCategory;
-        document.getElementById("most-spent-amount").textContent = formatNumber(
-          stats.mostSpentAmount
-        );
-        document.getElementById("financial-score").textContent =
-          stats.financialScore;
-        document.getElementById("total-income-stats").textContent =
-          formatNumber(stats.totalIncome);
-        document.getElementById("total-expense-stats").textContent =
-          formatNumber(stats.totalExpense);
-        document.getElementById("highest-transaction").textContent =
-          formatNumber(stats.highestTransaction);
-        document.getElementById("highest-transaction-desc").textContent =
-          stats.highestTransactionDesc;
-        document.getElementById("    total-transactions").textContent =
-          stats.totalTransactions;
-        savingTrend.innerHTML =
-          stats.savingTrend > 0
-            ? '<i class="fas fa-arrow-up stat-trend-up"></i>'
-            : '<i class="fas fa-arrow-down stat-trend-down"></i>';
-        spendTrend.innerHTML =
-          stats.spendTrend > 0
-            ? '<i class="fas fa-arrow-up stat-trend-up"></i>'
-            : '<i class="fas fa-arrow-down stat-trend-down"></i>';
+    function updateDashboard(income, expense, balance) {
+      dashboard.income.textContent = formatNumber(income);
+      dashboard.expense.textContent = formatNumber(expense);
+      dashboard.balance.textContent = formatNumber(balance);
+      dashboard.balance.className = `text-xl font-extrabold mt-1 text-white ${
+        balance >= 0 ? "balance-positive" : "balance-negative"
+      }`;
+      updateStatusMessage(balance);
+    }
+
+    function updateStatusMessage(balance) {
+      let message, statusClass;
+      if (balance > 0) {
+        message = "Keuangan Anda sehat! Pertahankan!";
+        statusClass = "status-positive";
+      } else if (balance === 0) {
+        message = "Saldo seimbang. Ayo tingkatkan tabungan!";
+        statusClass = "status-positive";
+      } else {
+        message = "Waspada! Pengeluaran melebihi pemasukan.";
+        statusClass = "status-negative";
       }
+      dashboard.statusMessage.textContent = message;
+      dashboard.statusMessage.className = `status-message ${statusClass}`;
+      dashboard.statusMessage.classList.remove("hidden");
+    }
 
-      function formatNumber(num) {
-        return `Rp ${num.toLocaleString("id-ID")}`;
+    function formatNumber(amount) {
+      return `Rp ${Math.abs(amount).toLocaleString("id-ID")}`;
+    }
+
+    function showMessage(message, type = "success") {
+      messageBox.textContent = message;
+      messageBox.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-xl text-white z-50 ${
+        type === "success"
+          ? "bg-green-600"
+          : type === "error"
+          ? "bg-red-600"
+          : "bg-yellow-600"
+      }`;
+      messageBox.classList.remove("hidden");
+      setTimeout(() => {
+        messageBox.classList.add("hidden");
+      }, 3000);
+    }
+
+    function showFunMessage() {
+      const messages = [
+        "Wow, kamu jago ngatur duit! 💰",
+        "Tabunganmu makin gemuk, lho! 🐷",
+        "Keuanganmu on fire! 🔥",
+        "Yuk, terus nabung biar impian tercapai! 🚀",
+        "Uangmu aman di tanganmu! 😎",
+      ];
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      funMessageBox.textContent = randomMessage;
+      funMessageBox.className =
+        "fixed bottom-5 right-5 p-4 rounded-lg shadow-xl text-white bg-gradient-to-r from-purple-500 to-indigo-500 z-60";
+      funMessageBox.classList.remove("hidden");
+      setTimeout(() => {
+        funMessageBox.classList.add("hidden");
+      }, 3000);
+    }
+
+    function loadData() {
+      showLoading();
+      transactions = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      categories = JSON.parse(localStorage.getItem(CATEGORIES_KEY)) || [];
+      savings = JSON.parse(localStorage.getItem(SAVINGS_KEY)) || [];
+      updateTransactionList();
+      initializeCharts();
+      calculateAdvancedStatistics();
+      updateSavingsList();
+      hideLoading();
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+      localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
+      localStorage.setItem(SAVINGS_KEY, JSON.stringify(savings));
+    }
+
+    function showLoading() {
+      loadingIndicator.classList.remove("hidden");
+      loadingIndicator.classList.add("loading-pulse");
+    }
+
+    function hideLoading() {
+      loadingIndicator.classList.add("hidden");
+      loadingIndicator.classList.remove("loading-pulse");
+    }
+
+    function updateTransactionList() {
+      transactionList.innerHTML = "";
+      if (transactions.length === 0) {
+        emptyState.classList.remove("hidden");
+        return;
       }
+      emptyState.classList.add("hidden");
+      transactions.forEach((transaction, index) => {
+        const li = document.createElement("li");
+        li.className = "transaction-item p-4 flex justify-between items-center";
+        const formattedAmount = formatNumber(transaction.amount);
+        const date = new Date(transaction.timestamp).toLocaleDateString("id-ID");
+        li.innerHTML = `
+                    <div class="flex-1">
+                        <p class="font-medium">${
+                          transaction.description
+                        } <span class="category-badge ${
+          transaction.type === "income"
+            ? "bg-green-600"
+            : "bg-red-600"
+        }">${transaction.category}</span></p>
+                        <p class="text-sm text-gray-400">${date}</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <p class="font-bold ${
+                          transaction.type === "income"
+                            ? "income-amount"
+                            : "expense-amount"
+                        }">${formattedAmount}</p>
+                        <button class="text-red-400 hover:text-red-600 transition-colors" onclick="deleteTransaction(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+        transactionList.appendChild(li);
+      });
+    }
 
-      function saveData() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
-        localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
-        localStorage.setItem(SAVINGS_KEY, JSON.stringify(savings));
-      }
+    function deleteTransaction(index) {
+      transactions.splice(index, 1);
+      saveData();
+      updateTransactionList();
+      initializeCharts();
+      calculateAdvancedStatistics();
+      showMessage("Transaksi dihapus!", "success");
+    }
 
-      function loadData() {
-        const storedTransactions = localStorage.getItem(STORAGE_KEY);
-        const storedCategories = localStorage.getItem(CATEGORIES_KEY);
-        const storedSavings = localStorage.getItem(SAVINGS_KEY);
-        if (storedTransactions) transactions = JSON.parse(storedTransactions);
-        if (storedCategories) categories = JSON.parse(storedCategories);
-        if (storedSavings) savings = JSON.parse(storedSavings);
-        updateUI();
-        updateSavingsUI();
-      }
-
-      function updateUI() {
-        const totalIncome = transactions
-          .filter((t) => t.type === "income")
-          .reduce((sum, t) => sum + t.amount, 0);
-        const totalExpense = transactions
-          .filter((t) => t.type === "expense")
-          .reduce((sum, t) => sum + t.amount, 0);
-        const netBalance = totalIncome - totalExpense;
-
-        dashboard.income.textContent = formatNumber(totalIncome);
-        dashboard.expense.textContent = formatNumber(totalExpense);
-        dashboard.balance.textContent = formatNumber(netBalance);
-
-        if (netBalance > 0) {
-          dashboard.balance.classList.add("balance-positive");
-          dashboard.balance.classList.remove("balance-negative");
-          dashboard.statusMessage.classList.remove("hidden");
-          dashboard.statusMessage.classList.add("status-positive");
-          dashboard.statusMessage.classList.remove("status-negative");
-          dashboard.statusMessage.textContent =
-            "Keuangan Anda sehat! Pertahankan tabungan Anda!";
-        } else if (netBalance < 0) {
-          dashboard.balance.classList.add("balance-negative");
-          dashboard.balance.classList.remove("balance-positive");
-          dashboard.statusMessage.classList.remove("hidden");
-          dashboard.statusMessage.classList.add("status-negative");
-          dashboard.statusMessage.classList.remove("status-positive");
-          dashboard.statusMessage.textContent =
-            "Pengeluaran melebihi pemasukan. Perhatikan anggaran Anda!";
-        } else {
-          dashboard.statusMessage.classList.add("hidden");
-        }
-
-        transactionList.innerHTML = "";
-        if (transactions.length === 0) {
-          emptyState.classList.remove("hidden");
-        } else {
-          emptyState.classList.add("hidden");
-          transactions.sort(
-            (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-          );
-          transactions.forEach((transaction) => {
-            const li = document.createElement("div");
-            li.className =
-              "transaction-item p-3 flex justify-between items-center";
-            const date = new Date(transaction.timestamp).toLocaleDateString(
-              "id-ID"
-            );
-            li.innerHTML = `
-                <div class="flex-1">
-                    <p class="font-medium">${transaction.description}</p>
-                    <p class="text-xs text-gray-400">${date} | <span class="category-badge" style="background: rgba(155, 89, 182, 0.2); color: var(--accent-purple);">${
-              transaction.category
-            }</span></p>
-                </div>
-                <p class="${
-                  transaction.type === "income"
-                    ? "income-amount"
-                    : "expense-amount"
-                } font-bold">
-                    ${transaction.type === "income" ? "+" : "-"}${formatNumber(
-              transaction.amount
-            )}
-                </p>
-                <button class="ml-3 text-red-400 hover:text-red-600 transition-colors" onclick="deleteTransaction('${
-                  transaction.id
-                }')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            `;
-            transactionList.appendChild(li);
-          });
-        }
-        initializeCharts();
-        updateAdvancedStatistics();
-      }
-
-      function deleteTransaction(id) {
-        transactions = transactions.filter((t) => t.id !== id);
-        saveData();
-        updateUI();
-        showMessage("Transaksi dihapus!", "bg-red-600");
-      }
-
-      function showMessage(message, bgClass) {
-        messageBox.textContent = message;
-        messageBox.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-xl text-white ${bgClass} z-50`;
-        messageBox.classList.remove("hidden");
-        setTimeout(() => {
-          messageBox.classList.add("hidden");
-        }, 3000);
-      }
-
-      function showFunMessage(message, bgClass) {
-        funMessageBox.textContent = message;
-        funMessageBox.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-xl text-white ${bgClass} z-60`;
-        funMessageBox.classList.remove("hidden");
-        setTimeout(() => {
-          funMessageBox.classList.add("hidden");
-        }, 3000);
-      }
-
-      function generateId() {
-        return "_" + Math.random().toString(36).substr(2, 9);
-      }
-
-      function formatInputNumber(input) {
-        let value = input.value.replace(/[^0-9]/g, "");
-        if (value) {
-          input.value = parseInt(value).toLocaleString("id-ID");
-        } else {
-          input.value = "";
-        }
-      }
-
-      function parseInputNumber(value) {
-        return parseInt(value.replace(/[^0-9]/g, "")) || 0;
-      }
+    function setupForm() {
+      amountInput.addEventListener("input", function () {
+        let value = this.value.replace(/[^0-9]/g, "");
+        this.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      });
 
       transactionForm.addEventListener("submit", function (e) {
         e.preventDefault();
+        const amount = parseFloat(
+          amountInput.value.replace(/\./g, "").replace(",", ".")
+        );
         const description = descriptionInput.value.trim();
-        const amount = parseInputNumber(amountInput.value);
         const date = dateInput.value;
-        let category =
-          categoryInput.value.trim() || customCategoryInput.value.trim();
+        let category = categoryInput.value.trim() || customCategoryInput.value.trim();
 
-        if (!description || !amount || !date) {
-          showMessage("Semua kolom wajib diisi!", "bg-red-600");
+        if (!amount || isNaN(amount)) {
+          showMessage("Masukkan jumlah yang valid!", "error");
           return;
         }
-
+        if (!description) {
+          showMessage("Deskripsi tidak boleh kosong!", "error");
+          return;
+        }
+        if (!date) {
+          showMessage("Tanggal tidak boleh kosong!", "error");
+          return;
+        }
         if (!category) {
           category =
             currentTransactionType === "income" ? "Pendapatan" : "Lain-lain";
         }
 
-        if (!categories.includes(category)) {
+        if (
+          !categories.includes(category) &&
+          !incomeCategories.includes(category) &&
+          !expenseCategories.includes(category)
+        ) {
           categories.push(category);
-          saveData();
         }
 
         const transaction = {
-          id: generateId(),
           type: currentTransactionType,
-          description,
           amount,
+          description,
           category,
           timestamp: new Date(date).toISOString(),
         };
 
         transactions.push(transaction);
         saveData();
-        updateUI();
-        showMessage(
-          `Transaksi ${
-            currentTransactionType === "income" ? "Pemasukan" : "Pengeluaran"
-          } berhasil ditambahkan!`,
-          "bg-green-600"
-        );
-
-        const funMessages = [
-          "Wah, keuanganmu makin teratur! 💪",
-          "Langkah kecil menuju tabungan besar! 🐷",
-          "Keren, kamu tahu caranya kelola uang! 😎",
-          "Tabunganmu bakal tersenyum lebar! 😄",
-        ];
-        showFunMessage(
-          funMessages[Math.floor(Math.random() * funMessages.length)],
-          "bg-indigo-600"
-        );
-
+        updateTransactionList();
+        initializeCharts();
+        calculateAdvancedStatistics();
         transactionForm.reset();
         categoryInput.value = "";
         customCategoryInput.value = "";
-        updateCategorySuggestions(detectCategories(""));
+        updateCategorySuggestions(
+          detectCategories(descriptionInput.value.toLowerCase().trim())
+        );
+        showMessage("Transaksi berhasil disimpan!", "success");
+        if (Math.random() < 0.3) showFunMessage();
       });
+    }
 
-      amountInput.addEventListener("input", function () {
-        formatInputNumber(this);
-      });
+    function setupSavingsForm() {
+      savingsForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const name = document.getElementById("savings-name").value.trim();
+        const target = parseFloat(
+          document
+            .getElementById("savings-target")
+            .value.replace(/\./g, "")
+            .replace(",", ".")
+        );
+        const amount = parseFloat(
+          document
+            .getElementById("savings-amount")
+            .value.replace(/\./g, "")
+            .replace(",", ".")
+        );
 
-      document
-        .getElementById("savings-target")
-        .addEventListener("input", function () {
-          formatInputNumber(this);
-        });
+        if (!name || !target || !amount || isNaN(target) || isNaN(amount)) {
+          showMessage("Lengkapi semua kolom dengan benar!", "error");
+          return;
+        }
 
-      document
-        .getElementById("savings-amount")
-        .addEventListener("input", function () {
-          formatInputNumber(this);
-        });
+        const savingsData = {
+          id: editingSavingsId || Date.now(),
+          name,
+          target,
+          amount,
+          current: editingSavingsId
+            ? savings.find((s) => s.id === editingSavingsId)?.current || 0
+            : 0,
+          plan: currentSavingsPlan,
+          history: editingSavingsId
+            ? savings.find((s) => s.id === editingSavingsId)?.history || []
+            : [],
+        };
 
-      document
-        .getElementById("money-amount")
-        .addEventListener("input", function () {
-          formatInputNumber(this);
-        });
-
-      function showTab(tabId) {
-        document.querySelectorAll(".tab-content").forEach((content) => {
-          content.classList.remove("active");
-        });
-        document.querySelectorAll(".tab-button").forEach((button) => {
-          button.classList.remove("active");
-        });
-        document.getElementById(`${tabId}-content`).classList.add("active");
-        document
-          .querySelector(`button[onclick="showTab('${tabId}')"]`)
-          .classList.add("active");
-      }
-
-      function updateSavingsUI() {
-        savingsList.innerHTML = "";
-        if (savings.length === 0) {
-          savingsList.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-coins"></i>
-                <p>Belum Ada Celengan</p>
-                <p class="text-sm mt-2">Mulai menabung dengan membuat celengan pertama Anda!</p>
-            </div>
-        `;
+        if (editingSavingsId) {
+          const index = savings.findIndex((s) => s.id === editingSavingsId);
+          savings[index] = savingsData;
         } else {
-          savings.forEach((saving) => {
-            const progress = (saving.current / saving.target) * 100;
-            const progressWidth = Math.min(progress, 100);
-            const remainingDays = calculateRemainingDays(saving);
-            const savingsCard = document.createElement("div");
-            savingsCard.className = "savings-card";
-            savingsCard.innerHTML = `
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold" style="color: var(--accent-yellow);">${
-                      saving.name
-                    }</h3>
-                    <div class="flex gap-2">
-                        <button class="add-money-btn" onclick="openAddMoneyModal('${
-                          saving.id
-                        }')">
-                            <i class="fas fa-money-bill-wave mr-1"></i> Kelola
-                        </button>
-                        <button class="delete-savings-btn" onclick="deleteSavings('${
-                          saving.id
-                        }')">
-                            <i class="fas fa-trash mr-1"></i> Hapus
-                        </button>
-                    </div>
-                </div>
-                <div class="savings-progress">
-                    <div class="savings-progress-bar" style="width: ${progressWidth}%"></div>
-                </div>
-                <div class="flex justify-between text-sm mb-2">
-                    <p>Terkumpul: <span class="font-bold">${formatNumber(
-                      saving.current
-                    )}</span></p>
-                    <p>Target: <span class="font-bold">${formatNumber(
-                      saving.target
-                    )}</span></p>
-                </div>
-                <div class="savings-stats">
-                    <div class="stat-item">
-                        <div class="stat-value-sm">${
-                          saving.plan.charAt(0).toUpperCase() +
-                          saving.plan.slice(1)
-                        }</div>
-                        <p class="stat-label">Rencana</p>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value-sm">${formatNumber(
-                          saving.amount
-                        )}</div>
-                        <p class="stat-label">Nominal ${saving.plan}</p>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value-sm">${remainingDays} hari</div>
-                        <p class="stat-label">Sisa Waktu</p>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value-sm">${Math.round(
-                          progress
-                        )}%</div>
-                        <p class="stat-label">Progres</p>
-                    </div>
-                </div>
-            `;
-            savingsList.appendChild(savingsCard);
-          });
+          savings.push(savingsData);
         }
-      }
 
-      function calculateRemainingDays(saving) {
-        const startDate = new Date(saving.createdAt);
-        const targetAmount = saving.target;
-        const currentAmount = saving.current;
-        const amountPerPlan = saving.amount;
-        let planInterval;
-        switch (saving.plan) {
-          case "daily":
-            planInterval = 1;
-            break;
-          case "weekly":
-            planInterval = 7;
-            break;
-          case "monthly":
-            planInterval = 30;
-            break;
-        }
-        const remainingAmount = targetAmount - currentAmount;
-        const remainingPlans = Math.ceil(remainingAmount / amountPerPlan);
-        const remainingDays = remainingPlans * planInterval;
-        return Math.max(0, remainingDays);
-      }
-
-      function openSavingsModal(editId = null) {
-        editingSavingsId = editId;
-        const modalTitle = document.getElementById("modal-title");
-        if (editId) {
-          const saving = savings.find((s) => s.id === editId);
-          modalTitle.innerHTML = `<i class="fas fa-edit mr-2"></i>Edit Celengan`;
-          document.getElementById("savings-name").value = saving.name;
-          document.getElementById("savings-target").value =
-            saving.target.toLocaleString("id-ID");
-          document.getElementById("savings-amount").value =
-            saving.amount.toLocaleString("id-ID");
-          document.querySelectorAll(".savings-plan-btn").forEach((btn) => {
-            btn.classList.remove("active");
-            if (btn.dataset.plan === saving.plan) {
-              btn.classList.add("active");
-              currentSavingsPlan = saving.plan;
-            }
-          });
-        } else {
-          modalTitle.innerHTML = `<i class="fas fa-plus-circle mr-2"></i>Buat Celengan Baru`;
-          savingsForm.reset();
-          document.querySelectorAll(".savings-plan-btn").forEach((btn) => {
-            btn.classList.remove("active");
-            if (btn.dataset.plan === "daily") {
-              btn.classList.add("active");
-              currentSavingsPlan = "daily";
-            }
-          });
-        }
-        savingsModal.classList.remove("hidden");
-      }
-
-      function openAddMoneyModal(savingsId) {
-        currentSavingsId = savingsId;
-        const saving = savings.find((s) => s.id === savingsId);
-        document.getElementById(
-          "add-money-title"
-        ).textContent = `Tambah/Kurangi Uang: ${saving.name}`;
-        addMoneyForm.reset();
-        document.querySelectorAll(".amount-btn").forEach((btn) => {
-          btn.classList.remove("active");
-          if (btn.dataset.action === "increase") {
-            btn.classList.add("active");
-            currentMoneyAction = "increase";
-          }
-        });
-        addMoneyModal.classList.remove("hidden");
-      }
-
-      function deleteSavings(id) {
-        savings = savings.filter((s) => s.id !== id);
         saveData();
-        updateSavingsUI();
-        showMessage("Celengan dihapus!", "bg-red-600");
-      }
+        updateSavingsList();
+        savingsModal.classList.add("hidden");
+        savingsForm.reset();
+        editingSavingsId = null;
+        showMessage(
+          editingSavingsId ? "Celengan diperbarui!" : "Celengan dibuat!",
+          "success"
+        );
+      });
 
-      addSavingsBtn.addEventListener("click", () => openSavingsModal());
+      document
+        .querySelectorAll(".savings-plan-btn")
+        .forEach((btn) => {
+          btn.addEventListener("click", function () {
+            document
+              .querySelectorAll(".savings-plan-btn")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+            currentSavingsPlan = this.dataset.plan;
+          });
+        });
 
       cancelSavings.addEventListener("click", () => {
         savingsModal.classList.add("hidden");
         savingsForm.reset();
+        editingSavingsId = null;
       });
 
-      cancelAddMoney.addEventListener("click", () => {
+      addSavingsBtn.addEventListener("click", () => {
+        document.getElementById("modal-title").textContent =
+          "Buat Celengan Baru";
+        savingsForm.reset();
+        document
+          .querySelectorAll(".savings-plan-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document
+          .querySelector('.savings-plan-btn[data-plan="daily"]')
+          .classList.add("active");
+        currentSavingsPlan = "daily";
+        savingsModal.classList.remove("hidden");
+      });
+    }
+
+    function setupAddMoneyForm() {
+      addMoneyForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const amount = parseFloat(
+          document
+            .getElementById("money-amount")
+            .value.replace(/\./g, "")
+            .replace(",", ".")
+        );
+        const description = document.getElementById("money-description").value.trim();
+
+        if (!amount || isNaN(amount)) {
+          showMessage("Masukkan jumlah yang valid!", "error");
+          return;
+        }
+
+        const savingsIndex = savings.findIndex((s) => s.id === currentSavingsId);
+        if (savingsIndex === -1) {
+          showMessage("Celengan tidak ditemukan!", "error");
+          return;
+        }
+
+        const savingsItem = savings[savingsIndex];
+        const newCurrent =
+          currentMoneyAction === "increase"
+            ? savingsItem.current + amount
+            : savingsItem.current - amount;
+
+        if (newCurrent < 0) {
+          showMessage("Saldo celengan tidak bisa negatif!", "error");
+          return;
+        }
+
+        savingsItem.current = newCurrent;
+        savingsItem.history.push({
+          amount,
+          action: currentMoneyAction,
+          description: description || "Tanpa keterangan",
+          timestamp: new Date().toISOString(),
+        });
+
+        saveData();
+        updateSavingsList();
         addMoneyModal.classList.add("hidden");
         addMoneyForm.reset();
-      });
-
-      document.querySelectorAll(".savings-plan-btn").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          document
-            .querySelectorAll(".savings-plan-btn")
-            .forEach((b) => b.classList.remove("active"));
-          this.classList.add("active");
-          currentSavingsPlan = this.dataset.plan;
-        });
+        showMessage(
+          `Berhasil ${
+            currentMoneyAction === "increase" ? "menambah" : "mengurangi"
+          } dana celengan!`,
+          "success"
+        );
       });
 
       document.querySelectorAll(".amount-btn").forEach((btn) => {
@@ -2613,110 +2550,137 @@
         });
       });
 
-      savingsForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const name = document.getElementById("savings-name").value.trim();
-        const target = parseInputNumber(
-          document.getElementById("savings-target").value
-        );
-        const amount = parseInputNumber(
-          document.getElementById("savings-amount").value
-        );
-
-        if (!name || !target || !amount) {
-          showMessage("Semua kolom wajib diisi!", "bg-red-600");
-          return;
-        }
-
-        if (editingSavingsId) {
-          const saving = savings.find((s) => s.id === editingSavingsId);
-          saving.name = name;
-          saving.target = target;
-          saving.amount = amount;
-          saving.plan = currentSavingsPlan;
-          showMessage("Celengan diperbarui!", "bg-green-600");
-        } else {
-          const saving = {
-            id: generateId(),
-            name,
-            target,
-            amount,
-            plan: currentSavingsPlan,
-            current: 0,
-            createdAt: new Date().toISOString(),
-            history: [],
-          };
-          savings.push(saving);
-          showMessage("Celengan berhasil dibuat!", "bg-green-600");
-        }
-
-        saveData();
-        updateSavingsUI();
-        savingsModal.classList.add("hidden");
-        savingsForm.reset();
-      });
-
-      addMoneyForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const amount = parseInputNumber(
-          document.getElementById("money-amount").value
-        );
-        const description =
-          document.getElementById("money-description").value.trim() ||
-          "Tanpa keterangan";
-
-        if (!amount) {
-          showMessage("Jumlah wajib diisi!", "bg-red-600");
-          return;
-        }
-
-        const saving = savings.find((s) => s.id === currentSavingsId);
-        if (currentMoneyAction === "increase") {
-          saving.current += amount;
-          saving.history.push({
-            action: "increase",
-            amount,
-            description,
-            timestamp: new Date().toISOString(),
-          });
-          showMessage(
-            `Berhasil menambahkan ${formatNumber(amount)} ke celengan!`,
-            "bg-green-600"
-          );
-        } else {
-          if (amount > saving.current) {
-            showMessage(
-              "Jumlah yang dikurangi melebihi saldo celengan!",
-              "bg-red-600"
-            );
-            return;
-          }
-          saving.current -= amount;
-          saving.history.push({
-            action: "decrease",
-            amount,
-            description,
-            timestamp: new Date().toISOString(),
-          });
-          showMessage(
-            `Berhasil mengurangi ${formatNumber(amount)} dari celengan!`,
-            "bg-red-600"
-          );
-        }
-
-        saveData();
-        updateSavingsUI();
+      cancelAddMoney.addEventListener("click", () => {
         addMoneyModal.classList.add("hidden");
         addMoneyForm.reset();
       });
 
-      document.addEventListener("DOMContentLoaded", () => {
-        loadData();
-        setupTypeButtons();
-        setupAutoCategory();
-        dateInput.value = new Date().toISOString().split("T")[0];
-        updateCategorySuggestions(detectCategories(""));
+      document
+        .getElementById("money-amount")
+        .addEventListener("input", function () {
+          let value = this.value.replace(/[^0-9]/g, "");
+          this.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        });
+    }
+
+    function updateSavingsList() {
+      savingsList.innerHTML = "";
+      if (savings.length === 0) {
+        savingsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-coins"></i>
+                        <p>Belum Ada Celengan</p>
+                        <p class="text-sm mt-2">Mulai menabung dengan membuat celengan pertama Anda!</p>
+                    </div>
+                `;
+        return;
+      }
+
+      savings.forEach((savingsItem) => {
+        const percentage = Math.min(
+          (savingsItem.current / savingsItem.target) * 100,
+          100
+        );
+        const savingsCard = document.createElement("div");
+        savingsCard.className = "savings-card";
+        savingsCard.innerHTML = `
+                    <h3 class="text-lg font-bold mb-2" style="color: var(--accent-yellow);">${
+                      savingsItem.name
+                    }</h3>
+                    <p class="text-sm text-gray-400 mb-2">Target: ${formatNumber(
+                      savingsItem.target
+                    )}</p>
+                    <p class="text-sm text-gray-400 mb-2">Saat ini: ${formatNumber(
+                      savingsItem.current
+                    )} (${percentage.toFixed(2)}%)</p>
+                    <p class="text-sm text-gray-400 mb-2">Rencana: ${
+                      savingsItem.plan === "daily"
+                        ? "Harian"
+                        : savingsItem.plan === "weekly"
+                        ? "Mingguan"
+                        : "Bulanan"
+                    } - ${formatNumber(savingsItem.amount)}</p>
+                    <div class="savings-progress">
+                        <div class="savings-progress-bar" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="flex gap-4 mt-4">
+                        <button class="add-money-btn" onclick="openAddMoneyModal(${
+                          savingsItem.id
+                        })">
+                            <i class="fas fa-money-bill-wave mr-2"></i>Tambah/Kurangi
+                        </button>
+                        <button class="delete-savings-btn" onclick="deleteSavings(${
+                          savingsItem.id
+                        })">
+                            <i class="fas fa-trash mr-2"></i>Hapus
+                        </button>
+                    </div>
+                    <div class="savings-stats">
+                        <div class="stat-item">
+                            <div class="stat-value-sm">${savingsItem.history.length}</div>
+                            <p class="stat-label">Total Transaksi</p>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value-sm">${formatNumber(
+                              savingsItem.current
+                            )}</div>
+                            <p class="stat-label">Total Terkumpul</p>
+                        </div>
+                    </div>
+                `;
+        savingsList.appendChild(savingsCard);
       });
+    }
+
+    function openAddMoneyModal(id) {
+      currentSavingsId = id;
+      const savingsItem = savings.find((s) => s.id === id);
+      document.getElementById(
+        "add-money-title"
+      ).textContent = `Tambah/Kurangi: ${savingsItem.name}`;
+      addMoneyForm.reset();
+      document
+        .querySelectorAll(".amount-btn")
+        .forEach((b) => b.classList.remove("active"));
+      document
+        .querySelector('.amount-btn[data-action="increase"]')
+        .classList.add("active");
+      currentMoneyAction = "increase";
+      addMoneyModal.classList.remove("hidden");
+    }
+
+    function deleteSavings(id) {
+      savings = savings.filter((s) => s.id !== id);
+      saveData();
+      updateSavingsList();
+      showMessage("Celengan dihapus!", "success");
+    }
+
+    function showTab(tabId) {
+      document.querySelectorAll(".tab-content").forEach((tab) => {
+        tab.classList.remove("active");
+      });
+      document.querySelectorAll(".tab-button").forEach((btn) => {
+        btn.classList.remove("active");
+      });
+      document.getElementById(`${tabId}-content`).classList.add("active");
+      document
+        .querySelector(`button[onclick="showTab('${tabId}')"]`)
+        .classList.add("active");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadData();
+      setupTypeButtons();
+      setupAutoCategory();
+      setupForm();
+      setupSavingsForm();
+      setupAddMoneyForm();
+      dateInput.value = new Date().toISOString().split("T")[0];
+      updateCategorySuggestions(
+        detectCategories(descriptionInput.value.toLowerCase().trim())
+      );
+    });
     </script>
   </body>
 </html>
