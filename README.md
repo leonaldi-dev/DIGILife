@@ -1,34 +1,62 @@
-# DIGILife - Asisten Pribadi
+# 💜 DIGILife – Asisten Pribadi 💛
 
-## Latar Belakang Ide
-DIGILife lahir dari kebutuhan untuk mengelola tugas sehari-hari dengan cara yang lebih interaktif dan menyenangkan. Ide ini muncul karena sering kali orang kesulitan mengatur jadwal, menghitung keuangan, atau membuat keputusan kecil tanpa alat yang sederhana namun canggih. Dengan desain modern dan fitur praktis, DIGILife dirancang untuk membantu pengguna—terutama pelajar dan profesional muda—meningkatkan produktivitas dalam kehidupan digital.
-
-## Manfaat
-- **Mudah Digunakan**: Antarmuka ramah pengguna dengan animasi interaktif.
-- **Fitur Lengkap**: Termasuk Kalkulator, To-Do List, BMI Tracker, Budget Planner, Kalkulator Zakat, dan Decision Maker.
-- **Personalisasi**: Pengguna bisa menyimpan nama dan mengakses fitur favorit.
-- **Akses Gratis**: Tersedia online melalui GitHub Pages tanpa biaya.
-
-## Cara Penggunaan
-1. **Akses Web**: Buka [https://leonaldev.github.io/digilife](https://leonaldev.github.io/digilife)
-2. **Masukkan Nama**: Di layar awal, ketik nama panggilan dan tekan Enter untuk memulai.
-3. **Pilih Fitur**:
-   - Klik bubble button seperti "Kalkulator" atau "To-Do List" untuk membuka fitur.
-   - Modal akan muncul dengan konten interaktif.
-   - Klik tombol "×" atau luar modal untuk kembali.
-4. **Ubah Nama**: Klik menu "Ubah Nama" di navigasi, masukkan nama baru, dan simpan.
-5. **Navigasi Mobile**: Di layar kecil, gunakan ikon hamburger untuk akses menu.
-
-## Teknologi yang Digunakan
-- **HTML/CSS/JavaScript**: Untuk struktur, desain, dan interaktivitas.
-- **Font Awesome**: Ikon dekoratif.
-- **Google Fonts**: Font Poppins dan Fredoka One untuk estetika.
-
-## Kontribusi
-Proyek ini dibuat oleh leo, dan di bantu dengan AI. Saran atau masukan bisa dikirim via email atau issue di repositori ini.
-
-## Lisensi
--
+### 🧠 Latar Belakang Ide
+DIGILife lahir dari kebutuhan untuk mengelola aktivitas harian secara praktis dan menyenangkan.  
+Banyak orang — terutama pelajar dan profesional muda — sering kesulitan mengatur jadwal, keuangan, dan keputusan kecil tanpa alat bantu yang sederhana namun canggih.  
+*DIGILife* hadir sebagai solusi: asisten digital yang ringan, interaktif, dan bermanfaat untuk kehidupan sehari-hari.
 
 ---
-*Terakhir diperbarui: 14 Oktober 2025*
+
+### 🌟 Manfaat
+- *Mudah digunakan* — Antarmuka ramah pengguna dengan animasi lembut.  
+- *Fitur lengkap* — Termasuk Kalkulator, To-Do List, BMI Tracker, Budget Planner, Kalkulator Zakat, dan Decision Maker.  
+- *Personalisasi* — Pengguna dapat menyimpan nama dan mengakses fitur favorit.  
+- *Gratis & ringan* — Dapat diakses langsung tanpa instalasi.
+
+---
+
+### 💻 Cara Penggunaan
+1. *Akses Web:*  
+   👉 [https://leonaldi-dev.github.io/DIGILife/](https://leonaldi-dev.github.io/DIGILife/)
+2. *Masukkan Nama:*  
+   Ketik nama panggilanmu di layar awal dan tekan *Enter*.
+3. *Pilih Fitur:*  
+   Klik salah satu bubble menu (contoh: “Kalkulator” atau “To-Do List”).  
+   Modal akan muncul berisi fitur interaktif.  
+4. *Ubah Nama:*  
+   Klik menu *Ubah Nama* di navigasi, lalu simpan nama baru.  
+5. *Navigasi Mobile:*  
+   Gunakan ikon *☰ (hamburger)* untuk membuka menu di layar kecil.
+
+---
+
+### 🧩 Teknologi yang Digunakan
+- *HTML, **CSS, **JavaScript*  
+- *Tailwind CSS* untuk tampilan responsif  
+- *Font Awesome* & *Google Fonts (Poppins, Fredoka One)*  
+- *LocalStorage API* untuk menyimpan data pengguna
+
+---
+
+### 🤝 Kontribusi
+Proyek ini dibuat oleh:  
+💜 *LEONALDI AHMAD IBRAHIM*  
+💛 *MIFTAKHUL ACHYAR*
+
+💬 “Bersama, kita membangun masa depan digital yang lebih baik.”
+
+Dibuat dengan semangat berbagi dan pengembangan teknologi kreatif.  
+Masukan dan saran dapat dikirim melalui email atau issue di GitHub.
+
+---
+
+### ⚖ Lisensi
+Proyek ini dirilis di bawah *Lisensi MIT*.  
+© 2025 *DIGILife*. Dibuat dengan HTML dan sepenuh hati 💛  
+
+---
+
+### 📎 Tautan Penting
+- 🌐 *Website:* [https://leonaldi-dev.github.io/DIGILife/](https://leonaldi-dev.github.io/DIGILife/)  
+- 💾 *Source Code:* [https://github.com/leonaldi-dev/DIGILife](https://github.com/leonaldi-dev/DIGILife)  
+- 📧 *Email:* [leonaldy283@gmail.com](mailto:leonaldy283@gmail.com)
