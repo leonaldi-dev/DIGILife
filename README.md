@@ -51,8 +51,8 @@ Masukan dan saran dapat dikirim melalui email atau issue di GitHub.
 ---
 
 ### ⚖ Lisensi
-Proyek ini dirilis di bawah *Lisensi MIT*.  
-© 2025 *DIGILife*. Dibuat dengan HTML dan sepenuh hati 💛  
+Proyek ini dirilis di bawah **[Lisensi MIT](https://opensource.org/licenses/MIT)**.  
+© 2025 *DIGILife*. Dibuat dengan HTML dan sepenuh hati 💛
 
 ---
 
